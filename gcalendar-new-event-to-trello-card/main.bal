@@ -2,8 +2,6 @@ import ballerina/http;
 import ballerinax/trello;
 import ballerinax/trigger.google.calendar;
 
-listener http:Listener httpListener = new (8090);
-
 // Google Calendar configuration parameters
 configurable calendar:ListenerConfig config = ?;
 
@@ -12,7 +10,6 @@ configurable string trelloApiKey = ?;
 configurable string trelloApiToken = ?;
 configurable string trelloListId = ?;
 
-listener calendar:Listener calendarListener = new (config, httpListener);
 
 trello:ApiKeysConfig apiKeyConfig = {
     key: trelloApiKey,
@@ -31,6 +28,8 @@ http:CircuitBreakerConfig circuitBreaker = {
 };
 final trello:Client trello = check new (apiKeyConfig, {circuitBreaker});
 
+listener http:Listener httpListener = new (8090);
+listener calendar:Listener calendarListener = new (config, httpListener);
 service calendar:CalendarService on calendarListener {
 
     remote function onNewEvent(calendar:Event payload) returns error? {
