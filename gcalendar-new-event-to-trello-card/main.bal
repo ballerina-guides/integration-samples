@@ -55,9 +55,3 @@ function transform(calendar:Event calEvent) returns trello:Cards => {
     desc: string `New event is created on Google Calendar: ${calEvent.summary ?: ""}. 
         The event starts on ${calEvent.'start?.dateTime ?: ""} and ends on ${calEvent.end?.dateTime ?: ""}`
 };
-
-// // Mapping from Google Calendar Event to Trello Card
-// trello:Cards card = transform(payload);
-
-// // Add the card to the Trello list
-// var _ = check trello->addCards(card);

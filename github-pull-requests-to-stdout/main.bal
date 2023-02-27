@@ -19,6 +19,6 @@ public function main() returns error? {
     };
     
     // Network data == program data
-    PR[] prs = check github->/["octocat/Hello-World"]/pulls(headers);
+    PR[] prs = check github->/octocat/Hello\-World/pulls(headers);
     io:println(prs);
 }
