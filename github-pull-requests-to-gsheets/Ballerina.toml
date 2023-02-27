@@ -1,0 +1,8 @@
+[package]
+org = "integration_samples"
+name = "github_pull_requests_to_gsheets"
+version = "0.1.0"
+distribution = "2201.3.2"
+
+[build-options]
+observabilityIncluded = true
