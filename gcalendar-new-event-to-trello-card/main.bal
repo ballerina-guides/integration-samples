@@ -3,7 +3,7 @@ import ballerinax/trello;
 import ballerinax/trigger.google.calendar;
 
 // Google Calendar configuration parameters
-configurable calendar:ListenerConfig config = ?;
+configurable calendar:ListenerConfig calendarListenerConfig = ?;
 
 // Trello configuration parameters
 configurable string trelloApiKey = ?;
@@ -29,7 +29,7 @@ http:CircuitBreakerConfig circuitBreaker = {
 final trello:Client trello = check new (apiKeyConfig, {circuitBreaker});
 
 listener http:Listener httpListener = new (8090);
-listener calendar:Listener calendarListener = new (config, httpListener);
+listener calendar:Listener calendarListener = new (calendarListenerConfig, httpListener);
 service calendar:CalendarService on calendarListener {
 
     remote function onNewEvent(calendar:Event payload) returns error? {
