@@ -5,16 +5,16 @@ import ballerina/time;
 import ballerinax/quickbooks.online as quickbooks;
 import ballerinax/ronin;
 
-// Ronin configuration parameters
-configurable http:CredentialsConfig roninAuthConfig = ?;
-configurable string roninServiceUrl = ?;
+// Clientary configuration parameters
+configurable http:CredentialsConfig clientaryAuthConfig = ?;
+configurable string clientaryServiceUrl = ?;
 
 // Quickbooks configuration parameters
 configurable http:BearerTokenConfig quickbooksAuthConfig = ?;
 configurable string quickbooksServiceUrl = ?;
 configurable string quickbooksRealmId = ?;
 
-final ronin:Client ronin = check new ({auth: roninAuthConfig}, roninServiceUrl);
+final ronin:Client clientary = check new ({auth: clientaryAuthConfig}, clientaryServiceUrl);
 final quickbooks:Client quickbooks = check new ({auth: quickbooksAuthConfig}, quickbooksServiceUrl);
 
 type LineItems record {|
@@ -37,45 +37,45 @@ type QuickbooksCustomer record {|
 
 public function main() returns error? {
     string yesterdayMidnight = regex:split(time:utcToString(time:utcNow()), "T")[0].concat("T00:00:00Z");
-    ronin:Invoices response = check ronin->listInvoices(updatedSince = yesterdayMidnight);
+    ronin:Invoices response = check clientary->listInvoices(updatedSince = yesterdayMidnight);
 
-    // Obtain Ronin invoices
+    // Obtain Clientary invoices
     ronin:Invoice[] invoices = response?.invoices ?: [];
     if invoices.length() == 0 {
-        log:printError("Ronin invoices are empty!");
+        log:printError("Clientary invoices are empty!");
         return;
     }
 
     // Obtain the Quickbooks customer array list
     QuickbooksCustomer[] customerArray = check getQuickbooksCustomerArray();
 
-    // Iterate through the Ronin invoices and create Quickbooks invoices
+    // Iterate through the Clientary invoices and create Quickbooks invoices
     foreach ronin:Invoice invoice in invoices {
-        // Obtain the Ronin customer ID related to the invoice
+        // Obtain the Clientary customer ID related to the invoice
         int? client_id = invoice?.client_id;
         if client_id is () {
-            log:printInfo(string `Client ID is empty for Ronin invoice ID ${invoice?.id ?: "Nil"}!`);
+            log:printInfo(string `Client ID is empty for Clientary invoice ID ${invoice?.id ?: "Nil"}!`);
             continue;
         }
 
-        // Obtain the Ronin invoice items
+        // Obtain the Clientary invoice items
         ronin:InvoiceItem[] invoice_items = invoice?.invoice_items ?: [];
         if invoice_items.length() == 0 {
-            log:printError(string `Invoice items are empty for Ronin invoice ID ${invoice?.id ?: "Nil"}!`);
+            log:printError(string `Invoice items are empty for Clientary invoice ID ${invoice?.id ?: "Nil"}!`);
             continue;
         }
 
         // Create the Quickbooks invoice
-        quickbooks:InvoiceCreateObject invoiceCreateObject = check roninInvoiceToQuickBooksInvoice(invoice, customerArray);
+        quickbooks:InvoiceCreateObject invoiceCreateObject = check clientaryInvoiceToQuickBooksInvoice(invoice, customerArray);
         _ = check quickbooks->createOrUpdateInvoice(quickbooksRealmId, invoiceCreateObject);
-        log:printInfo(string `Quickbooks invoice created successfully for Ronin invoice ID ${invoice?.id ?: "Nil"}!`);
+        log:printInfo(string `Quickbooks invoice created successfully for Clientary invoice ID ${invoice?.id ?: "Nil"}!`);
     }
 }
 
-isolated function roninInvoiceToQuickBooksInvoice(ronin:Invoice invoice, QuickbooksCustomer[] customerArray) returns quickbooks:InvoiceCreateObject|error =>
+isolated function clientaryInvoiceToQuickBooksInvoice(ronin:Invoice invoice, QuickbooksCustomer[] customerArray) returns quickbooks:InvoiceCreateObject|error =>
 {
     CustomerRef: {
-        value: check getQBCustomerIdForRoninClientId(invoice.id, invoice.client_id, customerArray)
+        value: check getQBCustomerIdForClientaryClientId(invoice.id, invoice.client_id, customerArray)
     },
     Line: from var invoiceItem in invoice.invoice_items ?: []
         let int quantity = invoiceItem.quantity ?: 0
@@ -130,15 +130,15 @@ isolated function getQuickbooksCustomerId(QuickbooksCustomer[] customerArray, st
     return customerId;
 }
 
-isolated function getQBCustomerIdForRoninClientId(int? roninInvoiceId, int? roninClientId, QuickbooksCustomer[] customerArray) returns string|error {
-    // Obtain the Ronin customer name for the given customer ID
-    ronin:ClientObject clientObject = check ronin->getClient(roninClientId.toString());
+isolated function getQBCustomerIdForClientaryClientId(int? clientaryInvoiceId, int? clientaryClientId, QuickbooksCustomer[] customerArray) returns string|error {
+    // Obtain the Clientary customer name for the given customer ID
+    ronin:ClientObject clientObject = check clientary->getClient(clientaryClientId.toString());
     string customerName = clientObject?.name ?: "";
 
-    // Obtain the Quickbooks customer ID from the Ronin customer name
+    // Obtain the Quickbooks customer ID from the Clientary customer name
     string|error customerId = getQuickbooksCustomerId(customerArray, customerName);
     if customerId is error {
-        return error(string `${customerId.message()} for Ronin invoice ID ${roninInvoiceId ?: "Nil"}!`);
+        return error(string `${customerId.message()} for Clientary invoice ID ${clientaryInvoiceId ?: "Nil"}!`);
     }
     return customerId;
 }
