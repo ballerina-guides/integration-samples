@@ -321,16 +321,16 @@ dependencies = [
 ]
 
 [[package]]
-org = "choreo"
+org = "integration_samples"
 name = "azure_cosmosdb_data_as_rest_api"
-version = "3.1.0"
+version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerinai", name = "observe"},
 	{org = "ballerinax", name = "azure_cosmosdb"}
 ]
 modules = [
-	{org = "choreo", packageName = "azure_cosmosdb_data_as_rest_api", moduleName = "azure_cosmosdb_data_as_rest_api"}
+	{org = "integration_samples", packageName = "azure_cosmosdb_data_as_rest_api", moduleName = "azure_cosmosdb_data_as_rest_api"}
 ]
 
 
