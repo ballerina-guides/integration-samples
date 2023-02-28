@@ -1,6 +1,6 @@
 [package]
 org = "integration_samples"
-name = "ronin_invoices_to_quickbooks_online_invoices"
+name = "clientary_invoices_to_quickbooks_online_invoices"
 version = "0.1.0"
 distribution = "2201.3.2"
 

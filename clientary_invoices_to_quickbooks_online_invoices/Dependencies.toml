@@ -324,7 +324,7 @@ modules = [
 
 [[package]]
 org = "integration_samples"
-name = "ronin_invoices_to_quickbooks_online_invoices"
+name = "clientary_invoices_to_quickbooks_online_invoices"
 version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
@@ -336,7 +336,7 @@ dependencies = [
 	{org = "ballerinax", name = "ronin"}
 ]
 modules = [
-	{org = "integration_samples", packageName = "ronin_invoices_to_quickbooks_online_invoices", moduleName = "ronin_invoices_to_quickbooks_online_invoices"}
+	{org = "integration_samples", packageName = "clientary_invoices_to_quickbooks_online_invoices", moduleName = "clientary_invoices_to_quickbooks_online_invoices"}
 ]
 
 

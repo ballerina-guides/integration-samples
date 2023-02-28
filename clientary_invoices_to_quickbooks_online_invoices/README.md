@@ -1,9 +1,9 @@
-# Ronin Invoices to Quickbooks Online Invoices
-This sample creates new Quickbooks online invoices from Ronin invoices.
+# Clientary Invoices to Quickbooks Online Invoices
+This sample creates new Quickbooks online invoices from Clientary invoices.
 
 ### Setting up CapsuleCRM account
-1. Visit [Ronin](https://www.roninapp.com) and create a Ronin account.
-2. Obtain tokens by following [this guide](https://www.roninapp.com/api)
+1. Visit [Clientary](https://www.clientary.com) and create a Clientary account.
+2. Obtain tokens by following [this guide](https://www.clientary.com/api)
 
 ### Setting up Quickbooks Online account
 1. Visit [Quickbooks](https://quickbooks.intuit.com/global/) and create a Quickbooks account.
@@ -15,21 +15,21 @@ Create a file called `Config.toml` at the root of the project.
 ### Config.toml 
 
 ```
-roninServiceUrl= "<RONIN_SERVICE_URL>"
+clientaryServiceUrl= "<CLIENTARY_SERVICE_URL>"
 quickbooksServiceUrl = "<QUICKBOOKS_SERVICE_URL>"
 quickbooksRealmId = "<QUICKBOOKS_REALM_ID>"
 
-[roninAuthConfig]
-username = "<RONIN_API_TOKEN>"
-password = "<RONIN_API_TOKEN>"
+[clientaryAuthConfig]
+username = "<CLIENTARY_API_TOKEN>"
+password = "<CLIENTARY_API_TOKEN>"
 
 [quickbooksAuthConfig]
 token = "<QUICKBOOKS_ACCESS_TOKEN>"
 ```
 
 ### Configuration
-1. Obtain the `roninServiceUrl`, `quickbooksServiceUrl` and `quickbooksRealmId`. 
-2. The `roninServiceUrl` is `https://{yourdomain}.roninapp.com`. Replace the `{yourdomain}` with your Ronin specific domain name.
+1. Obtain the `clientaryServiceUrl`, `quickbooksServiceUrl` and `quickbooksRealmId`. 
+2. The `clientaryServiceUrl` is `https://{yourdomain}.clientary.com`. Replace the `{yourdomain}` with your Clientary specific domain name.
 3. The `quickbooksServiceUrl` can be replaced with the production base URL `https://quickbooks.api.intuit.com` or with sandbox base URL `https://sandbox-quickbooks.api.intuit.com`.
 4. The `quickbooksRealmId` is also known as the company ID. This can be obtained while authorizing your app by following [this guide](https://developer.intuit.com/app/developer/qbo/docs/get-started/start-developing-your-app#authorize-your-app).
 5. Once you obtained all configurations, Create `Config.toml` in root directory.
@@ -38,4 +38,4 @@ token = "<QUICKBOOKS_ACCESS_TOKEN>"
 ## Testing
 Run the Ballerina project created by the integration template by executing `bal run` from the root.
 
-The the information from all the Ronin invoices updated within a particular day will be used to create new Quickbooks online invoices.
+The the information from all the Clientary invoices updated within a particular day will be used to create new Quickbooks online invoices.
