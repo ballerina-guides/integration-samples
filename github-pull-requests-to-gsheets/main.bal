@@ -14,15 +14,15 @@ type PR record {
     string updated_at;
 };
 
-public function main1() returns error? {
-    http:Client github = check new ("https://api.github.com/repos");
+public function main() returns error? {
+    http:Client github = check new ("https://api.github.com");
     map<string> headers = {
         "Accept": "application/vnd.github.v3+json",
         "Authorization": "token " + githubPAT
     };
     
     // Network data == program data
-    PR[] prs = check github->/octocat/Hello\-World/pulls(headers);
+    PR[] prs = check github->/repos/octocat/Hello\-World/pulls(headers);
 
     sheets:Client gsheets = check new ({auth: {token: sheetsAccessToken}});
     check gsheets->appendRowToSheet(spreadSheetId, sheetName,
