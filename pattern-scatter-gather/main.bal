@@ -18,8 +18,8 @@ type Quote record {
 };
 
 function findBestQuote(QuoteRequest quoteReq) returns Quote {
-    // The fork statement starts one or more named workers, which run in parallel with each other, 
-    //   each in its own new strand 
+    // The fork statement starts with one or more named workers, 
+    //  which run in parallel with each other 
     fork {
         worker venderA returns Quote|error {
             http:Client venderAEP = check new (venderAURL);
