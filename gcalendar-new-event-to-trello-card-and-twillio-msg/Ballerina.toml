@@ -1,0 +1,8 @@
+[package]
+org = "integration_samples"
+name = "gcalendar_new_event_to_trello_card_and_twillio_msg"
+version = "0.1.0"
+distribution = "2201.3.2"
+
+[build-options]
+observabilityIncluded = true
