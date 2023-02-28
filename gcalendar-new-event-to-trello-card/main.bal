@@ -10,23 +10,26 @@ configurable string trelloApiKey = ?;
 configurable string trelloApiToken = ?;
 configurable string trelloListId = ?;
 
-
 trello:ApiKeysConfig apiKeyConfig = {
     key: trelloApiKey,
     token: trelloApiToken
 };
 
-http:CircuitBreakerConfig circuitBreaker = {
-    rollingWindow: {
-        timeWindow: 10,
-        bucketSize: 2,
-        requestVolumeThreshold: 0
-    },
-    failureThreshold: 0.2,
-    resetTime: 10,
-    statusCodes: [400, 404, 500]
+http:RetryConfig retryConfig = {
+    // The initial retry interval in seconds.
+    interval: 3,
+
+    // The number of retry attempts before stopping.
+    count: 3,
+
+    // The multiplier of the retry interval exponentially increases the retry interval.
+    backOffFactor: 2.0,
+
+    // The upper limit of the retry interval is in seconds. If the `interval` into the `backOffFactor`
+    // value exceeded the `maxWaitInterval` interval value, `maxWaitInterval` is considered as the retry interval.
+    maxWaitInterval: 20
 };
-final trello:Client trello = check new (apiKeyConfig, {circuitBreaker});
+final trello:Client trello = check new (apiKeyConfig, {retryConfig});
 
 listener http:Listener httpListener = new (8090);
 listener calendar:Listener calendarListener = new (calendarListenerConfig, httpListener);

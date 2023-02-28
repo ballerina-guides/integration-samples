@@ -2,7 +2,6 @@ import ballerina/http;
 import ballerinax/googleapis.sheets;
 
 configurable string githubPAT = ?;
-configurable string repository = "ballerina-platform/ballerina-lang";
 configurable string sheetsAccessToken = ?;
 configurable string spreadSheetId = ?;
 configurable string sheetName = "Sheet1";
@@ -21,8 +20,9 @@ public function main1() returns error? {
         "Accept": "application/vnd.github.v3+json",
         "Authorization": "token " + githubPAT
     };
+    
     // Network data == program data
-    PR[] prs = check github->/[repository]/pulls(headers);
+    PR[] prs = check github->/octocat/Hello\-World/pulls(headers);
 
     sheets:Client gsheets = check new ({auth: {token: sheetsAccessToken}});
     check gsheets->appendRowToSheet(spreadSheetId, sheetName,
