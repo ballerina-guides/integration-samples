@@ -5,7 +5,7 @@ import ballerinax/twilio;
 import ballerina/log;
 
 // Google Calendar configuration parameters
-configurable calendar:ListenerConfig config = ?;
+configurable calendar:ListenerConfig calendarListenerConfig = ?;
 
 // Trello configuration parameters
 configurable string trelloApiKey = ?;
@@ -45,7 +45,7 @@ http:RetryConfig retryConfig = {
 };
 
 listener http:Listener httpListener = new (8090);
-listener calendar:Listener calendarListener = new (config, httpListener);
+listener calendar:Listener calendarListener = new (calendarListenerConfig, httpListener);
 final trello:Client trello = check new (apiKeyConfig, {retryConfig});
 final twilio:Client twilio = check new ({twilioAuth, retryConfig});
 
