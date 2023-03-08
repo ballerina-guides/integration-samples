@@ -145,5 +145,3 @@ CURL Command to send the same request:
 ```
 curl -X POST -H "Content-type: application/json" -d '{ "query": "mutation {addBook(isbn: \"9781683836223\", title: \"Harry Potter\", author: \"J. K. Rowling\", year: 2007){isbn}}" }' 'http://localhost:9090/graphql'
 ```
-
-You can find the original sample here: [https://github.com/anupama-pathirage/ballerina-scenarios/tree/main/ballerina-graphql-with-multiple-datasources](https://github.com/anupama-pathirage/ballerina-scenarios/tree/main/ballerina-graphql-with-multiple-datasources)
