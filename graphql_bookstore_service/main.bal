@@ -62,7 +62,7 @@ service class Book {
 
     resource function get reviews() returns Review|error {
         string isbn = self.bookData.isbn;
-        GoogleBook googleBook = check bookEp->/books/v1/volumes.get(q=string `isbn:${isbn}`);
+        GoogleBook googleBook = check bookEp->/books/v1/volumes.get(q = string `isbn:${isbn}`);
         return let var volInfo = googleBook.items[0].volumeInfo in {
                 averageRating: volInfo.averageRating,
                 ratingsCount: volInfo.ratingsCount,
