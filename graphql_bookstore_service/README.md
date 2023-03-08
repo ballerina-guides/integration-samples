@@ -11,7 +11,7 @@ E.g.: https://www.googleapis.com/books/v1/volumes?q=isbn:9781101042472
 
 # Run the code
 
-Execute `bal run` command  within the `graphql_bookstore_service` package directory.
+Execute `bal run` command within the `graphql_bookstore_service` package directory.
 
 # Test the service
 
