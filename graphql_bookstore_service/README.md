@@ -6,7 +6,7 @@ In this use case, let’s see how we can implement a GraphQL server using the Ba
 
 The information sources for the above operations are as follows.
 * Title, published year, ISBN number, author  - Retrieved from the datastore backed by an in-memory table.
-* Average rating and rating count - Retrieved from Google  Books API filtered using ISBN number of the book.  
+* Average rating and rating count - Retrieved from Google  Books API filtered using the ISBN number of the book.  
 E.g.: https://www.googleapis.com/books/v1/volumes?q=isbn:9781101042472
 
 # Run the code
