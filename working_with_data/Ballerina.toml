@@ -1,0 +1,8 @@
+[package]
+org = "ballerina"
+name = "working_with_data"
+version = "0.1.0"
+distribution = "2201.3.0"
+
+[build-options]
+observabilityIncluded = true
