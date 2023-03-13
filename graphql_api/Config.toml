@@ -1,0 +1,6 @@
+user = "root"
+password = "Test@123"
+host = "localhost"
+port = 3306
+database = "MUSIC_STORE"
+apiEndpoint = "http://localhost:8080/"
