@@ -1,0 +1,56 @@
+name: Ballerina build on PR and Merge
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Consuming Services Package
+        uses: ballerina-platform/ballerina-action@master
+        with:
+          args: 
+            build consuming_services
+      - name: Build Graphql API Package
+        uses: ballerina-platform/ballerina-action@master
+        with:
+          args: 
+            build graphql_api
+      - name: Ballerina Generate gRPC
+        uses: ballerina-platform/ballerina-action@master
+        with:
+          args: 
+            grpc --input ./grpc_api/descriptor_record_store.proto --output ./grpc_api/
+      - name: Build GRPC API Package
+        uses: ballerina-platform/ballerina-action@master
+        with:
+          args: 
+            build grpc_api
+      - name: Build Kafka Consumer Producer Package
+        uses: ballerina-platform/ballerina-action@master
+        with:
+          args: 
+            build kafka_consumer_producer
+      - name: Build RESTful API Package
+        uses: ballerina-platform/ballerina-action@master
+        with:
+          args: 
+            build restful_api
+      - name: Build Working With Data Package
+        uses: ballerina-platform/ballerina-action@master
+        with:
+          args: 
+            build working_with_data
+      - name: Build Working With Databases Package
+        uses: ballerina-platform/ballerina-action@master
+        with:
+          args: 
+            build working_with_databases

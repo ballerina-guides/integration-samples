@@ -1,0 +1,7 @@
+sheetsAccessToken = "<Google Sheets API access token>"
+spreadSheetId = "<Google spreadsheet ID>"
+githubPAT = "<GitHub personal access token>"
+
+# Optional
+# repository = "ballerina-platform/ballerina-lang"
+# sheetName = "ballerina-lang-pulls"
