@@ -63,7 +63,7 @@ final readonly & json booksJson = {
             "year": 1843
         },
         {
-            "name": "Oliwer Twist",
+            "name": "Oliver Twist",
             "author": "Charles Dickens",
             "price": "1323",
             "year": 1838
@@ -91,7 +91,7 @@ function testTransformJson() returns error? {
             },
             {
                 "book": {
-                    "NAME": "Oliwer Twist",
+                    "NAME": "Oliver Twist",
                     "AUTHOR": "Charles Dickens",
                     "PRICE": "1323",
                     "YEAR": 1838
@@ -128,7 +128,7 @@ json expectedTransformedJsonWithDefaults = {
             "price": 1323.0,
             "id": 2,
             "properties": {
-                "title": "Oliwer Twist",
+                "title": "Oliver Twist",
                 "author": "Charles Dickens",
                 "year": 1838
             }

@@ -48,7 +48,7 @@ public function main() returns error? {
                 "year": 1843
             },
             {
-                "name": "Oliwer Twist",
+                "name": "Oliver Twist",
                 "author": "Charles Dickens",
                 "price": "1323",
                 "year": 1838
