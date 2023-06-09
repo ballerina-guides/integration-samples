@@ -1,0 +1,8 @@
+[package]
+org = "integration_samples"
+name = "salesforce_new_lead_to_mail_chimp"
+version = "0.1.0"
+distribution = "2201.6.0"
+
+[build-options]
+observabilityIncluded = true
