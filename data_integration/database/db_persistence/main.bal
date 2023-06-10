@@ -1,8 +1,7 @@
-import ballerina/io;
-
-import ballerina/persist;
-
 import db_persistence.store;
+
+import ballerina/io;
+import ballerina/persist;
 
 public function main() returns error? {
     check clearTableAndAddData();

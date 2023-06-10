@@ -1,6 +1,6 @@
-import ballerina/persist;
-
 import db_persistence.store;
+
+import ballerina/persist;
 
 final store:Client cl = check new;
 
@@ -37,17 +37,6 @@ function update(function (store:Book) returns store:BookUpdate? fn) returns pers
     foreach [int, store:BookUpdate] [id, bookUpdate] in itemsToUpdate {
         _ = check cl->/books/[id].put(bookUpdate);
     }
-
-    // Can't use query expressions on Swan Lake Update 5 due to 
-    // https://github.com/ballerina-platform/ballerina-lang/issues/40412
-    
-    // [int, store:BookUpdate][] itemsToUpdate = check from store:Book book in bookStr
-    //                                             let store:BookUpdate? update = fn(book)
-    //                                             where update !is ()
-    //                                             select [book.id, update];
-    // foreach [int, store:BookUpdate] [id, bookUpdate] in itemsToUpdate {
-    //     _ = check cl->/books/[id].put(bookUpdate);
-    // }
 }
 
 function delete(int id) returns persist:Error? {

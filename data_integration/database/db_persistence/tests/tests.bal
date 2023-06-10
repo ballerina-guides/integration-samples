@@ -1,7 +1,7 @@
+import db_persistence.store;
+
 import ballerina/persist;
 import ballerina/test;
-
-import db_persistence.store;
 
 @test:BeforeSuite
 function addToTable() returns error? {

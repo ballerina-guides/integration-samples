@@ -1,5 +1,5 @@
 [package]
-org = "demo"
+org = "integration_samples"
 name = "population_service"
 version = "0.1.0"
 distribution = "2201.5.0"

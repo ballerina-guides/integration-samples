@@ -6,6 +6,10 @@ This sample allows retrieving population numbers for a country by year.
 
 Use the [World Bank Indicators API](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation) to retrieve data for a country and return just the population data by year, either in JSON or XML format.
 
+## Testing
+
+Use the `bal test` command to run some test cases that are in the [tests](/population_service/tests) folder.
+
 ## Running
 
 Start the service using the `bal run` command (within the [project root](/population_service/)).
@@ -38,7 +42,3 @@ $ curl http://localhost:8080/population/country/US?format=xml
                 </population><population>
                 ...
 ```
-
-## Testing
-
-Use the `bal test` command to run some basic test cases that are in the [tests](/population_service/tests) folder.
