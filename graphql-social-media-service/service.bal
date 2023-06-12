@@ -3,7 +3,6 @@ import graphql_social_media.db;
 import ballerina/graphql;
 import ballerina/io;
 import ballerina/uuid;
-import xlibb/pubsub;
 
 const POST_TOPIC = "post-created";
 
@@ -19,11 +18,8 @@ configurable record {int port;} serviceConfigs = ?;
     }
 }
 service SocialMediaService "/social-media" on new graphql:Listener(serviceConfigs.port) {
-    private final pubsub:PubSub postPubSub;
 
     isolated function init() returns error? {
-        self.postPubSub = new (false);
-        check self.postPubSub.createTopic(POST_TOPIC);
         io:println(string `💃 Server ready at http://localhost:${serviceConfigs.port}/social-media`);
     }
 
@@ -66,9 +62,8 @@ service SocialMediaService "/social-media" on new graphql:Listener(serviceConfig
     # + id - ID of the user
     # + return - Deleted user
     remote function deleteUser(graphql:Context context, string id) returns User|error {
-        // TODO: Authenticate user
-        // string token = check authenticate(context);
-        // check authorize(token, id);
+        string token = check authenticate(context);
+        check authorize(token, id);
 
         db:User user = check deleteUser(id);
         return new (user);
@@ -88,11 +83,11 @@ service SocialMediaService "/social-media" on new graphql:Listener(serviceConfig
             title: newPost.title,
             content: newPost.content
         });
-        Post post = new (postData);
 
-        // TODO: Use Kafka instead of in-memory pub/sub
-        check self.postPubSub.publish(POST_TOPIC, postData.cloneReadOnly(), -1);
-        return post;
+        // Publish the post to Kafka
+        check publishPost(postData);
+
+        return new (postData);
     }
 
     # Deletes a post with the given ID. Can return authentication/authorization errors if the user cannot be authenticated/authorized.
@@ -111,8 +106,9 @@ service SocialMediaService "/social-media" on new graphql:Listener(serviceConfig
     # Subscribe to new posts.
     # + return - Stream of new posts
     resource function subscribe newPosts() returns stream<Post, error?>|error {
-        stream<db:Post, error?> posts = check self.postPubSub.subscribe(POST_TOPIC, 10, -1);
-        return from db:Post post in posts
-            select new (post);
+        string id = uuid:createType1AsString();
+        PostStreamGenerator postStreamGenerator = check new (id);
+        stream<Post> postStream = new (postStreamGenerator);
+        return postStream;
     }
 }

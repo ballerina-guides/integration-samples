@@ -15,6 +15,9 @@ type SocialMediaService distinct service object {
     remote function deleteUser(graphql:Context context, string id) returns User|error;
     remote function createPost(graphql:Context context, NewPost newPost) returns Post|error;
     remote function deletePost(graphql:Context context, string id) returns Post|error;
+
+    // Subscription Type
+    resource function subscribe newPosts() returns stream<Post, error?>|error;
 };
 
 # Represents the User type in the GraphQL schema.

@@ -8,12 +8,11 @@ isolated function authenticate(graphql:Context context) returns string|error {
     return token;
 }
 
-// TODO: Use separate auth mechanism to get the token
 isolated function authenticateUserToken(string token) returns error? {
     // Get the user from the token
     db:User|error user = getUser(token);
     if user is error {
-        return error("Not authenticated");
+        return error("Not authenticated", user);
     }
 }
 
