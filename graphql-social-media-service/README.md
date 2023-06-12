@@ -154,6 +154,7 @@ database = "ballerina_social_media"
 
 [serviceConfigs]
 port = 9090
+graphiqlPath = "/graphiql"
 ```
 
 ### Authentication/Authorization
