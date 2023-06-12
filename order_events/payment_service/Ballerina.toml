@@ -1,0 +1,14 @@
+[package]
+org = "wso2"
+name = "payment_service"
+version = "0.1.0"
+distribution = "2201.6.0"
+
+[build-options]
+observabilityIncluded = true
+
+[[dependency]]
+org = "wso2"
+name = "orders.types"
+version = "0.1.0"
+repository = "local"

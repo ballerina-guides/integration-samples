@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package hotelbook;
+
+service HotelBookingService {
+  rpc bookHotel(HotelBookingRequest) returns (HotelReservationResponse);
+}
+
+message HotelBookingRequest {
+  string hotelName = 1;
+  string guestName = 2;
+  string checkinDate = 3;
+  string checkoutDate = 4;
+  int32 noOfRooms = 5;
+}
+
+message HotelReservationResponse {
+  string reservationId = 1;
+}

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package vehiclerent;
+
+service VehicleRentService {
+  rpc rentCar(VehicleRentRequest) returns (VehicleReservationResponse);
+}
+
+message VehicleRentRequest {
+  VEHICLE_TYPE type = 1;
+  int32 count = 2;
+}
+
+enum VEHICLE_TYPE{
+    BIKE = 0;
+    CAR = 1;
+    VAN = 2;
+    BUS = 3;  
+}
+
+message VehicleReservationResponse {
+  string reservationId = 1;
+}

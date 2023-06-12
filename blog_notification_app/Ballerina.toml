@@ -1,0 +1,8 @@
+[package]
+org = "anjana"
+name = "blog_app"
+version = "0.1.0"
+distribution = "2201.6.0-20230525-070000-e36fc7ac"
+
+[build-options]
+observabilityIncluded = true

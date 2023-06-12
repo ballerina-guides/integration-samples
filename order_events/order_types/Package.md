@@ -1,0 +1,1 @@
+Contains the types used across the microservices.
