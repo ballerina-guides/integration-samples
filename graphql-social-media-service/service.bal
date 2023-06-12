@@ -6,7 +6,7 @@ import ballerina/uuid;
 
 const POST_TOPIC = "post-created";
 
-configurable record {int port;} serviceConfigs = ?;
+configurable record {int port; string graphiqlPath; } serviceConfigs = ?;
 
 @graphql:ServiceConfig {
     contextInit: contextInit,
@@ -14,16 +14,18 @@ configurable record {int port;} serviceConfigs = ?;
         allowOrigins: ["*"]
     },
     graphiql: {
-        enabled: true
+        enabled: true,
+        path: serviceConfigs.graphiqlPath
     }
 }
 service SocialMediaService "/social-media" on new graphql:Listener(serviceConfigs.port) {
 
     isolated function init() returns error? {
         io:println(string `💃 Server ready at http://localhost:${serviceConfigs.port}/social-media`);
+        io:println(string `Access the GraphiQL UI at http://localhost:${serviceConfigs.port}${serviceConfigs.graphiqlPath}`);
     }
 
-    # Returns the list of users.
+    # Returns a list of users.
     # + return - List of users
     resource function get users() returns User[]|error {
         stream<db:User, error?> users = getUsers();
@@ -39,7 +41,7 @@ service SocialMediaService "/social-media" on new graphql:Listener(serviceConfig
         return new (userData);
     }
 
-    # Returns the list of posts from a user.
+    # Returns a list of posts by a user.
     # + id - ID of the user
     # + return - List of posts
     resource function get posts(string? id) returns Post[]|error {
@@ -57,7 +59,7 @@ service SocialMediaService "/social-media" on new graphql:Listener(serviceConfig
         return new (userData);
     }
 
-    # Deletes a user. Only the user can delete their own account. Will return an authentication/authorization error if the user cannot be authenticated/authorized.
+    # Deletes a user. Only the user can delete their own account. Returns an authentication/authorization error if the user cannot be authenticated/authorized.
     # + context - GraphQL context
     # + id - ID of the user
     # + return - Deleted user
@@ -69,7 +71,7 @@ service SocialMediaService "/social-media" on new graphql:Listener(serviceConfig
         return new (user);
     }
 
-    # Creates a new post. Can return authentication error if the user is not authenticated.
+    # Creates a new post. Returns an authentication error if the user is not authenticated.
     # + context - GraphQL context
     # + newPost - Post to be created
     # + return - Created post
@@ -90,7 +92,7 @@ service SocialMediaService "/social-media" on new graphql:Listener(serviceConfig
         return new (postData);
     }
 
-    # Deletes a post with the given ID. Can return authentication/authorization errors if the user cannot be authenticated/authorized.
+    # Deletes a post with the given ID. Returns authentication/authorization errors if the user cannot be authenticated/authorized.
     # + context - GraphQL context
     # + id - ID of the post
     # + return - Deleted post
@@ -106,6 +108,7 @@ service SocialMediaService "/social-media" on new graphql:Listener(serviceConfig
     # Subscribe to new posts.
     # + return - Stream of new posts
     resource function subscribe newPosts() returns stream<Post, error?>|error {
+        // Create unique ID for the stream
         string id = uuid:createType1AsString();
         PostStreamGenerator postStreamGenerator = check new (id);
         stream<Post> postStream = new (postStreamGenerator);

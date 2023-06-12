@@ -20,7 +20,7 @@ type SocialMediaService distinct service object {
     resource function subscribe newPosts() returns stream<Post, error?>|error;
 };
 
-# Represents the User type in the GraphQL schema.
+# Represents a user in the GraphQL schema.
 isolated service class User {
     private final readonly & db:User userData;
 
@@ -28,19 +28,19 @@ isolated service class User {
         self.userData = userData.cloneReadOnly();
     }
 
-    # The `id` of the User
+    # The user's ID.
     # + return - The `id` of the User
     isolated resource function get id() returns string => self.userData.id;
 
-    # The `name` of the User
+    # The user's name.
     # + return - The `name` of the User
     isolated resource function get name() returns string => self.userData.name;
 
-    # The `age` of the User
+    # The user's age.
     # + return - The `age` of the User
     isolated resource function get age() returns int => self.userData.age;
 
-    # The `posts` posted by the User
+    # Posts made by the user.
     # + return - The `posts` posted by the User
     isolated resource function get posts() returns Post[]|error {
         db:Post[]? posts = check getPosts(self.userData.id);
@@ -52,7 +52,7 @@ isolated service class User {
     }
 }
 
-# Represents the Post type in the GraphQL schema.
+# Represents a post in the GraphQL schema.
 isolated service class Post {
     private final readonly & db:Post postData;
 
@@ -60,19 +60,19 @@ isolated service class Post {
         self.postData = postData.cloneReadOnly();
     }
 
-    # The `id` of the Post
+    # The post's ID.
     # + return - The `id` of the Post
     isolated resource function get id() returns string => self.postData.id;
 
-    # The `title` of the Post
+    # The post's title.
     # + return - The `title` of the Post
     isolated resource function get title() returns string => self.postData.title;
 
-    # The `content` of the Post
+    # The post's content.
     # + return - The `content` of the Post
     isolated resource function get content() returns string => self.postData.content;
 
-    # The `author` of the Post
+    # The post's author.
     # + return - The `User` posted the Post
     isolated resource function get author() returns User|error {
         db:User user = check getUser(self.postData.authorId);
@@ -80,18 +80,18 @@ isolated service class Post {
     }
 }
 
-# Represents the NewUser type in the GraphQL schema.
+# Represents the input for creating a new user in the GraphQL schema.
 public type NewUser readonly & record {
-    # The `name` of the User
+    # The user's name.
     string name;
-    # The `age` of the User
+    # The user's age.
     int age;
 };
 
-# Represents the NewPost type in the GraphQL schema.
+# Represents the input for creating a new post in the GraphQL schema.
 public type NewPost readonly & record {|
-    # The `title` of the Post
+    # The post's title.
     string title;
-    # The `content` of the Post
+    # The post's content.
     string content;
 |};
