@@ -1,0 +1,7 @@
+{
+    "ignore": ["node_modules", "dist"],
+    "watch": ["ts", "config"],
+    "exec": "npx kill-port 4000 && npm start",
+    "ext": "ts",
+    "delay": 2500
+}

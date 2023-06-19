@@ -1,0 +1,80 @@
+type Query {
+    "Returns the list of all users"
+    users: [User!]!
+
+    "Returns the user with the given id"
+    user("The id of the user to return" id: String!): User!
+
+    "Returns the list of all posts with the given user id. If no user id is given, returns all posts"
+    posts(
+        "The id of the user whose posts to return. Use null to return all posts"
+        userId: String
+    ): [Post!]!
+}
+
+type Subscription {
+    "Subscribes to new posts"
+    newPosts: Post!
+}
+
+type Mutation {
+    "Creates a new user"
+    createUser("The information of the user to create" user: NewUser!): User!
+
+    "Deletes a user. Only the user can delete their own account. Will return an authentication/authorization error if the user cannot be authenticated/authorized"
+    deleteUser("The id of the user to delete" id: String!): User!
+
+    "Creates a new post. Can return authentication error if the user is not authenticated."
+    createPost("The information of the post to create" newPost: NewPost!): Post!
+
+    "Deletes a post with the given ID. Can return authentication/authorization errors if the user cannot be authenticated/authorized."
+    deletePost("The id of the post to delete" id: String!): Post!
+}
+
+"Represents the information of a new user"
+input NewUser {
+    "The name of the user"
+    name: String!
+
+    "The age of the user"
+    age: Int!
+}
+
+"Represents the information of a new post"
+input NewPost {
+    "The title of the post"
+    title: String!
+
+    "The content of the post"
+    content: String!
+}
+
+"Represents a user"
+type User {
+    "The id of the user"
+    id: String!
+
+    "The name of the user"
+    name: String!
+
+    "The age of the user"
+    age: Int!
+
+    "The list of posts posted by the user"
+    posts: [Post!]!
+}
+
+"Represents a post"
+type Post {
+    "The id of the post"
+    id: String!
+
+    "The title of the post"
+    title: String!
+
+    "The content of the post"
+    content: String!
+
+    "The author of the post"
+    author: User!
+}
