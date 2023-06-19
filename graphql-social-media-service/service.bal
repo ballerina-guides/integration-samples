@@ -6,7 +6,16 @@ import ballerina/uuid;
 
 const POST_TOPIC = "post-created";
 
-configurable record {int port; string graphiqlPath; } serviceConfigs = ?;
+listener graphql:Listener graphqlListener = new (9090,
+    secureSocket = {
+        key: {
+            certFile: "../resource/path/to/public.crt",
+            keyFile: "../resource/path/to/private.key"
+        }
+    }
+);
+
+configurable record {int port; string graphiqlPath;} serviceConfigs = ?;
 
 @graphql:ServiceConfig {
     contextInit: initContext,
@@ -16,13 +25,31 @@ configurable record {int port; string graphiqlPath; } serviceConfigs = ?;
     graphiql: {
         enabled: true,
         path: serviceConfigs.graphiqlPath
-    }
+    },
+    auth: [
+        {
+            oauth2IntrospectionConfig: {
+                url: "https://mytoken.endpoint/oauth2/introspect",
+                tokenTypeHint: "access_token",
+                scopeKey: "scp",
+                clientConfig: {
+                    customHeaders: {"Authorization": "Basic YWRtaW46YWRtaW4="},
+                    secureSocket: {
+                        cert: "../resource/path/to/public.crt"
+                    }
+                }
+            },
+            scopes: ["admin"]
+        }
+    ],
+    // Validate the query depth
+    maxQueryDepth: 5
 }
-service SocialMediaService /graphql on new graphql:Listener(serviceConfigs.port) {
+service SocialMediaService /graphql on graphqlListener {
 
     isolated function init() returns error? {
-        io:println(string `💃 Server ready at http://localhost:${serviceConfigs.port}/graphql`);
-        io:println(string `Access the GraphiQL UI at http://localhost:${serviceConfigs.port}${serviceConfigs.graphiqlPath}`);
+        io:println(string `💃 Server ready at https://localhost:9090/graphql`);
+        io:println(string `Access the GraphiQL UI at https://localhost:9090${serviceConfigs.graphiqlPath}`);
     }
 
     # Returns a list of users.
