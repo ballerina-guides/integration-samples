@@ -18,10 +18,10 @@ configurable record {int port; string graphiqlPath; } serviceConfigs = ?;
         path: serviceConfigs.graphiqlPath
     }
 }
-service SocialMediaService "/social-media" on new graphql:Listener(serviceConfigs.port) {
+service SocialMediaService /graphql on new graphql:Listener(serviceConfigs.port) {
 
     isolated function init() returns error? {
-        io:println(string `💃 Server ready at http://localhost:${serviceConfigs.port}/social-media`);
+        io:println(string `💃 Server ready at http://localhost:${serviceConfigs.port}/graphql`);
         io:println(string `Access the GraphiQL UI at http://localhost:${serviceConfigs.port}${serviceConfigs.graphiqlPath}`);
     }
 
