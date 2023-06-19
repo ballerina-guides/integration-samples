@@ -1,0 +1,11 @@
+mutation CreatePost($title: String!, $content: String!) {
+  createPost(newPost: { title: $title, content: $content }) {
+    title
+    content
+    author {
+      id
+      name
+      age
+    }
+  }
+}

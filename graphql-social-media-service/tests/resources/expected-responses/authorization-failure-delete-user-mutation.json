@@ -1,0 +1,10 @@
+{
+  "errors": [
+    {
+      "message": "Not authorized",
+      "locations": [{ "line": 2, "column": 3 }],
+      "path": ["deleteUser"]
+    }
+  ],
+  "data": null
+}
