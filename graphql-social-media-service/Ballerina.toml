@@ -1,0 +1,18 @@
+[package]
+org = "integration_samples"
+name = "graphql_social_media"
+version = "0.1.0"
+distribution = "2201.6.0"
+
+[build-options]
+observabilityIncluded = true
+
+[persist]
+datastore = "mysql"
+module = "graphql_social_media.db"
+
+[[platform.java11.dependency]]
+groupId = "io.ballerina.stdlib"
+artifactId = "persist.sql-native"
+version = "1.0.0"
+

@@ -1,0 +1,5 @@
+# Ignore the Config.toml
+Config.toml
+
+# Generated files
+generated/
