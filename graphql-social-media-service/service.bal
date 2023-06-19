@@ -9,7 +9,7 @@ const POST_TOPIC = "post-created";
 configurable record {int port; string graphiqlPath; } serviceConfigs = ?;
 
 @graphql:ServiceConfig {
-    contextInit: contextInit,
+    contextInit: initContext,
     cors: {
         allowOrigins: ["*"]
     },
@@ -111,7 +111,7 @@ service SocialMediaService /graphql on new graphql:Listener(serviceConfigs.port)
         // Create unique ID for the stream
         string id = uuid:createType1AsString();
         PostStreamGenerator postStreamGenerator = check new (id);
-        stream<Post> postStream = new (postStreamGenerator);
+        stream<Post, error?> postStream = new (postStreamGenerator);
         return postStream;
     }
 }

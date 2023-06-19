@@ -26,12 +26,12 @@ isolated class PostStreamGenerator {
         self.consumer = check new (kafka:DEFAULT_URL, consumerConfiguration);
     }
 
-    public isolated function next() returns record {|Post value;|}? {
+    public isolated function next() returns record {|Post value;|}|error? {
         db:Post[]|error posts = self.consumer->pollPayload(POLL_INTERVAL);
         if posts is error {
             // Log the error with the consumer group id and return nil
             log:printError("Failed to retrieve data from the Kafka server", posts, id = self.consumerGroup);
-            return;
+            return posts;
         }
         if posts.length() < 1 {
             // Log the warning with the consumer group id and return nil. This will end the subscription as returning
