@@ -1,8 +1,0 @@
-[package]
-org = "integration_samples"
-name = "http_designer"
-version = "0.1.0"
-distribution = "2201.6.0"
-
-[build-options]
-observabilityIncluded = true
