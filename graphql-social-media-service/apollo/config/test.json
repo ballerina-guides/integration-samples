@@ -1,0 +1,15 @@
+{
+    "db": {
+        "host": "127.0.0.1",
+        "port": 3306,
+        "user": "root",
+        "password": "Test@123",
+        "database": "apollo_social_media"
+    },
+    "server": {
+        "port": 4000
+    },
+    "kafka": {
+        "port": 9092
+    }
+}

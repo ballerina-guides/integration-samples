@@ -1,0 +1,6 @@
+subscription {
+  newPosts {
+    title
+    content
+  }
+}

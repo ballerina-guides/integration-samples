@@ -1,0 +1,16 @@
+mutation CreateUsers {
+  jhon: createUser(user: { name: "Jhon", age: 26 }) {
+    ...userInfo
+  }
+  jane: createUser(user: { name: "Jane", age: 21 }) {
+    ...userInfo
+  }
+  bob: createUser(user: { name: "Bob", age: 19 }) {
+    ...userInfo
+  }
+}
+
+fragment userInfo on User {
+  name
+  age
+}

@@ -1,0 +1,10 @@
+{
+  "data": {
+    "posts": [
+      {
+        "title": "Post title",
+        "content": "Post content"
+      }
+    ]
+  }
+}

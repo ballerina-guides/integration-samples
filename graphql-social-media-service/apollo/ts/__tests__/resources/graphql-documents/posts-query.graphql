@@ -1,0 +1,6 @@
+query Posts($id: String) {
+  posts(userId: $id) {
+    title
+    content
+  }
+}
