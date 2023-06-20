@@ -1,7 +1,7 @@
 import ballerina/http;
 
 type Person record {
-    string id;
+    readonly string id;
     string firstName;
     string lastName;
     int age;
@@ -9,7 +9,7 @@ type Person record {
 };
 
 type Course record {
-    readonly string id;
+    string id;
     string name;
     int credits;
 };
@@ -46,42 +46,49 @@ function transform(Person person, Course[] courses) returns Student => let var i
 
 configurable int port = 8080;
 
-table<Course> key(id) courses = table [
+table<Person> key(id) persons = table [
     {
-        id: "CS6002",
-        name: "Computation Structures",
-        credits: 4
+        id: "1001",
+        firstName: "John",
+        lastName: "Doe",
+        age: 25,
+        country: "LK"
     },
     {
-        id: "CS6003",
-        name: "Circuits and Electronics",
-        credits: 3
-    },
-    {
-        id: "CM1001",
-        name: "Computational Statistics",
-        credits: 4
+        id: "1002",
+        firstName: "Jane",
+        lastName: "Doe",
+        age: 23,
+        country: "US"
     }
 ];
 
 service / on new http:Listener(port) {
 
-    resource function get courses() returns Course[] {
-        return courses.toArray();
+    resource function get persons() returns Person[] {
+        return persons.toArray();
     }
 
-    resource function post courses(Course course) returns Course|http:Conflict {
-        if courses.hasKey(course.id) {
+    resource function post persons(Person person) returns Person|http:Conflict {
+        if persons.hasKey(person.id) {
             return http:CONFLICT;
         }
-        courses.add(course);
-        return course;
+        persons.add(person);
+        return person;
     }
 
-    resource function put courses(Course course) returns Course|http:NotFound {
-        if courses.hasKey(course.id) {
-            courses.put(course);
-            return course;
+    resource function put persons(Person person) returns Person|http:NotFound {
+        if persons.hasKey(person.id) {
+            persons.put(person);
+            return person;
+        }
+        return http:NOT_FOUND;
+    }
+
+    resource function post persons/[string id]/enroll(Course[] courses) returns Student|http:NotFound {
+        if persons.hasKey(id) {
+            Person person = persons.get(id);
+            return transform(person, courses);
         }
         return http:NOT_FOUND;
     }

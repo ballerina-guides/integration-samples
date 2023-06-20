@@ -1,17 +1,20 @@
 import ballerina/http;
 import ballerina/test;
 
-final http:Client coursesClient = check new (string `http://localhost:${port}`);
+final http:Client personsClient = check new (string `http://localhost:${port}`);
 
 @test:Config {}
 function testStudentTransform() returns error? {
     Person person = {
-        id: "1001",
+        id: "1004",
         firstName: "Vinnie",
         lastName: "Hickman",
         age: 15,
         country: "UK"
     };
+
+    Person response = check personsClient->/persons.post(person);
+    test:assertEquals(response, person);
 
     Course[] courses = [
         {
@@ -36,9 +39,9 @@ function testStudentTransform() returns error? {
         }
     ];
 
-    Student student = transform(person, courses);
+    Student student = check personsClient->/persons/'1004/enroll.post(courses);
     Student expectedStudent = {
-        id: "1001F",
+        id: "1004F",
         fullName: "Vinnie Hickman",
         age: "15",
         courses: [
@@ -63,33 +66,37 @@ function testStudentTransform() returns error? {
 }
 
 @test:Config {}
-function testGetCourses() returns error? {
-    Course[] response = check coursesClient->/courses;
-    test:assertEquals(response, courses.toArray());
+function testGetPersons() returns error? {
+    Person[] response = check personsClient->/persons;
+    test:assertEquals(response, persons.toArray());
 }
 
 @test:Config {}
-function testPostCourse() returns error? {
-    Course course = {
-        id: "CS6005",
-        name: "Computer Networks",
-        credits: 4
+function testPostPerson() returns error? {
+    Person person = {
+        id: "1003",
+        firstName: "John",
+        lastName: "Smith",
+        age: 24,
+        country: "US"
     };
 
-    Course response = check coursesClient->/courses.post(course);
-    test:assertEquals(response, course);
+    Person response = check personsClient->/persons.post(person);
+    test:assertEquals(response, person);
 }
 
 @test:Config {
-    dependsOn: [testPostCourse]
+    dependsOn: [testPostPerson]
 }
-function testPutCourse() returns error? {
-    Course course = {
-        id: "CS6005",
-        name: "Computer Networks",
-        credits: 2
+function testPutPerson() returns error? {
+    Person person = {
+        id: "1003",
+        firstName: "Jane",
+        lastName: "Smith",
+        age: 28,
+        country: "LK"
     };
 
-    Course response = check coursesClient->/courses.put(course);
-    test:assertEquals(response, course);
+    Person response = check personsClient->/persons.put(person);
+    test:assertEquals(response, person);
 }
