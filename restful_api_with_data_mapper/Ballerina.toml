@@ -1,6 +1,6 @@
 [package]
-org = "tharmigan"
-name = "vs_code_home_page_sample"
+org = "integration_samples"
+name = "restful_api_with_data_mapper"
 version = "0.1.0"
 distribution = "2201.6.0"
 

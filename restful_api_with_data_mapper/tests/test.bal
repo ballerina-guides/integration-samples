@@ -73,13 +73,7 @@ function testGetPersons() returns error? {
 
 @test:Config {}
 function testPostPerson() returns error? {
-    Person person = {
-        id: "1003",
-        firstName: "John",
-        lastName: "Smith",
-        age: 24,
-        country: "US"
-    };
+    Person person = {"id": "1003","firstName": "John","lastName": "Smith","age": 24,"country": "US"};
 
     Person response = check personsClient->/persons.post(person);
     test:assertEquals(response, person);
