@@ -1,5 +1,0 @@
-sheetsAccessToken = "<Google Sheets API access token>"
-spreadSheetId = "<Google spreadsheet ID>"
-
-# Optional
-# sheetName = "student-enrollments"
