@@ -43,5 +43,3 @@ This guide elaborates on developing a RESTful API with a data mapper. In additio
    # Optional
    # sheetName = "student-enrollments"
    ```
-
-
