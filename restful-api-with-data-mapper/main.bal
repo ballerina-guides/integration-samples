@@ -1,4 +1,5 @@
 import ballerina/http;
+import ballerinax/googleapis.sheets;
 
 type Person record {
     readonly int id;
@@ -27,6 +28,12 @@ type Student record {
 };
 
 configurable int port = 8080;
+configurable string sheetsAccessToken = ?;
+configurable string spreadSheetId = ?;
+configurable string sheetName = "enrollments";
+
+final sheets:Client gsheetsClient = check new ({auth: {token: sheetsAccessToken}});
+
 const D_TIER_4_VISA = "D tier-4";
 
 table<Person> key(id) persons = table [
@@ -49,7 +56,7 @@ table<Person> key(id) persons = table [
 var totalCredits = function(int total, record {string id; string name; int credits;} course)
                         returns int => total + (course.id.startsWith("CS") ? course.credits : 0);
 
-function transformToStudent(Person person, Course[] courses) returns Student => let var isForeign = person.country != "LK" in {
+function enrollPerson(Person person, Course[] courses) returns Student => let var isForeign = person.country != "LK" in {
         id: person.id.toString() + (isForeign ? "F" : ""),
         age: person.age,
         fullName: person.firstName + " " + person.lastName,
@@ -85,10 +92,27 @@ service / on new http:Listener(port) {
         return http:NOT_FOUND;
     }
 
-    resource function post persons/[int id]/enroll(Course[] courses) returns Student|http:NotFound {
+    resource function post persons/[int id]/enroll(Course[] courses)
+            returns Student|http:NotFound|http:InternalServerError {
         if persons.hasKey(id) {
             Person person = persons.get(id);
-            return transformToStudent(person, courses);
+            Student student = enrollPerson(person, courses);
+            do {
+                _ = check gsheetsClient->appendValue(spreadSheetId, [
+                        student.id,
+                        student.fullName,
+                        student.age,
+                        student.visaType,
+                        string:'join(", ", ...from var course in student.courses
+                            select course.title),
+                        student.totalCredits
+                    ], {sheetName: sheetName});
+                return student;
+            } on fail error err {
+                return <http:InternalServerError>{
+                    body: err.message()
+                };
+            }
         }
         return http:NOT_FOUND;
     }

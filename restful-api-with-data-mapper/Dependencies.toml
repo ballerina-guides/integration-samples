@@ -253,6 +253,15 @@ dependencies = [
 
 [[package]]
 org = "ballerina"
+name = "regex"
+version = "1.4.3"
+dependencies = [
+	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "lang.string"}
+]
+
+[[package]]
+org = "ballerina"
 name = "task"
 version = "2.3.3"
 dependencies = [
@@ -302,13 +311,42 @@ modules = [
 ]
 
 [[package]]
+org = "ballerinax"
+name = "client.config"
+version = "1.0.1"
+dependencies = [
+	{org = "ballerina", name = "http"},
+	{org = "ballerina", name = "oauth2"}
+]
+
+[[package]]
+org = "ballerinax"
+name = "googleapis.sheets"
+version = "3.4.0"
+dependencies = [
+	{org = "ballerina", name = "http"},
+	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "lang.array"},
+	{org = "ballerina", name = "lang.int"},
+	{org = "ballerina", name = "lang.regexp"},
+	{org = "ballerina", name = "log"},
+	{org = "ballerina", name = "os"},
+	{org = "ballerina", name = "regex"},
+	{org = "ballerinax", name = "client.config"}
+]
+modules = [
+	{org = "ballerinax", packageName = "googleapis.sheets", moduleName = "googleapis.sheets"}
+]
+
+[[package]]
 org = "integration_samples"
 name = "restful_api_with_data_mapper"
 version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "test"},
-	{org = "ballerinai", name = "observe"}
+	{org = "ballerinai", name = "observe"},
+	{org = "ballerinax", name = "googleapis.sheets"}
 ]
 modules = [
 	{org = "integration_samples", packageName = "restful_api_with_data_mapper", moduleName = "restful_api_with_data_mapper"}
