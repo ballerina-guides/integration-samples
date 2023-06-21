@@ -6,7 +6,7 @@ final http:Client personsClient = check new (string `http://localhost:${port}`);
 @test:Config {}
 function testStudentTransform() returns error? {
     Person person = {
-        id: "1004",
+        id: 1004,
         firstName: "Vinnie",
         lastName: "Hickman",
         age: 15,
@@ -43,7 +43,7 @@ function testStudentTransform() returns error? {
     Student expectedStudent = {
         id: "1004F",
         fullName: "Vinnie Hickman",
-        age: "15",
+        age: 15,
         courses: [
             {
                 title: "CS6002 - Computation Structures",
@@ -73,7 +73,13 @@ function testGetPersons() returns error? {
 
 @test:Config {}
 function testPostPerson() returns error? {
-    Person person = {"id": "1003","firstName": "John","lastName": "Smith","age": 24,"country": "US"};
+    Person person = {
+        "id": 1003,
+        "firstName": "John",
+        "lastName": "Smith",
+        "age": 24,
+        "country": "US"
+    };
 
     Person response = check personsClient->/persons.post(person);
     test:assertEquals(response, person);
@@ -84,7 +90,7 @@ function testPostPerson() returns error? {
 }
 function testPutPerson() returns error? {
     Person person = {
-        id: "1003",
+        id: 1003,
         firstName: "Jane",
         lastName: "Smith",
         age: 28,
