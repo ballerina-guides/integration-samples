@@ -49,7 +49,7 @@ table<Person> key(id) persons = table [
 var totalCredits = function(int total, record {string id; string name; int credits;} course)
                         returns int => total + (course.id.startsWith("CS") ? course.credits : 0);
 
-function transform(Person person, Course[] courses) returns Student => let var isForeign = person.country != "LK" in {
+function enrollAsStudent(Person person, Course[] courses) returns Student => let var isForeign = person.country != "LK" in {
         id: person.id.toString() + (isForeign ? "F" : ""),
         age: person.age,
         fullName: person.firstName + " " + person.lastName,
@@ -88,7 +88,7 @@ service / on new http:Listener(port) {
     resource function post persons/[int id]/enroll(Course[] courses) returns Student|http:NotFound {
         if persons.hasKey(id) {
             Person person = persons.get(id);
-            return transform(person, courses);
+            return enrollAsStudent(person, courses);
         }
         return http:NOT_FOUND;
     }
