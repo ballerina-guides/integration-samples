@@ -29,6 +29,13 @@ public function main() returns error?{
     json items = check invoiceData.items;
     io:println("Invoice items: ", items);
 
+    // Fails at runtime if the convertion is not possible.
+    json[] itemArr = check items.cloneWithType();
+
+    // Results in a nil value if the accessed field is not present.
+    decimal? discountAmount = check itemArr[1]?.discount?.amount;
+    io:println("Discount amount: ", discountAmount.toBalString());
+
     // Converts to the domain type.
     // Fails at runtime if the json value does not match the type.
     Invoice invoice = check invoiceData.fromJsonWithType();
