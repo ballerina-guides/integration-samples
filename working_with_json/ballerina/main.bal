@@ -34,7 +34,7 @@ public function main() returns error?{
 
     // Results in a nil value if the accessed field is not present.
     decimal? discountAmount = check itemArr[1]?.discount?.amount;
-    io:println("Discount amount: ", discountAmount.toBalString());
+    io:println("Discount amount: ", discountAmount);
 
     // Converts to the domain type.
     // Fails at runtime if the json value does not match the type.
