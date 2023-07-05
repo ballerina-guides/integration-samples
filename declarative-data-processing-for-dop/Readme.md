@@ -1,4 +1,4 @@
-Prerequisites:
+# Prerequisites:
 
 Before running the declarative-data-processing-for-dop sample, ensure that following prerequisite is met:
 
