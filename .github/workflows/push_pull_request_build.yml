@@ -50,7 +50,7 @@ jobs:
           args: 
             build working_with_data
       - name: Build Working With Databases Package
-        uses: ballerina-platform/ballerina-action@nightly
+        uses: ballerina-platform/ballerina-action@master
         with:
           args: 
             build working_with_databases
