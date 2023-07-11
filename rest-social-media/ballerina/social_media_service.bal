@@ -56,7 +56,7 @@ service SocialMedia /social\-media on socialMediaListener {
     # 
     # + return - The list of users or error message
     resource function get users() returns User[]|error {
-        stream<User, sql:Error?> userStream = self.socialMediaDb->query(`SELECT * FROM social_media_database.users`);
+        stream<User, sql:Error?> userStream = self.socialMediaDb->query(`SELECT * FROM social_media_database.user`);
         return from User user in userStream
             select user;
     }
@@ -66,7 +66,7 @@ service SocialMedia /social\-media on socialMediaListener {
     # + id - The user ID of the user to be retrived
     # + return - A specific user or error message
     resource function get users/[int id]() returns User|UserNotFound|error {
-        User|error result = self.socialMediaDb->queryRow(`SELECT * FROM social_media_database.users WHERE ID = ${id}`);
+        User|error result = self.socialMediaDb->queryRow(`SELECT * FROM social_media_database.user WHERE ID = ${id}`);
         if result is sql:NoRowsError {
             ErrorDetails errorDetails = buildErrorPayload(string `id: ${id}`, string `users/${id}/posts`);
             UserNotFound userNotFound = {
@@ -84,7 +84,7 @@ service SocialMedia /social\-media on socialMediaListener {
     # + return - The created message or error message
     resource function post users(@http:Payload NewUser newUser) returns http:Created|error {
         _ = check self.socialMediaDb->execute(`
-            INSERT INTO social_media_database.users(birth_date, name)
+            INSERT INTO social_media_database.user(birth_date, name)
             VALUES (${newUser.birthDate}, ${newUser.name});`);
         return http:CREATED;
     }
@@ -95,7 +95,7 @@ service SocialMedia /social\-media on socialMediaListener {
     # + return - The success message or error message
     resource function delete users/[int id]() returns http:NoContent|error {
         _ = check self.socialMediaDb->execute(`
-            DELETE FROM social_media_database.users WHERE id = ${id};`);
+            DELETE FROM social_media_database.user WHERE id = ${id};`);
         return http:NO_CONTENT;
     }
 
@@ -104,7 +104,7 @@ service SocialMedia /social\-media on socialMediaListener {
     # + id - The user ID for which posts are retrieved
     # + return - A list of posts or error message
     resource function get users/[int id]/posts() returns Post[]|UserNotFound|error {
-        User|error result = self.socialMediaDb->queryRow(`SELECT * FROM social_media_database.users WHERE id = ${id}`);
+        User|error result = self.socialMediaDb->queryRow(`SELECT * FROM social_media_database.user WHERE id = ${id}`);
         if result is sql:NoRowsError {
             ErrorDetails errorDetails = buildErrorPayload(string `id: ${id}`, string `users/${id}/posts`);
             UserNotFound userNotFound = {
@@ -113,7 +113,7 @@ service SocialMedia /social\-media on socialMediaListener {
             return userNotFound;
         }
 
-        stream<Post, sql:Error?> postStream = self.socialMediaDb->query(`SELECT id, description FROM social_media_database.posts WHERE user_id = ${id}`);
+        stream<Post, sql:Error?> postStream = self.socialMediaDb->query(`SELECT id, description FROM social_media_database.post WHERE user_id = ${id}`);
         Post[]|error posts = from Post post in postStream
             select post;
         return posts;
@@ -124,7 +124,7 @@ service SocialMedia /social\-media on socialMediaListener {
     # + id - The user ID for which the post is created
     # + return - The created message or error message
     resource function post users/[int id]/posts(@http:Payload NewPost newPost) returns http:Created|UserNotFound|PostForbidden|error {
-        User|error result = self.socialMediaDb->queryRow(`SELECT * FROM social_media_database.users WHERE id = ${id}`);
+        User|error result = self.socialMediaDb->queryRow(`SELECT * FROM social_media_database.user WHERE id = ${id}`);
         if result is sql:NoRowsError {
             ErrorDetails errorDetails = buildErrorPayload(string `id: ${id}`, string `users/${id}/posts`);
             UserNotFound userNotFound = {
@@ -146,7 +146,7 @@ service SocialMedia /social\-media on socialMediaListener {
         }
 
         _ = check self.socialMediaDb->execute(`
-            INSERT INTO social_media_database.posts(description, user_id)
+            INSERT INTO social_media_database.post(description, user_id)
             VALUES (${newPost.description}, ${id});`);
         return http:CREATED;
     }
