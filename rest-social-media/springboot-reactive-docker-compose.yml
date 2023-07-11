@@ -16,6 +16,15 @@ services:
     image: 'shafreen/springboot-sentiment-api:0.0.1'
     ports:
       - '8088:8088'
+    depends_on:
+      zipkin: 
+        condition: service_started
+    network_mode: "host"
+
+  zipkin:
+    image: 'openzipkin/zipkin'
+    ports:
+      - '9411:9411'
     network_mode: "host"
 
   mysql:
