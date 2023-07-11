@@ -1,0 +1,29 @@
+### Creat a user
+POST http://localhost:8087/social-media/users
+content-type: application/json
+
+{
+  "name": "Ravi",
+  "birthDate": "1997-08-11"
+}
+
+### Get users
+GET http://localhost:8087/social-media/users
+
+### Get a specific user
+GET http://localhost:8087/social-media/users/1
+
+### Create a post
+POST http://localhost:8087/social-media/users/1/post
+content-type: application/json
+
+{
+    "description": "I wang to learn GCP"
+}
+
+### Get posts
+GET http://localhost:8087/social-media/users/1/posts
+
+
+### Delete a user
+DELETE http://localhost:8087/social-media/users/1
