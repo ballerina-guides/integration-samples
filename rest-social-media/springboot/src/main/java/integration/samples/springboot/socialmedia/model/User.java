@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 
-@Entity(name = "user_details")
+@Entity
 public class User {
 
     @Id
