@@ -2,7 +2,7 @@
 org = "integration_samples"
 name = "working_with_data"
 version = "0.1.0"
-distribution = "2201.7.0"
+distribution = "2201.4.0"
 
 [build-options]
 observabilityIncluded = true

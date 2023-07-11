@@ -1,4 +1,5 @@
 import ballerina/io;
+import ballerina/xmldata;
 
 // Define a SOAP payload
 xml soapPayload = xml `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
@@ -16,6 +17,11 @@ xml soapPayload = xml `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.o
 
 xmlns "http://schemas.xmlsoap.org/soap/envelope/" as ns;
 
+type Address record {|
+    string city;
+    string country;
+|};
+
 public function main() returns error? {
     // Extract the SOAP payload
     xml xmlPayload = soapPayload/**/<ns:Body>;
@@ -27,7 +33,10 @@ public function main() returns error? {
     string name = (person/<name>).data();
     string age = (person/<age>).data();
     string city = (person/**/<city>).data();
-    string country = (person/<address>/<country>).data();
+
+    // Extract the sub-xml and convert it to a record
+    Address address = check xmldata:fromXml(person/<Address>);
+    string country = address.country;
 
     io:println(string `Name: ${name}, Age: ${age}, City: ${city}, Country: ${country}`);
 }
