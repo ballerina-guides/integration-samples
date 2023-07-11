@@ -147,7 +147,7 @@ public class SocialMediaController {
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorDetails.class))})
     })
-    @PostMapping("/social-media/users/{id}/post")
+    @PostMapping("/social-media/users/{id}/posts")
     @Retry(name = "sentiment-api")
     public ResponseEntity<User> createUserPost(@PathVariable int id, @Valid @RequestBody Post post) {
         Optional<User> user = userRepository.findById(id);
