@@ -1,5 +1,6 @@
 package dop.example;
 
+import org.modelmapper.ModelMapper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -25,6 +26,12 @@ public class Main {
             "        </person>\n" +
             "    </soapenv:Body>\n" +
             "</soapenv:Envelope>";
+
+    public record Address(String city, String country) {
+        public Address() {
+            this(null, null);
+        }
+    }
 
     public static void main(String[] args) throws Exception {
         // Parse the SOAP payload
@@ -57,13 +64,18 @@ public class Main {
         String soapPayloadExpression = "/*/soapenv:Body";
         Node soapPayloadNode = (Node) xpath.evaluate(soapPayloadExpression, document, XPathConstants.NODE);
 
-        String expression = "./person";
-        Node personNode = (Node) xpath.evaluate(expression, soapPayloadNode, XPathConstants.NODE);
+        String personPath = "./person";
+        Node personNode = (Node) xpath.evaluate(personPath, soapPayloadNode, XPathConstants.NODE);
 
         String name = (String) xpath.evaluate("name", personNode, XPathConstants.STRING);
         String age = (String) xpath.evaluate("age", personNode, XPathConstants.STRING);
         String city = (String) xpath.evaluate("*/city", personNode, XPathConstants.STRING);
-        String country = (String) xpath.evaluate("address/country", personNode, XPathConstants.STRING);
+
+        // Extract the sub-xml and convert it to a record
+        String addressPath = "./address";
+        Node addressNode = (Node) xpath.evaluate(addressPath, personNode, XPathConstants.NODE);
+        Address address = new ModelMapper().map(addressNode, Address.class);
+        String country = address.country();
 
         System.out.println("Name: " + name + ", Age: " + age + ", City: " + city + ", Country: " + country);
     }
