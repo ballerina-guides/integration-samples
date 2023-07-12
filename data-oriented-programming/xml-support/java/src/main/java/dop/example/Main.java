@@ -12,20 +12,21 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.*;
 
 public class Main {
-
     // Define a SOAP payload
-    final static String soapPayload = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">\n" +
-            "    <soapenv:Body>\n" +
-            "        <person>\n" +
-            "            <name>John Doe</name>\n" +
-            "            <age>30</age>\n" +
-            "            <address>\n" +
-            "                <city>New York</city>\n" +
-            "                <country>USA</country>\n" +
-            "            </address>\n" +
-            "        </person>\n" +
-            "    </soapenv:Body>\n" +
-            "</soapenv:Envelope>";
+    final static String soapPayload =
+            """
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+                <soapenv:Body>
+                    <person>
+                        <name>John Doe</name>
+                        <age>30</age>
+                        <address>
+                            <city>New York</city>
+                            <country>USA</country>
+                        </address>
+                    </person>
+                </soapenv:Body>
+            </soapenv:Envelope>""";
 
     public record Address(String city, String country) {
         public Address() {
@@ -60,7 +61,7 @@ public class Main {
         };
         xpath.setNamespaceContext(nsContext);
 
-        // // Navigate to SOAP payload and extract the data using XPath
+        // Navigate to SOAP payload and extract the data using XPath
         String soapPayloadExpression = "/*/soapenv:Body";
         Node soapPayloadNode = (Node) xpath.evaluate(soapPayloadExpression, document, XPathConstants.NODE);
 

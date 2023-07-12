@@ -39,16 +39,16 @@ public class Main {
 
         Person person = objectMapper.readValue(jsonInput, Person.class);
 
-        System.out.println(person.age()); //output: null
+        System.out.println(person.age()); // output: null
 
-        //optional type access
+        // optional type access
         int age = person.getAge().orElse(-1);
-        System.out.println(age); //output: -1
+        System.out.println(age); // output: -1
 
-        //optional field access
-        System.out.println(person.availableFields().contains("email")); //output: false
+        // optional field access
+        System.out.println(person.availableFields().contains("email")); // output: false
         String emailValue = person.getEmail().isPresent() ? person.email() : "Email is not provided";
-        System.out.println(emailValue); //output: Email is not provided
+        System.out.println(emailValue); // output: Email is not provided
     }
 }
 
@@ -79,4 +79,3 @@ class PersonDeserializer extends StdDeserializer<Person> {
         return new Person(id, name, age, email, availableFields);
     }
 }
-

@@ -1,5 +1,5 @@
-import ballerina/http;
 import ballerina/constraint;
+import ballerina/http;
 import ballerina/io;
 
 type User record {

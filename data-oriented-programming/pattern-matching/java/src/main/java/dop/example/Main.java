@@ -1,4 +1,5 @@
 package dop.example;
+
 import java.util.Map;
 
 /*
@@ -42,8 +43,7 @@ public class Main {
                 double b = record.y;
                 Map<String, Object> rest = record.rest;
                 String optionalArg = matchValue(rest, isObstructed, powerPercentage);
-                return "Maneuvering to x: " + a + " and y: " + b +
-                        " coordinates with " + optionalArg;
+                return "Maneuvering to x: " + a + " and y: " + b + " coordinates with " + optionalArg;
             }
             default -> {
                 return "Invalid instruction";
@@ -54,8 +54,7 @@ public class Main {
     record Record(double x, double y, Map<String, Object> rest) {}
 
     public static void main(String[] args) {
-        String output = matchValue(new double[]{2.516, 51.409}, false, 0.0f);
+        String output = matchValue(new double[] { 2.516, 51.409 }, false, 0.0f);
         System.out.println(output);
     }
 }
-

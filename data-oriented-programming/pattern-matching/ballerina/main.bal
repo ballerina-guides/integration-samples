@@ -33,7 +33,6 @@ function matchValue(anydata value, boolean isObstructed, float powerPercentage) 
         // Destructuring a map and recursively matching with optional argument
         {x: var a, y: var b, ...var rest} => {
             string optionalArg = matchValue(rest, isObstructed, powerPercentage);
-
             return string `Maneuvering to x: ${a.toString()} and y: ${b.toString()} coordinates with ${optionalArg}`;
         }
         _ => {

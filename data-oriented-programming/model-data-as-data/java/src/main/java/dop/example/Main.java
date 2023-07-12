@@ -1,6 +1,9 @@
 package dop.example;
+
 enum UserType {
-    ADMIN, CUSTOMER, GUEST
+    ADMIN,
+    CUSTOMER,
+    GUEST
 }
 
 record User(int id, String name, UserType userType) {

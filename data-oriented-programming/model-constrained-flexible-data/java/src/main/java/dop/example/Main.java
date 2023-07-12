@@ -51,7 +51,8 @@ class FlexibleTypeSystem {
         personalDetails.age = personalDetails.age + 1;
 
         // Create a new EmployeeDetails with dynamic fields
-        EmployeeDetails employeeInfo = new EmployeeDetails("n/a", 3000.0f, convertToMap(personalDetails));
+        EmployeeDetails employeeInfo = new EmployeeDetails("n/a", 3000.0f,
+                convertToMap(personalDetails));
 
         // Access and modify defined fields
         employeeInfo.designation = "Software Engineer";
