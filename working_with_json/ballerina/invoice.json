@@ -15,7 +15,11 @@
             "name": "Product A",
             "quantity": 2,
             "price": 50.00,
-            "taxable": true
+            "taxable": true,
+            "discount": {
+                "percentage": 10,
+                "amount": 5.00
+            }
         },
         {
             "id": "PROD-002",
