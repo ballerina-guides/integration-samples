@@ -33,9 +33,7 @@ type DataBaseConfig record {|
 |};
 configurable DataBaseConfig databaseConfig = ?;
 
-listener http:Listener socialMediaListener = new (9090,
-    interceptors = [new ResponseErrorInterceptor()]
-);
+listener http:Listener socialMediaListener = new (9090);
 
 service SocialMedia /social\-media on socialMediaListener {
 
@@ -50,6 +48,11 @@ service SocialMedia /social\-media on socialMediaListener {
             }
         );
         log:printInfo("Social media service started");
+    }
+
+   // Service-level error interceptors can handle errors occurred during the service execution.
+    public function createInterceptors() returns ResponseErrorInterceptor {
+        return new ResponseErrorInterceptor();
     }
     
     # Get all the users
@@ -73,16 +76,15 @@ service SocialMedia /social\-media on socialMediaListener {
                 body: errorDetails
             };
             return userNotFound;
-        } else {
-            return result;
         }
+        return result;
     }
 
     # Create a new user
     # 
     # + newUser - The user details of the new user
     # + return - The created message or error message
-    resource function post users(@http:Payload NewUser newUser) returns http:Created|error {
+    resource function post users(NewUser newUser) returns http:Created|error {
         _ = check self.socialMediaDb->execute(`
             INSERT INTO social_media_database.user(birth_date, name)
             VALUES (${newUser.birthDate}, ${newUser.name});`);
@@ -123,7 +125,7 @@ service SocialMedia /social\-media on socialMediaListener {
     # 
     # + id - The user ID for which the post is created
     # + return - The created message or error message
-    resource function post users/[int id]/posts(@http:Payload NewPost newPost) returns http:Created|UserNotFound|PostForbidden|error {
+    resource function post users/[int id]/posts(NewPost newPost) returns http:Created|UserNotFound|PostForbidden|error {
         User|error result = self.socialMediaDb->queryRow(`SELECT * FROM social_media_database.user WHERE id = ${id}`);
         if result is sql:NoRowsError {
             ErrorDetails errorDetails = buildErrorPayload(string `id: ${id}`, string `users/${id}/posts`);

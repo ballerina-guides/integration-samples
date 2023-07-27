@@ -21,7 +21,7 @@ import ballerina/constraint;
 service class ResponseErrorInterceptor {
     *http:ResponseErrorInterceptor;
 
-    remote function interceptResponseError(http:RequestContext ctx, error err) 
+    remote function interceptResponseError(error err) 
             returns SocialMediaBadReqeust|SocialMediaServerError {
         ErrorDetails errorDetails = buildErrorPayload(err.message(), "");
         
