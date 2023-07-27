@@ -1,0 +1,8 @@
+[package]
+org = "data_oriented_programming_samples"
+name = "model_constrained_n_flexible_data"
+version = "0.1.0"
+distribution = "2201.7.0-20230622-064700-4a2dc6dd"
+
+[build-options]
+observabilityIncluded = true
