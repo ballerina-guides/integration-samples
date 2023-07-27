@@ -15,17 +15,16 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/constraint;
 
 // Handle listener errors
 service class ResponseErrorInterceptor {
     *http:ResponseErrorInterceptor;
 
-    remote function interceptResponseError(error err) 
+    remote function interceptResponseError(http:Request req, error err) 
             returns SocialMediaBadReqeust|SocialMediaServerError {
-        ErrorDetails errorDetails = buildErrorPayload(err.message(), "");
+        ErrorDetails errorDetails = buildErrorPayload(err.message(), req.rawPath);
         
-        if err is constraint:Error {
+        if err is http:PayloadValidationError {
             SocialMediaBadReqeust socialMediaBadRequest = {
                 body: errorDetails
             };
