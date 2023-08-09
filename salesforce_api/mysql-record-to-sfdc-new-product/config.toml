@@ -1,0 +1,12 @@
+salesforceBaseUrl = ""
+port = 3306
+host = ""
+user = ""
+password = ""
+database = ""
+
+[choreo.mysql_record_to_sfdc_new_product.salesforceOAuthConfig]
+clientId = ""
+clientSecret = ""
+refreshToken = ""
+refreshUrl = ""
