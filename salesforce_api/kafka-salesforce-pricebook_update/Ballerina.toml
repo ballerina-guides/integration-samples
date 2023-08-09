@@ -1,8 +1,8 @@
 [package]
 org = "choreo"
-name = "kafka_salesforce_pricebook"
+name = "kafka_salesforce_pricebook_update"
 version = "0.1.0"
-distribution = "2201.7.0-20230622-064700-4a2dc6dd"
+distribution = "2201.7.0"
 
 [build-options]
 observabilityIncluded = true
