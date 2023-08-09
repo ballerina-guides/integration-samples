@@ -1,0 +1,13 @@
+[choreo.sfdc_new_contact_to_twilio_sms]
+fromNumber = ""  
+toNumber = ""  
+
+[choreo.sfdc_new_contact_to_twilio_sms.twilioClientConfig]
+accountSId = ""  
+authToken = ""
+
+[choreo.sfdc_new_contact_to_twilio_sms.salesforceOAuthConfig]
+clientId = ""
+clientSecret = ""
+refreshToken = ""
+refreshUrl = ""
