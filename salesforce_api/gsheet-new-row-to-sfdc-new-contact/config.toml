@@ -1,0 +1,16 @@
+spreadsheetId = ""
+worksheetName = ""
+duplicateWorksheetName = ""
+salesforceBaseUrl = ""
+
+[choreo.gsheet-new-row-to-sfdc-new-contact.GSheetOAuthConfig]
+clientId = ""
+clientSecret = ""
+refreshToken = ""
+refreshUrl = ""
+
+[choreo.gsheet-new-row-to-sfdc-new-contact.salesforceOAuthConfig]
+clientId = ""
+clientSecret = ""
+refreshToken = ""
+refreshUrl = ""

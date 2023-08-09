@@ -1,0 +1,8 @@
+[package]
+template = true
+org = "choreo"
+name = "gsheet-new-row-to-sfdc-new-contact"
+distribution = "2201.7.0"
+version = "3.1.0"
+[build-options]
+observabilityIncluded = true
