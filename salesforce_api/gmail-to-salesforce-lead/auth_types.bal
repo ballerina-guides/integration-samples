@@ -11,5 +11,4 @@ type SalesforceOAuth2Config record {|
     string baseUrl;
     string refreshUrl;
 |};
-
-
+    
