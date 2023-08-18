@@ -3,15 +3,15 @@ Example to create new contacts in the Salesforce pricebook using google sheets a
 ## Use case
 Google Sheets is a spreadsheet application included as part of the free, web-based Google Docs Editors suite offered by Google.
 
-As most of the organizations maintains a well organized sales process, it is important to enter contacts to Salesforce as soon as they are obtained by sales persons. As many of the sales persons are profiecient in using spreadsheets, it's much convinient fot salespersons to add new contacts to the google sheets and do the followups.
+As most organizations maintain well-organized sales processes, it is important to enter contacts into Salesforce as soon as they are obtained by salespersons. As many of the salespersons are proficient in using spreadsheets, it's much more convenient for salespersons to add new contacts to the google sheets and do follow-ups.
 
-The following sample demonstrates a scenario in which a contact details are added to the google sheets and it will periodiclly update the Salesfoce leads by adding the new contacts.
+The following sample demonstrates a scenario in which contact details are added to the google sheets and it will periodically update the Salesforce leads by adding the new contacts.
 
 ## Prerequisites
 * Salesforce account
-* Google cloud platform account
+* Google Cloud Platform account
 
-### Setting up Salesforce account
+### Setting up a Salesforce account
 1. Visit [Salesforce](https://www.salesforce.com/) and create a Salesforce Account.
 2. Create a connected app and obtain the following credentials:
     *   Base URL (Endpoint)
@@ -27,11 +27,11 @@ The following sample demonstrates a scenario in which a contact details are adde
 4. Provide the client ID and client secret to obtain the refresh token and access token. For more information on obtaining OAuth2 credentials, go to [Salesforce documentation](https://help.salesforce.com/articleView?id=remoteaccess_authenticate_overview.htm).
 5. Once you obtained all configurations, Replace "" in the `Conf.toml` file with your data.
 
-### Setting up Google sheets account
-1. Create a Google account and create a connected app by visiting [Google cloud platform APIs and Services](https://console.cloud.google.com/apis/dashboard). 
+### Setting up Google Sheets account
+1. Create a Google account and create a connected app by visiting [Google Cloud platform APIs and Services](https://console.cloud.google.com/apis/dashboard). 
 2. Click `Library` from the left side menu.
 3. In the search bar enter Google Sheets.
-4. Then select Google Sheets API and click `Enable` button.
+4. Then select Google Sheets API and click the `Enable` button.
 5. Complete OAuth Consent Screen setup.
 6. Click `Credential` tab from left sidebar. In the displaying window click `Create Credentials` button. Select OAuth client ID.
 7. Fill the required fields. Add https://developers.google.com/oauthplayground to the Redirect URI field.
@@ -74,8 +74,6 @@ refreshUrl = "<REFRESH_URL>"
 
 
 ## Testing
-1. Create a spreasdheet and add the sheet names and spreadsheet ids to the config file.
-2. The user need to add a new contact to the google sheet.
+1. Create a spreadsheet and add the sheet names and spreadsheet ids to the config file.
+2. The user needs to add a new contact to the Google sheet.
 3. Run the ballerina project.
-
-

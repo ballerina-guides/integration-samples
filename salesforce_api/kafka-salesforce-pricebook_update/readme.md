@@ -1,4 +1,4 @@
-Example to update the product price in the Salesforce pricebook using Kafka and Salesforce integration.
+Example to update the product price in the Salesforce pricebook through Kafka and Salesforce integration.
 
 ## Use case
 Apache Kafka is a distributed event store and stream-processing platform, widely used for enterprise messaging applications.
@@ -11,7 +11,7 @@ The following sample demonstrates a scenario in which a product's price in a pri
 * Salesforce account
 * Install Kafka
 
-### Setting up Salesforce account
+### Setting up a Salesforce account
 1. Visit [Salesforce](https://www.salesforce.com/) and create a Salesforce Account.
 2. Create a connected app and obtain the following credentials:
     *   Base URL (Endpoint)
@@ -28,7 +28,7 @@ The following sample demonstrates a scenario in which a product's price in a pri
 5. Once you obtained all configurations, Replace "" in the `Conf.toml` file with your data.
 
 ### Setting up Kafka.
-1. To test in local machines, install the kafka to your machine and start the server. You can follow the steps in [here](https://kafka.apache.org/quickstart).
+1. To test in local machines, install the Kafka to your machine and start the server. You can follow the steps [here](https://kafka.apache.org/quickstart).
 
 ## Configuration
 Create a file called `Config.toml` at the root of the project.
@@ -51,9 +51,8 @@ refreshUrl = "<SALESFORCE_REFRESH_URL>"
 ## Testing
 1. First run the kafka_msgProducer to start the kafka producer.
 
-2. Start the kafka subscriber by running the kafka-salesforce-pricebook_update.
+2. Start the Kafka subscriber by running the kafka-salesforce-pricebook_update.
 
-3. Then send the required message to kafka producer using `curl http://localhost:9090/orders -H "Content-type:application/json" -d "{\"Name\": \"<PRODUCT_NAME>\", \"UnitPrice\": <UPDATED_PRICE>}"`.
+3. Then send the required message to Kafka producer using `curl http://localhost:9090/orders -H "Content-type:application/json" -d "{\"Name\": \"<PRODUCT_NAME>\", \"UnitPrice\": <UPDATED_PRICE>}"`.
 
-When the new message is published to the kafka topic, it subscriber will update the new price in the Salesforce pricebook.
-
+When the new message is published to the Kafka topic, the subscriber will update the new price in the Salesforce pricebook.
