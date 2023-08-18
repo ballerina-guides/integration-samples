@@ -1,12 +1,7 @@
-// import ballerina/http;
-// import ballerina/log;
-// import ballerina/regex;
-// import ballerinax/trigger.salesforce as sfdcListener;
-// import ballerinax/twilio;
-import ballerinax/salesforce as sfdc;
-import ballerina/io;
-import ballerinax/twilio;
+import ballerina/http;
 import ballerina/log;
+import ballerinax/trigger.salesforce as sfdcListener;
+import ballerinax/twilio;
 
 // Types
 type SalesforceListenerConfig record {
@@ -18,70 +13,65 @@ type TwilioClientConfig record {
     string accountSId;
     string authToken;
 };
-type Lead record {
-    string Id;
-    string FirstName;
-    string LastName;
-    string Company;
-    string Email;
-    string Title;
-    string Phone;
-};
-
-type SalesforceOAuth2Config record {
-    string clientId;
-    string clientSecret;
-    string refreshToken;
-    string refreshUrl = "https://login.salesforce.com/services/oauth2/token";
-};
-
-configurable SalesforceOAuth2Config salesforceOAuthConfig = ?;
-
-sfdc:Client sfdcClient = check new ({
-    baseUrl: "wso2--ballerina.sandbox.my.salesforce.com",
-    auth: {
-        clientId: salesforceOAuthConfig.clientId,
-        clientSecret: salesforceOAuthConfig.clientSecret,
-        refreshToken: salesforceOAuthConfig.refreshToken,
-        refreshUrl: salesforceOAuthConfig.refreshUrl
-    }
-});
-
-twilio:Client twilioClient = check new ({
-            twilioAuth: {
-                accountSId: twilioClientConfig.accountSId,
-                authToken: twilioClientConfig.authToken
-            }
-        });
 
 // Constants
 const string COMMA = ",";
 const string EQUAL_SIGN = "=";
 const string CLOSING_BRACKET = "}";
 const string NO_STRING = "";
+const string CHANNEL_NAME = "/data/ContactChangeEvent";
 
+// Salesforce configuration parameters
+configurable SalesforceListenerConfig salesforceListenerConfig = ?;
+
+// Twilio configuration parameters
 configurable TwilioClientConfig twilioClientConfig = ?;
 configurable string fromNumber = ?;
 configurable string toNumber = ?;
 
-public function main() returns error? {
-    stream<Lead, error?>|error query = sfdcClient->query("SELECT Id,FirstName,LastName, Company, Email, Title FROM Lead");
-    if query !is error {
-        record {|Lead value;|}|error? leadValue = query.next();
-        while leadValue is record {|Lead value;|} {
-            string firstName = leadValue.value.FirstName;
-            string lastName = leadValue.value.LastName;
-            string company = leadValue.value.Company;
-            string email = leadValue.value.Email;
-            string title = leadValue.value.Title;
-            string message = string `New lead is created! | Name: ${firstName} ${lastName} | Organization: ${company} | Email: ${email} | Title: ${title}`;
-            twilio:SmsResponse response = check twilioClient->sendSms(fromNumber, toNumber, message);
-            log:printInfo("SMS(SID: "+ response.sid +") sent successfully");
-            leadValue = query.next();
+listener sfdcListener:Listener sfdcEventListener = new ({
+    username: salesforceListenerConfig.username,
+    password: salesforceListenerConfig.password,
+    channelName: CHANNEL_NAME,
+    environment: "Sandbox"
+});
 
+@display { label: "Salesforce New Contact to Twilio SMS" }
+service sfdcListener:RecordService on sfdcEventListener {
+    remote function onCreate(sfdcListener:EventData payload) returns error? {
+        string firstName = NO_STRING;
+        string lastName = NO_STRING;
+        map<json> contactMap = payload.changedData;
+        string[] nameParts = re `,`.split(contactMap["Name"].toString());
+        if nameParts.length() >= 2 {
+            firstName = re `=`.split(nameParts[0])[1];
+            lastName = re `=`.split(re `\}`.replace(nameParts[1], ""))[1];
+        } else {
+            lastName = re `=`.split(re `\}`.replace(nameParts[0], ""))[1];
         }
-    } else {
-        io:println(query);
+        string createdDate = check payload.changedData.CreatedDate;
+        string message = string `New contact is created! | Name: ${firstName} ${lastName} | Created Date: ${createdDate}`;
+        twilio:Client twilioClient = check new ({
+            twilioAuth: {
+                accountSId: twilioClientConfig.accountSId,
+                authToken: twilioClientConfig.authToken
+            }
+        });
+        twilio:SmsResponse response = check twilioClient->sendSms(fromNumber, toNumber, message);
+        log:printInfo("SMS(SID: "+ response.sid +") sent successfully");
     }
-    
+
+    remote function onUpdate(sfdcListener:EventData payload) returns error? {
+        return;
+    }
+
+    remote function onDelete(sfdcListener:EventData payload) returns error? {
+        return;
+    }
+
+    remote function onRestore(sfdcListener:EventData payload) returns error? {
+        return;
+    }
 }
+
+service /ignore on new http:Listener(8090) {}
