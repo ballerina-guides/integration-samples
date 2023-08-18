@@ -3,9 +3,9 @@ Example to create new contacts in the Salesforce pricebook using google sheets a
 ## Use case
 Google Sheets is a spreadsheet application included as part of the free, web-based Google Docs Editors suite offered by Google.
 
-As most organizations maintain well-organized sales processes, it is important to enter contacts into Salesforce as soon as they are obtained by salespersons. As many of the salespersons are proficient in using spreadsheets, it's much more convenient for salespersons to add new contacts to the google sheets and do follow-ups.
+As most organizations maintain well-organized sales processes, it is important to enter contacts into Salesforce as soon as they are obtained by salespersons. As many of the salespersons are proficient in using spreadsheets, it's much more convenient for them to add new contacts to the google sheets and do follow-ups.
 
-The following sample demonstrates a scenario in which contact details are added to the google sheets and it will periodically update the Salesforce leads by adding the new contacts.
+The following sample demonstrates a scenario in which contact details are added to the google sheets and it will periodically update the Salesforce by adding the new contacts.
 
 ## Prerequisites
 * Salesforce account
