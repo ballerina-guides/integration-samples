@@ -1,5 +1,4 @@
 import ballerinax/kafka;
-import ballerina/io;
 import ballerinax/salesforce as sfdc;
 
 const string PRICEBOOKID = "";
