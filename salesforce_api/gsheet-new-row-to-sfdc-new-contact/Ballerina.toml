@@ -1,8 +1,8 @@
 [package]
 template = true
-org = "choreo"
-name = "gsheet-new-row-to-sfdc-new-contact"
+org = "integration_samples"
+name = "gsheet_new_row_to_sfdc_new_contact"
 distribution = "2201.7.0"
-version = "3.1.0"
+version = "0.1.0"
 [build-options]
 observabilityIncluded = true

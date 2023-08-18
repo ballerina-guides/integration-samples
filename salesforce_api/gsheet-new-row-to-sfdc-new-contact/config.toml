@@ -3,13 +3,13 @@ worksheetName = ""
 duplicateWorksheetName = ""
 salesforceBaseUrl = ""
 
-[choreo.gsheet-new-row-to-sfdc-new-contact.GSheetOAuthConfig]
+[integration_samples.gsheet-new-row-to-sfdc-new-contact.GSheetOAuthConfig]
 clientId = ""
 clientSecret = ""
 refreshToken = ""
 refreshUrl = ""
 
-[choreo.gsheet-new-row-to-sfdc-new-contact.salesforceOAuthConfig]
+[integration_samples.gsheet-new-row-to-sfdc-new-contact.salesforceOAuthConfig]
 clientId = ""
 clientSecret = ""
 refreshToken = ""

@@ -1,5 +1,5 @@
 [package]
-org = "sahan"
+org = "integration_samples"
 name = "kafka_msgProducer"
 version = "0.1.0"
 distribution = "2201.7.0"
