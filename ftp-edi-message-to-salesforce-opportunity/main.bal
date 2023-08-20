@@ -2,16 +2,19 @@ import ballerinax/edifact.d03a.retail.mREQOTE;
 
 import ballerina/io;
 import ballerinax/salesforce as sf;
+import ballerina/file;
 import ballerina/ftp;
 
 configurable ftp:ClientConfiguration ftpConfig = ?;
+configurable string ftpNewQuotesPath = ?;
+configurable string ftpProcessedQuotesPath = ?;
 configurable sf:ConnectionConfig salesforceConfig = ?;
 configurable string salesforcePriceBookId = ?;
 
 public function main() returns error? {
     sf:Client sfClient = check new (salesforceConfig);
     ftp:Client ftpClient = check new ftp:Client(ftpConfig);
-    ftp:FileInfo[] quoteList = check ftpClient->list("/ftp/user1/techpulse/new-quotes");
+    ftp:FileInfo[] quoteList = check ftpClient->list(ftpNewQuotesPath);
     foreach ftp:FileInfo quoteFile in quoteList {
         if !quoteFile.name.endsWith(".edi") {
             continue;
@@ -55,7 +58,7 @@ public function main() returns error? {
             };
             _ = check sfClient->create("OpportunityLineItem", oppProduct);
         }
-        check ftpClient->put("/ftp/user1/techpulse/processed-quotes/" + quoteFile.name, quoteText.toBytes());
+        check ftpClient->put(check file:joinPath(ftpProcessedQuotesPath, quoteFile.name), quoteText.toBytes());
         check ftpClient->delete(quoteFile.path);
     }
 }
