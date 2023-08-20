@@ -40,6 +40,10 @@ Business-to-Business communications are commonly performed via EDI messages. The
 
 ### Config.toml
 ```
+salesforcePriceBookId = "<pricebook-id>"
+ftpNewQuotesPath = "<ftp-path-for-input-edi-files>"
+ftpProcessedQuotesPath = "<ftp-path-for-processed-edi-files>"
+
 # ==========================
 # FTP configuration
 # ==========================
@@ -65,8 +69,6 @@ clientId = "<salesforce-client-id>"
 clientSecret = "<salesforce-client-secret>"
 refreshToken = "<salesforce-refresh-token>"
 refreshUrl = "<salesforce-refresh-url>"
-
-salesforcePriceBookId = "<pricebook-id>"
 ```
 
 ## Testing
