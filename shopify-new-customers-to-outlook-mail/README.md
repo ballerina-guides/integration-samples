@@ -37,7 +37,7 @@ oneDriveAccessToken = "<ONE_DRIVE_ACCESS_TOKEN>"
 flyerFilePath = "<ONE_DRIVE_FILE_PATH>"
 ```
 
-### Template Configuration
+### Configuration
 1. Obtain the `shopifyServiceUrl`. 
 2. The `shopifyServiceUrl` is `https://{store_name}.myshopify.com`. Replace the `{store_name}` with the name of the Shopify store.
 3. Obtain the relevant OAuth access tokens for `Shopify`, `Microsoft OneDrive` and `Microsoft Outlook` configurations.
