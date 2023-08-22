@@ -35,8 +35,8 @@ hubspotAccessToken = "<HUBSPOT_ACCESS_TOKEN>"
 
 ### Configuration
 1. Obtain the relevant OAuth access tokens for `Google Contacts` and `Hubspot` configurations.
-4. Once you obtained all configurations, Create the `Config.toml` file in the root directory.
-5. Replace the necessary fields in the `Config.toml` file with your data.
+2. Once you obtained all configurations, Create the `Config.toml` file in the root directory.
+3. Replace the necessary fields in the `Config.toml` file with your data.
 
 
 ## Testing
