@@ -1,9 +1,10 @@
-import ballerina/log;
-import ballerinax/googleapis.gmail as gmail;
-import ballerina/mime;
-import ballerinax/salesforce as sfdc;
+//Re-order the imports alphabetically
 import ballerina/lang.runtime;
+import ballerina/log;
+import ballerina/mime;
+import ballerinax/googleapis.gmail as gmail;
 import ballerinax/openai.chat as openAI;
+import ballerinax/salesforce as sfdc;
 
 type Email record {|
     string 'from;
