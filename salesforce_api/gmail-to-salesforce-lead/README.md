@@ -13,6 +13,8 @@ When the user receives an email pertaining to a lead, they will mark that thread
 
 Once these details have been inferred, a new lead will be generated on Salesforce.
 
+![Flow diagram](/docs/flow-diagram.png)
+
 ## Prerequisites
 * An email account configured to use Gmail
 * An account on the Google Cloud Platform
