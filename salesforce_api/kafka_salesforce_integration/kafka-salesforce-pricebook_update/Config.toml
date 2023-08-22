@@ -1,7 +1,0 @@
-salesforceBaseUrl = ""
-
-[integration_samples.kafka_salesforce_pricebook_update.salesforceOAuthConfig]
-clientId = ""
-clientSecret = ""
-refreshToken = ""
-refreshUrl = ""
