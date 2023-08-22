@@ -37,15 +37,8 @@ Create a file called `Config.toml` at the root of the project.
 ```
 [<ORG_NAME>.kafka_salesforce_pricebook_update]
 salesforceBaseUrl = "<SALESFORCE_BASE_URL>"
-
-[<ORG_NAME>.kafka_salesforce_pricebook_update.salesforceOAuthConfig]
-clientId = "<SALESFORCE_CLIENT_ID>"
-clientSecret = "<SALESFORCE_CLIENT_SECRET>"
-refreshToken = "<SALESFORCE_REFRESH_TOKEN>"
-refreshUrl = "<SALESFORCE_REFRESH_URL>"
+salesforceAccessToken = "<SALESFORCE_ACCESS_TOKEN>"
 ```
-> Here   
-    * SALESFORCE_REFRESH_URL : https://login.salesforce.com/services/oauth2/token
 
 
 ## Testing
@@ -53,6 +46,6 @@ refreshUrl = "<SALESFORCE_REFRESH_URL>"
 
 2. Start the Kafka subscriber by running the kafka-salesforce-pricebook_update.
 
-3. Then send the required message to Kafka producer using `curl http://localhost:9090/orders -H "Content-type:application/json" -d "{\"Name\": \"<PRODUCT_NAME>\", \"UnitPrice\": <UPDATED_PRICE>}"`.
+3. Then send the required message to Kafka producer using `curl http://localhost:9090/orders -H "Content-type:application/json" -d "{\"name\": \"<PRODUCT_NAME>\", \"unitPrice\": <UPDATED_PRICE>}"`.
 
 When the new message is published to the Kafka topic, the subscriber will update the new price in the Salesforce pricebook.

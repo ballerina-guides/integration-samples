@@ -1,10 +1,10 @@
-import ballerinax/kafka;
 import ballerina/http;
+import ballerinax/kafka;
 
-public type ProductPrice readonly & record {
-    string Name;
-    float UnitPrice;
-};
+public type ProductPrice readonly & record {|
+    string name;
+    float unitPrice;
+|};
 
 service / on new http:Listener(9090) {
     private final kafka:Producer priceProducer;

@@ -1,49 +1,44 @@
 import ballerinax/kafka;
 import ballerinax/salesforce as sfdc;
 
-configurable SalesforceOAuth2Config salesforceOAuthConfig = ?;
+configurable string salesforceAccessToken = ?;
 configurable string salesforceBaseUrl = ?;
-public type ProductPrice readonly & record {
-    string Name;
-    float UnitPrice;
-};
+public type ProductPrice readonly & record {|
+    string name;
+    float unitPrice;
+|};
 
-public type ProductPriceUpdate readonly & record {
+public type ProductPriceUpdate readonly & record {|
     float UnitPrice;
-};
+|};
 
 listener kafka:Listener orderListener = new (kafka:DEFAULT_URL, {
     groupId: "order-group-id",
     topics: "foobar"
 });
 
-type SalesforceOAuth2Config record {
-    string clientId;
-    string clientSecret;
-    string refreshToken;
-    string refreshUrl = "https://test.salesforce.com/services/oauth2/token";
-};
-
 const string PRICEBOOKID = "";
 
-sfdc:Client sfdcClient = check new ({
+final sfdc:Client sfdcClient = check new ({
     baseUrl: salesforceBaseUrl,
     auth: {
-        clientId: salesforceOAuthConfig.clientId,
-        clientSecret: salesforceOAuthConfig.clientSecret,
-        refreshToken: salesforceOAuthConfig.refreshToken,
-        refreshUrl: salesforceOAuthConfig.refreshUrl
+        token: salesforceAccessToken
     }
 });
 
 service on orderListener {
-    remote function onConsumerRecord(ProductPrice[] prices) returns error? {
-        foreach ProductPrice price in prices {
-            stream<record{},error?> retrievedStream = check sfdcClient->query(string `SELECT Id FROM PricebookEntry WHERE Pricebook2Id = '${PRICEBOOKID}' AND Name = '${price.Name}'`);
+    isolated remote function onConsumerRecord(ProductPrice[] prices) returns error? {
+        foreach ProductPrice {name, unitPrice} in prices {
+            stream<record{},error?> retrievedStream = check sfdcClient->query(
+                string `SELECT Id FROM PricebookEntry 
+                    WHERE Pricebook2Id = '${PRICEBOOKID}' AND 
+                    Name = '${name}'`);
             record{}[] retrieved = check from record{} entry in retrievedStream select entry;
-            string pricebookEntryId = <string>retrieved[0]["Id"];
-            ProductPriceUpdate updatedPrice = {UnitPrice: price.UnitPrice};
-            check sfdcClient->update("PricebookEntry", pricebookEntryId, updatedPrice);
+            anydata pricebookEntryId = retrieved[0]["Id"];
+            if pricebookEntryId is string {
+                ProductPriceUpdate updatedPrice = {UnitPrice: unitPrice};
+                check sfdcClient->update("PricebookEntry", pricebookEntryId, updatedPrice);
+            }
         }
     }
 }
