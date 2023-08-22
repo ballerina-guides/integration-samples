@@ -40,7 +40,6 @@ salesforceBaseUrl = "<SALESFORCE_BASE_URL>"
 salesforceAccessToken = "<SALESFORCE_ACCESS_TOKEN>"
 ```
 
-
 ## Testing
 1. First run the kafka_msgProducer to start the kafka producer.
 
