@@ -24,42 +24,10 @@ type Lead record {|
     string designation__c;
 |};
 
-type GmailOAuth2Config record {|
-    string refreshToken;
-    string clientId;
-    string clientSecret;
-|};
-
-type SalesforceOAuth2Config record {|
-    string clientId;
-    string clientSecret;
-    string refreshToken;
-    string baseUrl;
-    string refreshUrl;
-|};
-
-configurable GmailOAuth2Config gmailOAuth2Config = ?;
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: gmailOAuth2Config.refreshToken,
-        clientId: gmailOAuth2Config.clientId,
-        clientSecret: gmailOAuth2Config.clientSecret
-    }
-};
-
-configurable SalesforceOAuth2Config salesforceOAuth2Config = ?;
-sfdc:ConnectionConfig sfdcConfig = {
-    baseUrl: salesforceOAuth2Config.baseUrl,
-    auth: {
-        clientId: salesforceOAuth2Config.clientId,
-        clientSecret: salesforceOAuth2Config.clientSecret,
-        refreshToken: salesforceOAuth2Config.refreshToken,
-        refreshUrl: salesforceOAuth2Config.refreshUrl
-    }
-};
-
+configurable string gmailAccessToken = ?;
 configurable string openAIKey = ?;
+configurable string salesforceBaseUrl = ?;
+configurable string salesforceAccessToken = ?;
 
 final string label = "Lead";
 
@@ -83,7 +51,7 @@ public function main() returns error? {
 }
 
 function getEmails(string label) returns Email[]|error {
-    gmail:Client gmailClient = check new (gmailConfig);
+    gmail:Client gmailClient = check new ({auth: {token: gmailAccessToken}});
 
     string[] labelIdsToMatch = check getLabelIds(gmailClient, [label]);
     if (labelIdsToMatch.length() == 0) {
@@ -207,7 +175,10 @@ function generateLead(string 'from, string subject, string body) returns Lead|er
 }
 
 function addLeadsToSalesforce(Lead[] leads) returns error? {
-    sfdc:Client sfdcClient = check new (sfdcConfig);
+    sfdc:Client sfdcClient = check new ({
+        baseUrl: salesforceBaseUrl,
+        auth: {token: salesforceAccessToken}
+    });
 
     from Lead lead in leads
     do {

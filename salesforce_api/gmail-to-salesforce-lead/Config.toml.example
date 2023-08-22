@@ -1,13 +1,4 @@
+gmailAccessToken = ""
 openAIKey = ""
-
-[integration_samples.gmail_to_salesforce_lead.gmailOAuth2Config]
-refreshToken = ""
-clientId = ""
-clientSecret = ""
-
-[integration_samples.gmail_to_salesforce_lead.salesforceOAuth2Config]
-baseUrl = ""
-clientId = ""
-clientSecret = ""
-refreshToken = ""
-refreshUrl = ""
+salesforceBaseUrl = "https://instance-id.salesforce.com"
+salesforceAccessToken = ""
