@@ -58,7 +58,6 @@ salesforceBaseUrl = "<SALESFORCE_BASE_URL>"
 salesforceAccessToken = "<SALESFORCE_ACCESS_TOKEN>"
 ```
 
-
 ## Testing
 1. Create a spreadsheet and add the sheet names and spreadsheet ids to the config file.
 2. The user needs to add a new contact to the Google sheet.
