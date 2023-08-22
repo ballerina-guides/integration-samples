@@ -1,9 +1,9 @@
 import ballerinax/edifact.d03a.retail.mREQOTE;
 
-import ballerina/io;
-import ballerinax/salesforce as sf;
 import ballerina/file;
 import ballerina/ftp;
+import ballerina/io;
+import ballerinax/salesforce as sf;
 
 configurable ftp:ClientConfiguration ftpConfig = ?;
 configurable string ftpNewQuotesPath = ?;
@@ -14,18 +14,27 @@ configurable string salesforcePriceBookId = ?;
 public function main() returns error? {
     sf:Client sfClient = check new (salesforceConfig);
     ftp:Client ftpClient = check new ftp:Client(ftpConfig);
+
+    // Get new quotes from the FTP new quotes directory, and iterate through them
     ftp:FileInfo[] quoteList = check ftpClient->list(ftpNewQuotesPath);
     foreach ftp:FileInfo quoteFile in quoteList {
         if !quoteFile.name.endsWith(".edi") {
             continue;
         }
+
+        // Fetch the EDI file containing the quote from the FTP server
         stream<byte[] & readonly, io:Error?> fileStream = check ftpClient->get(quoteFile.path);
         string quoteText = check streamToString(fileStream);
+
+        // Parse the EDI file and transform in to Ballerina record containing only the required data
         mREQOTE:EDI_REQOTE_Request_for_quote_message quote = check mREQOTE:fromEdiString(quoteText);
         QuoteRequest quoteRequest = check transformQuoteRequest(quote);
-        stream<record {|string Id;|}, error?> accQuery = check sfClient->query(
+
+        // Get the corresponding account Id and oppurtunity Id from Salesforce.
+        // Create a new opportunity if an opportunity with the given name does not exist. 
+        stream<AccountId, error?> accQuery = check sfClient->query(
             string `SELECT Id FROM Account WHERE Name = '${quoteRequest.accountName}'`);
-        record {|record {|string Id;|} value;|}? account = check accQuery.next();
+        record {|AccountId value;|}? account = check accQuery.next();
         if account is () {
             return error("Account not found. Account name: " + quoteRequest.accountName);
         }
@@ -35,15 +44,17 @@ public function main() returns error? {
             Pricebook2Id: salesforcePriceBookId
         };
         string oppId = "";
-        stream<record {|string Id;|}, error?> oppQuery = check sfClient->query(
+        stream<OpportunityId, error?> oppQuery = check sfClient->query(
             string `SELECT Id FROM Opportunity WHERE Name = '${quoteRequest.oppName}'`);
-        record {|record {|string Id;|} value;|}? existingOpp = check oppQuery.next();
+        record {|OpportunityId value;|}? existingOpp = check oppQuery.next();
         if existingOpp is () {
             sf:CreationResponse oppResult = check sfClient->create("Opportunity", opp);
             oppId = oppResult.id;
         } else {
             oppId = existingOpp.value.Id;
         }
+
+        // Create opportunity line items for each item in the quote
         foreach ItemData item in quoteRequest.itemData {
             stream<PriceBookEntry, error?> query = check sfClient->query(string `SELECT UnitPrice FROM PricebookEntry WHERE Pricebook2Id = '01s6C000000UN4PQAW' AND Product2Id = '${item.itemId}'`);
             record {|PriceBookEntry value;|}? unionResult = check query.next();
@@ -58,6 +69,8 @@ public function main() returns error? {
             };
             _ = check sfClient->create("OpportunityLineItem", oppProduct);
         }
+
+        // Move the processed quote to the processed quotes FTP directory
         check ftpClient->put(check file:joinPath(ftpProcessedQuotesPath, quoteFile.name), quoteText.toBytes());
         check ftpClient->delete(quoteFile.path);
     }
@@ -115,5 +128,4 @@ function streamToString(stream<byte[] & readonly, io:Error?> inStream) returns s
     });
     return string:fromBytes(content);
 }
-
 

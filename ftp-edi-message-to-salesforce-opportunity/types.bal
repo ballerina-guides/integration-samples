@@ -9,7 +9,11 @@ type ItemData record {|
     int quantity = 0;
 |};
 
-type Account record {|
+type AccountId record {|
+    string Id;
+|};
+
+type OpportunityId record {|
     string Id;
 |};
 
