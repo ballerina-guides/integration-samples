@@ -1,7 +1,6 @@
 import ballerinax/kafka;
 import ballerinax/salesforce as sfdc;
 
-const string PRICEBOOKID = "";
 configurable SalesforceOAuth2Config salesforceOAuthConfig = ?;
 configurable string salesforceBaseUrl = ?;
 public type ProductPrice readonly & record {
@@ -25,7 +24,8 @@ type SalesforceOAuth2Config record {
     string refreshUrl = "https://test.salesforce.com/services/oauth2/token";
 };
 
-// Salesforce client
+const string PRICEBOOKID = "";
+
 sfdc:Client sfdcClient = check new ({
     baseUrl: salesforceBaseUrl,
     auth: {
