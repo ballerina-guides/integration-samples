@@ -3,7 +3,6 @@ import ballerina/log;
 import ballerinax/trigger.salesforce as sfdcListener;
 import ballerinax/twilio;
 
-// Types
 type SalesforceListenerConfig record {
     string username;
     string password;
@@ -14,7 +13,6 @@ type TwilioClientConfig record {
     string authToken;
 };
 
-// Constants
 const string COMMA = ",";
 const string EQUAL_SIGN = "=";
 const string CLOSING_BRACKET = "}";
@@ -32,11 +30,9 @@ configurable string toNumber = ?;
 listener sfdcListener:Listener sfdcEventListener = new ({
     username: salesforceListenerConfig.username,
     password: salesforceListenerConfig.password,
-    channelName: CHANNEL_NAME,
-    environment: "Sandbox"
+    channelName: CHANNEL_NAME
 });
 
-@display { label: "Salesforce New Contact to Twilio SMS" }
 service sfdcListener:RecordService on sfdcEventListener {
     remote function onCreate(sfdcListener:EventData payload) returns error? {
         string firstName = NO_STRING;
