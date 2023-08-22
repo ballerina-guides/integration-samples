@@ -36,19 +36,10 @@ host = "<DATABASE_HOST>'
 user = "<USERNAME>'
 password = "<PASSWORD>"
 database = "<DATABASE_NAME>"
-
-[<ORG_NAME>.mysql_record_to_sfdc_new_product.salesforceOAuthConfig]
-clientId = "<SALESFORCE_CLIENT_ID>"
-clientSecret = "<SALESFORCE_CLIENT_SECRET>"
-refreshToken = "<SALESFORCE_REFRESH_TOKEN>"
-refreshUrl = "<SALESFORCE_REFRESH_URL>"
+salesforceAccessToken = "<SALESFORCE_ACCESS_TOKEN>"
 ```
-> Here   
-    * SALESFORCE_REFRESH_URL : https://login.salesforce.com/services/oauth2/token
-
 ## Configuration
 Create a file called `Config.toml` at the root of the project and include all the required configurations in the config file.
-
 
 ## Testing
 1. Make sure the database is running and accessible.
