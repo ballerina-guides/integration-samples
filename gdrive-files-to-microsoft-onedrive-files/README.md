@@ -3,7 +3,7 @@
 ## Use case
 Sync files in a given Google Drive folder to a given Microsoft OneDrive folder.
 
-![Flow diagram](/hubspot-contacts-to-google-contacts/docs/images/flow.png)
+![Flow diagram](/gdrive-files-to-microsoft-onedrive-files/docs/images/flow.png)
 
 ## Prerequisites
 * Google account
