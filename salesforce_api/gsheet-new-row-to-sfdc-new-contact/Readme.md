@@ -1,4 +1,4 @@
-Example to create new contacts in the Salesforce pricebook using Google Sheets and Salesforce integration.
+Example to create new contacts in the Salesforce using Google Sheets and Salesforce integration.
 
 ## Use case
 Google Sheets is a spreadsheet application included as part of the free, web-based Google Docs Editors suite offered by Google.

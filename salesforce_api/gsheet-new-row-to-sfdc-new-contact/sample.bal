@@ -2,10 +2,10 @@ import ballerina/log;
 import ballerinax/googleapis.sheets;
 import ballerinax/salesforce as sfdc;
 
-public type Contact record {
+public type Contact record {|
     string Id;
     string Email;
-};
+|};
 
 const int HEADINGS_ROW = 1;
 
