@@ -337,9 +337,9 @@ modules = [
 ]
 
 [[package]]
-org = "choreo"
+org = "integration_samples"
 name = "gdrive_files_to_microsoft_onedrive_files"
-version = "3.1.0"
+version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "log"},
@@ -348,6 +348,6 @@ dependencies = [
 	{org = "ballerinax", name = "microsoft.onedrive"}
 ]
 modules = [
-	{org = "choreo", packageName = "gdrive_files_to_microsoft_onedrive_files", moduleName = "gdrive_files_to_microsoft_onedrive_files"}
+	{org = "integration_samples", packageName = "gdrive_files_to_microsoft_onedrive_files", moduleName = "gdrive_files_to_microsoft_onedrive_files"}
 ]
 

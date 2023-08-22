@@ -63,4 +63,3 @@ isolated function checkIfFileExistsInOneDrive(string fileName, onedrive:Client o
     record {|onedrive:DriveItemData value;|}? next = check searchDriveItems.next();
     return next !is ();
 }
-
