@@ -1,4 +1,5 @@
-Example to create new contacts in the Salesforce using Google Sheets and Salesforce integration.
+
+This example creates new contacts in Salesforce using Google Sheets and Salesforce integration.
 
 ## Use case
 Google Sheets is a spreadsheet application included as part of the free, web-based Google Docs Editors suite offered by Google.
