@@ -35,7 +35,7 @@ sfdc:Client sfdcClient = check new ({
 });
 
 public function main() returns error? {
-    mysql:Client dbClient = check new (host = host, user = user, password = password, database = database, port = port, options = {});
+    mysql:Client dbClient = check new (host, user, password, database, port);
 
     stream<ProductRecieved, error?> streamOutput = dbClient->query(`SELECT name, unitType, currencyISO, productId FROM products WHERE processed = false`);
     ProductRecieved[] productsRecieved = check from ProductRecieved items in streamOutput

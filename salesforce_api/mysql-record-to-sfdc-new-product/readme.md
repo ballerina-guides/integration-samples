@@ -1,4 +1,4 @@
-Example to create a new product in Salesforce using MySQL and Salesforce integration.
+This example creates a new product in Salesforce using MySQL and Salesforce integration.
 
 ## Use case
 MySQL is an open-source relational database management system that can be easily used for data storing and retrieving applications. 
