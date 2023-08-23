@@ -15,18 +15,18 @@ public function main() returns error? {
     sf:Client sfClient = check new (salesforceConfig);
     ftp:Client ftpClient = check new ftp:Client(ftpConfig);
 
-    // Get new quotes from the FTP new quotes directory, and iterate through them
+    // Get new quotes from the FTP new quotes directory, and iterate through them.
     ftp:FileInfo[] quoteList = check ftpClient->list(ftpNewQuotesPath);
     foreach ftp:FileInfo quoteFile in quoteList {
         if !quoteFile.name.endsWith(".edi") {
             continue;
         }
 
-        // Fetch the EDI file containing the quote from the FTP server
+        // Fetch the EDI file containing the quote from the FTP server.
         stream<byte[] & readonly, io:Error?> fileStream = check ftpClient->get(quoteFile.path);
         string quoteText = check streamToString(fileStream);
 
-        // Parse the EDI file and transform in to Ballerina record containing only the required data
+        // Parse the EDI file and transform in to Ballerina record containing only the required data.
         mREQOTE:EDI_REQOTE_Request_for_quote_message quote = check mREQOTE:fromEdiString(quoteText);
         QuoteRequest quoteRequest = check transformQuoteRequest(quote);
 
@@ -54,7 +54,7 @@ public function main() returns error? {
             oppId = existingOpp.value.Id;
         }
 
-        // Create opportunity line items for each item in the quote
+        // Create opportunity line items for each item in the quote.
         foreach ItemData item in quoteRequest.itemData {
             stream<PriceBookEntry, error?> query = check sfClient->query(string `SELECT UnitPrice FROM PricebookEntry WHERE Pricebook2Id = '01s6C000000UN4PQAW' AND Product2Id = '${item.itemId}'`);
             record {|PriceBookEntry value;|}? unionResult = check query.next();
@@ -70,7 +70,7 @@ public function main() returns error? {
             _ = check sfClient->create("OpportunityLineItem", oppProduct);
         }
 
-        // Move the processed quote to the processed quotes FTP directory
+        // Move the processed quote to the processed quotes FTP directory.
         check ftpClient->put(check file:joinPath(ftpProcessedQuotesPath, quoteFile.name), quoteText.toBytes());
         check ftpClient->delete(quoteFile.path);
     }
