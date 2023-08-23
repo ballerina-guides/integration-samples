@@ -1,4 +1,4 @@
-Example to update the product price in the Salesforce pricebook through Kafka and Salesforce integration.
+This example updates the product price in the Salesforce price book through Kafka and Salesforce integration.
 
 ## Use case
 Apache Kafka is a distributed event store and stream-processing platform, widely used for enterprise messaging applications.
