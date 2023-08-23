@@ -26,7 +26,7 @@ The following sample demonstrates a scenario in which contact details are added 
     *   Perform requests on your behalf at any time (refresh_token, offline_access)
     *   Provide access to your data via the Web (web)
 4. Provide the client ID and client secret to obtain the refresh token and access token. For more information on obtaining OAuth2 credentials, go to [Salesforce documentation](https://help.salesforce.com/articleView?id=remoteaccess_authenticate_overview.htm).
-5. Once you obtained all configurations, Replace "" in the `Conf.toml` file with your data.
+5. Once you obtained all configurations, add those to the `config.toml` file.
 
 ### Setting up Google Sheets account
 1. Create a Google account and create a connected app by visiting [Google Cloud platform APIs and Services](https://console.cloud.google.com/apis/dashboard). 
