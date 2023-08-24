@@ -1,7 +1,6 @@
 # Email Lead Info into Salesforce using OpenAI.
 This sample creates a lead on [Salesforce](https://salesforce.com) for each email marked with a specific label on [Gmail](https://mail.google.com) using the [OpenAI](https://openai.com) chat API to infer customer details.
 
-
 ## Use case
 The following sample demonstrates a scenario in which customer leads obtained through email are automatically pushed to Salesforce. The required details for the lead (name, company, designation, etc.) are inferred from the content of the email and the OpenAI chat API.
 
@@ -70,6 +69,7 @@ Once these details have been inferred, a new lead will be generated on Salesforc
 
 ## Configuration
 Create a file called `Config.toml` at the root of the project.
+
 ### Config.toml 
 ```
 gmailAccessToken = "<GMAIL_ACCESS_TOKEN>"
@@ -83,7 +83,6 @@ salesforceAccessToken = "<SALESFORCE_ACCESS_TOKEN>"
 3. Obtain the path of the OneDrive folder you want to sync.
 4. Once you have obtained all configurations, Create the `Config.toml` file in the root directory.
 5. Replace the necessary fields in the `Config.toml` file with your data.
-
 
 ## Testing
 
