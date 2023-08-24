@@ -167,6 +167,7 @@ function generateLead(Email email) returns Lead? {
         return check content.fromJsonStringWithType(Lead);
     } on fail error e {
         log:printError("An error occured while generating the lead.", e, e.stackTrace(), email = email);
+        return;
     }
 }
 
