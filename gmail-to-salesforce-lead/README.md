@@ -1,9 +1,11 @@
-# Example to create leads obtained via email on Salesforce using the OpenAI API.
+# Email Lead Info into Salesforce using OpenAI.
+This sample creates a lead on [Salesforce](https://salesforce.com) for each email marked with a specific label on [Gmail](https://mail.google.com) using the [OpenAI](https://openai.com) chat API to infer customer details.
+
 
 ## Use case
-The following sample demonstrates a scenario in which customer leads obtained through email are automatically pushed to Salesforce. The required details for the lead (name, company, designation etc.) are inferred using the content of the email and the OpenAI chat API.
+The following sample demonstrates a scenario in which customer leads obtained through email are automatically pushed to Salesforce. The required details for the lead (name, company, designation, etc.) are inferred from the content of the email and the OpenAI chat API.
 
-When the user receives an email pertaining to a lead, they will mark that thread with a specific label (e.g. `"Lead"`). This Ballerina program will run continuously in the background, polling the email server every 10 minutes for threads marked with this label. If an email is found, its content will be read and used to infer the following details
+When the user receives an email pertaining to a lead, they will mark that thread with a specific label (e.g., `"Lead"`). This Ballerina program will run continuously in the background, polling the email server every 10 minutes for threads marked with this label. If an email is found, its content will be read and used to infer the following details
 * First name
 * Last name
 * Phone number
@@ -13,18 +15,18 @@ When the user receives an email pertaining to a lead, they will mark that thread
 
 Once these details have been inferred, a new lead will be generated on Salesforce.
 
-![Flow diagram](/docs/flow-diagram.png)
+![Flow diagram](/gmail-to-salesforce-lead/docs/images/flow-diagram.png)
 
 ## Prerequisites
-* An email account configured to use Gmail
-* An account on the Google Cloud Platform
-* An OpenAI account with API usage enabled
-* A Salesforce account
+* An email account configured to use [Gmail](https://mail.google.com)
+* An account on the [Google Cloud Platform](https://console.cloud.google.com)
+* An [OpenAI](https://openai.com) account with API usage enabled
+* A [Salesforce](https://salesforce.com) account
 
->Note: The following steps will require you to generate keys for the Gmail, OpenAI and Salesforce APIs. These keys will have to be securely stored in the `Config.toml` file in the project directory under the relevant fields. To see a template of this file, please see the [`Config.toml.example`] file (./Config.toml.example).
+>Note: The following steps will require you to generate keys for the Gmail, OpenAI and Salesforce APIs. These keys will have to be securely stored in the `Config.toml` file in the project directory under the relevant fields.
 
 ### Configuring your email account to use Gmail
-> Note: If you already have a Gmail account (ending with `@gmail.com`) or your acccount is on the Google workspace, you do not need to follow the steps below. In essence, if you can access your email via `www.gmail.com`, the following is not necessary.
+> Note: If you already have a Gmail account (ending with `@gmail.com`) or your account is on the Google workspace, you do not need to follow the steps below. In essence, if you can access your email via `www.gmail.com`, the following is not necessary.
 1. Visit [Gmail](https://gmail.com) and create a new account or log into an existing account.
 2. Enter the `Accounts` tab under settings and click on `Add a mail account`.
 3. Provide the necessary authentication details to your email account.
@@ -33,16 +35,16 @@ Once these details have been inferred, a new lead will be generated on Salesforc
 ### Obtaining the Gmail API keys
 1. Create a new [Google Cloud Platform project](https://console.cloud.google.com). 
 2. Find and click `APIs & Services` --> `Library` from the navigation menu.
-3. In the searchbox enter `"Gmail"`.
+3. In the search box, enter `"Gmail"`.
 4. Then select Gmail API and click `Enable` button.
-5. Complete OAuth consent screen setup.
-6. Click the `Credential` tab from the left sidebar. In the displaying window click on the `Create Credentials` button Select OAuth client ID.
+5. Complete the OAuth consent screen setup.
+6. Click the `Credential` tab from the left sidebar. In the displaying window click on the `Create Credentials` button and select OAuth client ID.
 7. Fill in the required fields. Add `"https://developers.google.com/oauthplayground"` to the Redirect URI field.
 8. Note down the `clientId` and `clientSecret`.
 9. Visit https://developers.google.com/oauthplayground/. Go to settings (Top right corner) -> Tick 'Use your own OAuth credentials' and insert Oauth ClientId and clientSecret. Click close.
 10. Then, Complete Step1 (Select and Authorize APIs)
-11. Make sure you select the `"https://www.googleapis/auth/gmail.modify"` and `"https://www.googleapis/auth/gmail.labels` OAuth scopes. These two scopes will allow the program to read emails including adding/removing labels.
-12. Click `Authorize APIs` and You will be in Step 2.
+11. Make sure you select the `"https://www.googleapis/auth/gmail.modify"` and `"https://www.googleapis/auth/gmail.labels` OAuth scopes. These two scopes will allow the program to read emails, including adding/removing labels.
+12. Click `Authorize APIs`, and you will be in step 2.
 13. Exchange Auth code for tokens.
 14. Copy the `Access token` and enter it on the `Config.toml` file.
 
@@ -95,4 +97,3 @@ In Gmail, we can use a label to mark an email under several categories. These la
 ### Running the project
 1. Execute the ballerina project by executing `bal run` in the project directory.
 2. You should see the emails you've marked as `LEAD` should have the label removed and a new lead should be created on Salesforce.
- 
