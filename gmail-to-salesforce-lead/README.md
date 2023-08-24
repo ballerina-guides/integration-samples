@@ -66,10 +66,26 @@ Once these details have been inferred, a new lead will be generated on Salesforc
 4. Provide the client ID and client secret to obtain the refresh token and access token. For more information on obtaining OAuth2 credentials, go to [Salesforce documentation](https://help.salesforce.com/articleView?id=remoteaccess_authenticate_overview.htm).
 5. Once you have obtained the access token, include it in the `Config.toml` file.
 
+## Configuration
+Create a file called `Config.toml` at the root of the project.
+### Config.toml 
+```
+gmailAccessToken = "<GMAIL_ACCESS_TOKEN>"
+openAIKey = "<OPEN_AI_KEY>"
+salesforceBaseUrl = "https://<INSTANCE_ID>.salesforce.com"
+salesforceAccessToken = "<SALESFORCE_ACCESS_TOKEN>"
+```
+### Configuration
+1. Obtain the relevant OAuth access tokens for `Google Drive` and `Microsoft One Drive` configurations.
+2. Obtain the folder ID of the Google Drive folder you want to sync.
+3. Obtain the path of the OneDrive folder you want to sync.
+4. Once you have obtained all configurations, Create the `Config.toml` file in the root directory.
+5. Replace the necessary fields in the `Config.toml` file with your data.
 
-## Usage
 
-### Using labels
+## Testing
+
+### Adding labels
 In Gmail, we can use a label to mark an email under several categories. These labels can be manually added to email threads by the user or can be automatically added based on user-provided rules as well. For this sample, we will use a custom label to mark emails pertaining to a lead generation as `"Lead"`.
 
 1. Log into your Gmail account.
@@ -77,4 +93,6 @@ In Gmail, we can use a label to mark an email under several categories. These la
 3. Whenever you receive an email pertaining to a lead generation, add the newly created label to it by clicking on the Labels icon above the thread.
 
 ### Running the project
-Execute the ballerina project by executing `bal run` in the project directory.
+1. Execute the ballerina project by executing `bal run` in the project directory.
+2. You should see the emails you've marked as `LEAD` should have the label removed and a new lead should be created on Salesforce.
+ 
