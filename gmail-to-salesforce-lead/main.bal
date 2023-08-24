@@ -39,10 +39,9 @@ public function main() returns error? {
     while true {
         Email[] emails = check getEmails(LABEL);
         Lead[] leads = from Email email in emails
-                       let Lead|error lead = generateLead(email)
+                       let Lead? lead = generateLead(email)
                        where lead is Lead
                        select lead;
-
         addLeadsToSalesforce(leads);
         runtime:sleep(600);
     }
@@ -131,7 +130,7 @@ function parseEmail(gmail:Message message) returns Email|error {
     }
 }
 
-function generateLead(Email email) returns Lead|error {
+function generateLead(Email email) returns Lead? {
     openAI:CreateChatCompletionRequest request = {
         model: "gpt-3.5-turbo",
         messages: [
@@ -159,12 +158,16 @@ function generateLead(Email email) returns Lead|error {
         ]
     };
 
-    openAI:CreateChatCompletionResponse response = check openAIClient->/chat/completions.post(request);
-    if response.choices.length() < 1 {
-        return error("Unable to find any choices in the response.");
+    do {
+        openAI:CreateChatCompletionResponse response = check openAIClient->/chat/completions.post(request);
+        if response.choices.length() < 1 {
+            check error("Unable to find any choices in the response.");
+        }
+        string content = check response.choices[0].message?.content.ensureType(string);
+        return check content.fromJsonStringWithType(Lead);
+    } on fail error e {
+        log:printError("An error occured while generating the lead.", e, e.stackTrace(), email = email);
     }
-    string content = check response.choices[0].message?.content.ensureType(string);
-    return check content.fromJsonStringWithType(Lead);
 }
 
 function addLeadsToSalesforce(Lead[] leads) {
