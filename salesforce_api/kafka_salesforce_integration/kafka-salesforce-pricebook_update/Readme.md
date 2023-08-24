@@ -47,4 +47,4 @@ salesforceAccessToken = "<SALESFORCE_ACCESS_TOKEN>"
 
 3. Then send the required message to Kafka producer using `curl http://localhost:9090/orders -H "Content-type:application/json" -d "{\"name\": \"<PRODUCT_NAME>\", \"unitPrice\": <UPDATED_PRICE>}"`.
 
-When the new message is published to the Kafka topic, the subscriber will update the new price in the Salesforce pricebook.
+When the new message is published to the Kafka topic, the subscriber will update the new price in the Salesforce price book.
