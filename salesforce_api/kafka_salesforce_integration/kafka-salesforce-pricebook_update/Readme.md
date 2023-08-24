@@ -1,4 +1,4 @@
-This example updates the product price in the [Salesforce](https://www.salesforce.com/) pricebook through [Kafka](https://kafka.apache.org/) and Salesforce integration.
+This example updates the product price in the [Salesforce](https://www.salesforce.com/) price book through [Kafka](https://kafka.apache.org/) and Salesforce integration.
 
 ## Use case
 Apache Kafka is a distributed event store and stream-processing platform, widely used for enterprise messaging applications.
@@ -46,4 +46,4 @@ salesforcePriceBookId = "<SALESFORCE_PRICEBOOK_ID>"
 2. Start the Kafka subscriber by running the kafka-salesforce-pricebook_update.
 3. Then send the required message to Kafka producer using `curl http://localhost:9090/orders -H "Content-type:application/json" -d "{\"name\": \"<PRODUCT_NAME>\", \"unitPrice\": <UPDATED_PRICE>}"`.
 
-When the new message is published to the Kafka topic, the subscriber will update the new price in the Salesforce pricebook.
+When the new message is published to the Kafka topic, the subscriber will update the new price in the Salesforce price book.
