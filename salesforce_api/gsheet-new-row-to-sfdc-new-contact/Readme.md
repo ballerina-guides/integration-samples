@@ -1,5 +1,4 @@
-
-This example creates new contacts in Salesforce using Google Sheets and Salesforce integration.
+This example creates new contacts in [Salesforce](https://www.salesforce.com/) using [Google Sheets](google.com/sheets/about/) and Salesforce integration.
 
 ## Use case
 Google Sheets is a spreadsheet application included as part of the free, web-based Google Docs Editors suite offered by Google.
@@ -40,7 +39,7 @@ The following sample demonstrates a scenario in which contact details are added 
 9. Visit https://developers.google.com/oauthplayground/. Go to settings (Top right corner) -> Tick 'Use your own OAuth credentials' and insert Oauth ClientId and clientSecret. Click close.
 10. Then, Complete Step 1 (Select and Authorize APIs)
 11. Make sure you select https://www.googleapis.com/auth/drive & https://www.googleapis.com/auth/spreadsheets OAuth scopes.
-12. Click `Authorize API's` and You will be in Step 2.
+12. Click `Authorize APIs` and You will be in Step 2.
 13. Exchange Auth code for tokens.
 14. Copy `Access token` and `Refresh token`. Put it on the `Config.toml` file.
 15. Obtain the relevant `Refresh URL` (For example: https://www.googleapis.com/oauth2/v3/token) for the Google Sheets API and include it in the `Config.toml` file.

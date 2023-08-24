@@ -1,4 +1,4 @@
-This example creates a new product in Salesforce using MySQL and Salesforce integration.
+This example creates a new product in [Salesforce](https://www.salesforce.com/) using [MySQL](https://www.mysql.com/) and Salesforce integration.
 
 ## Use case
 MySQL is an open-source relational database management system that can be easily used for data storing and retrieving applications. 
@@ -25,7 +25,7 @@ The following sample demonstrates a scenario of creating products in Salesforce 
     *   Perform requests on your behalf at any time (refresh_token, offline_access)
     *   Provide access to your data via the Web (web)
 4. Provide the client ID and client secret to obtain the refresh token and access token. For more information on obtaining OAuth2 credentials, go to [Salesforce documentation](https://help.salesforce.com/articleView?id=remoteaccess_authenticate_overview.htm).
-5. Once you obtained all configurations, Replace "" in the `Config.toml` file with your data.
+5. Once you obtained all configurations, add those to the `config.toml` file.
 
 ### Config.toml 
 ```
@@ -43,7 +43,6 @@ Create a file called `Config.toml` at the root of the project and include all th
 
 ## Testing
 1. Make sure the database is running and accessible.
-
 2. Run the sample using `bal Run`
 
 When the ballerina program is executed, it will create a new product in Salesforce for all the new entries and change the processed column to True so that it won't be processed again.

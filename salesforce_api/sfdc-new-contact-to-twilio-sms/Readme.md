@@ -1,4 +1,4 @@
-This example sends a Twilio SMS for every new Salesforce contact.
+This example sends a [Twilio](https://www.twilio.com/) SMS for every new [Salesforce](https://www.salesforce.com/) contact.
 
 ## Use case
 Twilio is a cloud communications platform as a service (CPaaS) company. It allows software developers to programmatically make and receive phone calls, send and receive text messages, and perform other communication functions using its web service APIs. 
@@ -22,7 +22,7 @@ The following sample demonstrates a scenario in which a Twilio SMS message conta
 2. Obtain the Account SID and Auth Token from the project dashboard.
 3. Obtain the phone number from the project dashboard and set it as the value of the `fromNumber` variable in the `Config.toml`.
 4. Give a mobile number where the SMS should be sent as the value of the `toNumber` variable in the `Config.toml`.
-5. Once you obtained all configurations, Replace relevant places in the `Config.toml` file with your data.
+5. Once you obtained all configurations, add those to the `config.toml` file.
 
 ## Configuration
 Create a file called `Config.toml` at the root of the project.
@@ -43,6 +43,7 @@ twilioAuthToken = "<TWILIO_AUTH_TOKEN>"
 
 ```
 Phone numbers must be provided in E.164 format: +<country code><number>, for example: +16175551212
+
 ## Testing
 Run the Ballerina project created by the integration template by executing `bal run` from the root.
 

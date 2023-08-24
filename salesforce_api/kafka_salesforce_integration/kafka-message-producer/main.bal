@@ -15,7 +15,7 @@ service / on new http:Listener(9090) {
 
     resource function post orders(@http:Payload anydata productPrice) returns http:Accepted|error {
         check self.priceProducer->send({
-            topic: "foobar",
+            topic: "product-price-updates",
             value: productPrice
         });
         return http:ACCEPTED;

@@ -37,7 +37,8 @@ sfdc:Client sfdcClient = check new ({
 public function main() returns error? {
     mysql:Client dbClient = check new (host, user, password, database, port);
 
-    stream<ProductRecieved, error?> streamOutput = dbClient->query(`SELECT name, unitType, currencyISO, productId FROM products WHERE processed = false`);
+    stream<ProductRecieved, error?> streamOutput = dbClient->query(
+        `SELECT name, unitType, currencyISO, productId FROM products WHERE processed = false`);
     ProductRecieved[] productsRecieved = check from ProductRecieved items in streamOutput
         select items;
     foreach ProductRecieved prductRecieved in productsRecieved {
@@ -47,6 +48,7 @@ public function main() returns error? {
             CurrencyIsoCode: prductRecieved.currencyISO
         };
         _ = check sfdcClient->create("Product2", product);
-        _ = check dbClient->execute(`UPDATE products SET processed = true WHERE productId = ${prductRecieved.productId}`);
-    }      
+        _ = check dbClient->execute(
+            `UPDATE products SET processed = true WHERE productId = ${prductRecieved.productId}`);
+    }
 }
