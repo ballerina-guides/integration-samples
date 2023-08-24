@@ -81,14 +81,13 @@ function getMatchingMailThreads(gmail:Client gmailClient, string[] labelIdsToMat
 }
 
 function removeLabels(gmail:Client gmailClient, gmail:MailThread[] mailThreads, string[] labelIds) {
-    from gmail:MailThread mailThread in mailThreads
-    do {
+    foreach gmail:MailThread mailThread in mailThreads {
         gmail:MailThread|error removeLabelResponse = gmailClient->modifyThread(mailThread.id, [], labelIds);
         if removeLabelResponse is error {
-            log:printError("An error occured in removing the labels from the thread.", 
+            log:printError("An error occured in removing the labels from the thread.",
                 removeLabelResponse, removeLabelResponse.stackTrace(), threadId = mailThread.id, labelIds = labelIds);
         }
-    };
+    }
 }
 
 function getMatchingEmails(gmail:Client gmailClient, gmail:MailThread[] mailThreads) returns gmail:Message[] {
