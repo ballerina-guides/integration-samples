@@ -14,14 +14,14 @@ configurable string oneDriveAccessToken = ?;
 configurable string flyerFilePath = ?;
 
 public function main() returns error? {
-    shopify:Client shopifyClient = check new ({xShopifyAccessToken: xShopifyAccessToken}, shopifyServiceUrl);
-    mail:Client outlookClient = check new ({ auth: { token: outlookAccessToken }});
-    onedrive:Client onedriveClient = check new ({auth: { token: oneDriveAccessToken}});
+    shopify:Client shopify = check new ({xShopifyAccessToken: xShopifyAccessToken}, shopifyServiceUrl);
+    mail:Client outlook = check new ({ auth: { token: outlookAccessToken }});
+    onedrive:Client oneDrive = check new ({auth: { token: oneDriveAccessToken}});
 
     string dateOriginTime = time:utcToString(time:utcAddSeconds(time:utcNow(), -300.0));
     string currentTime = time:utcToString(time:utcNow());
 
-    shopify:CustomerList customerList = check shopifyClient->getCustomers(createdAtMin = dateOriginTime, createdAtMax = currentTime);
+    shopify:CustomerList customerList = check shopify->getCustomers(createdAtMin = dateOriginTime, createdAtMax = currentTime);
     shopify:Customer[] customers = customerList?.customers ?: [];
     mail:Recipient[] recepients = [];
     foreach shopify:Customer customer in customers {
@@ -33,7 +33,7 @@ public function main() returns error? {
         });
     }
 
-    onedrive:File fileContents = check onedriveClient->downloadFileByPath(flyerFilePath);
+    onedrive:File fileContents = check oneDrive->downloadFileByPath(flyerFilePath);
     byte[] byteContent = fileContents.content ?: [];
 
     if customers.length() > 0 {
@@ -59,7 +59,7 @@ public function main() returns error? {
             },
             saveToSentItems: true
         };
-        http:Response response = check outlookClient->sendMessage(messageContent);
+        http:Response response = check outlook->sendMessage(messageContent);
         if response.statusCode == http:STATUS_ACCEPTED {
             log:printInfo(string `Welcome emails sent successfully!`);
         } else {
