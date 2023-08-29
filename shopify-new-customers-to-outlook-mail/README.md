@@ -1,19 +1,21 @@
 # Send Welcome Emails using MS Outlook to New Shopify Customers
+This sample sends an email via Microsoft Outlook to every customer created on Shopify within the previous 5 minutes. The email sent also contains an attachment downloaded from Microsoft OneDrive.
 
 ## Use case
-Each new customer in Shopify created within the last five minutes period will receive welcome emails 
-from a Microsoft Outlook account. The attachment for the email is extracted from a Microsoft OneDrive account.
+Send welcome emails to your customers on Shopify using Microsoft Outlook. By using this integration, you can automatically send the initial greeting email to newly created Shopify customers. 
 
 ![Flow diagram](/shopify-new-customers-to-outlook-mail/docs/images/flow.png)
 
 ## Prerequisites
-* Shopify account
-* Microsoft Outlook account
-* Microsoft OneDrive account
+* [Shopify](https://www.shopify.com/) account
+* [Microsoft Outlook](https://outlook.live.com/) account
+* [Microsoft OneDrive](https://www.microsoft.com/en-us/microsoft-365/onedrive/online-cloud-storage) account
 
 ### Setting up a Shopify account
 1. Visit [Shopify](https://www.shopify.com) and create a Shopify account.
 2. Obtain tokens by following [this guide](https://help.shopify.com/en/manual/apps/custom-apps)
+3. The `shopifyServiceUrl` is `https://{store_name}.myshopify.com`. Replace the `{store_name}` with the name of the Shopify store.
+
 
 ### Setting up a Microsoft Outlook account
 1. Visit [Microsoft Outlook](https://outlook.live.com/owa/) and sign up for a Microsoft Outlook account
@@ -22,6 +24,7 @@ from a Microsoft Outlook account. The attachment for the email is extracted from
 ### Setting up a Microsoft OneDrive account
 1. Visit [Microsoft OneDrive](https://www.microsoft.com/en-ww/microsoft-365/onedrive/online-cloud-storage) and signup for a Microsoft OneDrive account
 2. Obtain tokens by following [this guide](https://docs.microsoft.com/en-us/graph/auth-v2-user#authentication-and-authorization-steps)
+3. You could provide the `flyerFilePath` from the root. If the file is in the root directory, the path should be given as `/CHILD_NAME.ext`
 
 ## Configuration
 Create a file called `Config.toml` at the root of the project.
@@ -37,14 +40,5 @@ oneDriveAccessToken = "<ONE_DRIVE_ACCESS_TOKEN>"
 flyerFilePath = "<ONE_DRIVE_FILE_PATH>"
 ```
 
-### Configuration
-1. Obtain the `shopifyServiceUrl`. 
-2. The `shopifyServiceUrl` is `https://{store_name}.myshopify.com`. Replace the `{store_name}` with the name of the Shopify store.
-3. Obtain the relevant OAuth access tokens for `Shopify`, `Microsoft OneDrive` and `Microsoft Outlook` configurations.
-4. Once you obtained all configurations, Create the `Config.toml` file in the root directory.
-5. Replace the necessary fields in the `Config.toml` file with your data.
-
 ## Testing
 Run the Ballerina project created by the integration template by executing `bal run` from the root.
-
-All new customers in the Shopify store within the past five minutes will receive a welcome email from the Microsoft Outlook account.
