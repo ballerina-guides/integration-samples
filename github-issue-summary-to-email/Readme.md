@@ -5,7 +5,7 @@ address using GitHub and Ballerina integration.
 
 ## Use case
 Managers always like summaries. This example generates a report out of the issues reported at a GitHub repository.
-It contains information on how many issues are assigned to each contributor to the project, total issues opened and total
+It contains information on how many issues are assigned to each contributor to the project, total issues opened, and total
 issues closed so far. You could configure this report to be generated daily and emailed out to the specified email address.
 It will provide continuous feedback about the project issue status.
 
