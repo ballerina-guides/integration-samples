@@ -1,8 +1,11 @@
-# Generate a GitHub issue summary report and email to a specified email address.
+# GitHub Issue Summary Report to Email
+
+This example [GitHub](https://www.github.com/) generates an issue summary report and emails to a specified email 
+address using GitHub and Ballerina integration.
 
 ## Use case
-Managers always like summaries. In this scenario, we generate a report out of the issues reported at a GitHub repository.
-It contains information on how many issues are assigned to each contributor of the project, total issues opened and total
+Managers always like summaries. This example generates a report out of the issues reported at a GitHub repository.
+It contains information on how many issues are assigned to each contributor to the project, total issues opened and total
 issues closed so far. You could configure this report to be generated daily and emailed out to the specified email address.
 It will provide continuous feedback about the project issue status.
 
@@ -28,4 +31,4 @@ recipientAddress = "<RECIPIENT_ADDRESS>"
 ## Testing
 Run the Ballerina project by executing `bal run` from the root.
 
-Once successfully executed, the GitHub issue summary report will be received to the email specified.
+Once successfully executed, the GitHub issue summary report will be sent to the specified email.
