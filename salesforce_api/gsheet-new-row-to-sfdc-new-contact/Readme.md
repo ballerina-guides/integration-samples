@@ -5,7 +5,7 @@ This example creates new contacts in [Salesforce](https://www.salesforce.com/) u
 ## Use case
 Google Sheets is a spreadsheet application included as part of the free, web-based Google Docs Editors suite offered by Google.
 
-As most organizations maintain well-organized sales processes, it is important to enter contacts into Salesforce as soon as they are obtained by salespersons. As many of the salespersons are proficient in using spreadsheets, it's much more convenient for them to add new contacts to the Google Sheets and do follow-ups.
+As most organizations maintain well-organized sales processes, it is important to enter contacts into Salesforce as soon as they are obtained by salespersons. As many of the salespersons are proficient in using spreadsheets, it's more convenient for them to add new contacts to the Google Sheets and do follow-ups.
 
 The following sample demonstrates a scenario in which contact details are added to the Google Sheets, and it will periodically update Salesforce by adding the new contacts.
 
@@ -27,7 +27,7 @@ The following sample demonstrates a scenario in which contact details are added 
     *   Perform requests on your behalf at any time (refresh_token, offline_access)
     *   Provide access to your data via the Web (web)
 4. Provide the client ID and client secret to obtain the refresh token and access token. For more information on obtaining OAuth2 credentials, go to [Salesforce documentation](https://help.salesforce.com/articleView?id=remoteaccess_authenticate_overview.htm).
-5. Once you obtained all configurations, add those to the `Config.toml` file.
+5. Once you have obtained all configurations, add those to the `Config.toml` file.
 
 ### Setting up a Google Sheets account
 1. Create a Google account and create a connected app by visiting [Google Cloud platform APIs and Services](https://console.cloud.google.com/apis/dashboard). 
