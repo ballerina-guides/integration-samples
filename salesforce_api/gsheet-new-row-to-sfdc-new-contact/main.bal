@@ -46,7 +46,6 @@ public function main() returns error? {
         record {} newContact = map from int index in 0 ..< headers.length()
             let int|string|decimal header = headers[index]
             select [header.toString(), item[index]];
-
         _ = check sfdcClient->create("Contact", newContact);
         log:printInfo(string `Contact created successfully!. Email : ${item[indexOfEmail]}`);
     }
