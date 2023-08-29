@@ -17,7 +17,7 @@ public function main() returns error? {
         foreach var article in articles {
             string? title = article?.title;
             if title is string {
-                mailBody = mailBody + "\t" + "* " + title + "\n";
+                mailBody = mailBody + string `\t* ${title}\n`;
                 log:printInfo(mailBody);
             }
         }
