@@ -1,13 +1,14 @@
 # Sync Hubspot Contacts with Google Contacts.
+This sample creates a new contact on Google Contacts for each contact you have on Hubspot contacts.
 
 ## Use case
-Sync your contacts from Hubspot to Google Contacts.
+Manage your contacts across multiple platforms. By using this integration, you can automatically sync your contacts from Hubspot to Google Contacts.
 
 ![Flow diagram](/hubspot-contacts-to-google-contacts/docs/images/flow.png)
 
 ## Prerequisites
-* Google account
-* Hubspot account
+* Google account with access to [Google Contacts](https://contacts.google.com/)
+* [Hubspot](https://www.hubspot.com/home-page) account
 
 ### Setting up a Google account
 1. Visit [Google API Console](https://console.developers.google.com), click **Create Project**, and follow the wizard to create a new project.
@@ -33,12 +34,5 @@ gPeopleAccessToken = "<GOOGLE_CONTACTS_ACCESS_TOKEN>"
 hubspotAccessToken = "<HUBSPOT_ACCESS_TOKEN>"
 ```
 
-### Configuration
-1. Obtain the relevant OAuth access tokens for `Google Contacts` and `Hubspot` configurations.
-2. Once you obtained all configurations, Create the `Config.toml` file in the root directory.
-3. Replace the necessary fields in the `Config.toml` file with your data.
-
-
 ## Testing
-1. Run the Ballerina project created by the integration template by executing `bal run` from the root. 
-2. Now you can check your Google Contacts to verify if the new contacts are added.
+Run the Ballerina project created by the integration template by executing `bal run` from the root. 
