@@ -1,13 +1,14 @@
 # Sync Google Drive files to Microsoft OneDrive.
+This sample syncs all files in a Google Drive folder to a Microsoft OneDrive folder.
 
 ## Use case
-Sync files in a given Google Drive folder to a given Microsoft OneDrive folder.
+Keep your files in sync between Google Drive and Microsoft OneDrive. By using this integration, you can automatically sync all files in a Google Drive folder to a Microsoft OneDrive folder.
 
 ![Flow diagram](/gdrive-files-to-microsoft-onedrive-files/docs/images/flow.png)
 
 ## Prerequisites
-* Google account
-* Microsoft OneDrive account
+* Google account with access to [Google Drive](https://www.google.com/drive/)
+* Microsoft account with access to [OneDrive](https://www.microsoft.com/en-us/microsoft-365/onedrive/online-cloud-storage)
 
 ### Setting up a Google Drive account
 1. Visit [Google API Console](https://console.developers.google.com), click **Create Project**, and follow the wizard to create a new project.
@@ -20,9 +21,10 @@ access token and refresh token).
 6. In a separate browser window or tab, visit [OAuth 2.0 playground](https://developers.google.com/oauthplayground), select the required Google Drive scopes, and then click **Authorize APIs**.
 7. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token and access token.
 8. You could get the `gDriveFolderId` from the folder URL.
+    - The folder ID will be the URL segment following `/folders/`
 
 ### Setting up a Microsoft OneDrive account
-1. Before you run the following steps, create an account in [OneDrive](https://onedrive.live.com). Next, sign into [Azure Portal - App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade). You can use your personal or work or school account to register.
+1. Before you run the following steps, create an account in [OneDrive](https://onedrive.live.com). Next, sign into [Azure Portal - App Registrations](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade). You can use your personal, work or school account to register.
 2. In the App registrations page, click **New registration** and enter a meaningful name in the name field.
 3. In the **Supported account types** section, select **Accounts** in any organizational directory under personal Microsoft accounts (e.g., Skype, Xbox, Outlook.com). Click **Register** to create the application.
 4. Copy the Application (client) ID (`<CLIENT_ID>`). This is the unique identifier for your app.
@@ -39,7 +41,7 @@ First, in a new browser, enter the below URL by replacing the `<CLIENT_ID>` with
     https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=<CLIENT_ID>&redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient&scope=Files.ReadWrite offline_access
     ```
 10. This will prompt you to enter the username and password for signing into the Azure Portal App.
-11. Once the username and password pair is successfully entered, this will give a URL as follows on the browser address bar.
+11. Once the username and password pair is entered, this will give a URL in the browser address bar as shown below.
     `https://login.microsoftonline.com/common/oauth2/nativeclient?code=xxxxxxxxxxxxxxxxxxxxxxxxxxx`
 12. Copy the code parameter (`xxxxxxxxxxxxxxxxxxxxxxxxxxx` in the above example) and in a new terminal, enter the following cURL command by replacing the `<CODE>` with the code received from the above step. The `<CLIENT_ID>` and `<CLIENT_SECRET>` parameters are the same as above.
     ```
@@ -65,14 +67,5 @@ oneDrivePath = "<ONE_DRIVE_PATH>"
 filesOverridable = false
 ```
 
-### Configuration
-1. Obtain the relevant OAuth access tokens for `Google Drive` and `Microsoft One Drive` configurations.
-2. Obtain the folder ID of the Google Drive folder you want to sync.
-3. Obtain the path of the OneDrive folder you want to sync.
-4. Once you have obtained all configurations, Create the `Config.toml` file in the root directory.
-5. Replace the necessary fields in the `Config.toml` file with your data.
-
-
 ## Testing
-1. Run the Ballerina project created by the integration template by executing `bal run` from the root. 
-2. Now you can check the OneDrive folder to verify whether the folders are synced.
+Run the Ballerina project created by the integration template by executing `bal run` from the root. 
