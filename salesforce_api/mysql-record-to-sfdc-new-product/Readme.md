@@ -1,3 +1,5 @@
+# MySQL Record to Salesforce New Product
+
 This example creates a new product in [Salesforce](https://www.salesforce.com/) using [MySQL](https://www.mysql.com/) and Salesforce integration.
 
 ## Use case
@@ -25,7 +27,7 @@ The following sample demonstrates a scenario of creating products in Salesforce 
     *   Perform requests on your behalf at any time (refresh_token, offline_access)
     *   Provide access to your data via the Web (web)
 4. Provide the client ID and client secret to obtain the refresh token and access token. For more information on obtaining OAuth2 credentials, go to [Salesforce documentation](https://help.salesforce.com/articleView?id=remoteaccess_authenticate_overview.htm).
-5. Once you obtained all configurations, add those to the `config.toml` file.
+5. Once you obtained all configurations, add those to the `Config.toml` file.
 
 ### Config.toml 
 ```

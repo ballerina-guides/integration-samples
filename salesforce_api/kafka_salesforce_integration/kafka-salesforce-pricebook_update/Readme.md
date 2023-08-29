@@ -1,3 +1,5 @@
+# Kafka Message to Salesforce Price Book Update
+
 This example updates the product price in the [Salesforce](https://www.salesforce.com/) price book through [Kafka](https://kafka.apache.org/) and Salesforce integration.
 
 ## Use case
@@ -25,7 +27,7 @@ The following sample demonstrates a scenario in which a product's price in a pri
     *   Perform requests on your behalf at any time (refresh_token, offline_access)
     *   Provide access to your data via the Web (web)
 4. Provide the client ID and client secret to obtain the refresh token and access token. For more information on obtaining OAuth2 credentials, go to [Salesforce documentation](https://help.salesforce.com/articleView?id=remoteaccess_authenticate_overview.htm).
-5. Once you obtained all configurations, add those to the `config.toml` file.
+5. Once you obtained all configurations, add those to the `Config.toml` file.
 
 ### Setting up Kafka.
 1. To test in local machines, install the Kafka to your machine and start the server. You can follow the steps [here](https://kafka.apache.org/quickstart).
