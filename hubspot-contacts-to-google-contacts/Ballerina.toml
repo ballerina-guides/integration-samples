@@ -1,0 +1,8 @@
+[package]
+org = "integration_samples"
+name = "hubspot_contacts_to_google_contacts"
+version = "0.1.0"
+distribution = "2201.7.1"
+
+[build-options]
+observabilityIncluded = true

@@ -1,0 +1,8 @@
+[package]
+org = "integration_samples"
+name = "gdrive_files_to_microsoft_onedrive_files"
+version = "0.1.0"
+distribution = "2201.7.1"
+
+[build-options]
+observabilityIncluded = true
