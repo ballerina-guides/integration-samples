@@ -2,13 +2,17 @@ import ballerina/email;
 import ballerina/log;
 import ballerinax/newsapi;
 
-//News API configuration
+// News API configuration
 configurable newsapi:ApiKeysConfig apiKeyConfig = ?;
-configurable string emailAddress = ?;
+
+// Email client configuration parameters
 configurable string smtpPassword = ?;
 configurable string smtpUsername = ?;
 configurable string smtpHost = ?;
+
+// Email configuration parameters
 configurable string fromAddress = ?;
+configurable string emailAddress = ?;
 
 public function main() returns error? {
     newsapi:Client newsapi = check new (apiKeyConfig, {}, "https://newsapi.org/v2");
