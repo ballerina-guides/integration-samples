@@ -23,6 +23,10 @@ githubAccessToken = "<GITHUB_ACCESS_TOKEN>"
 repositoryName = "<REPO_NAME>"  
 repositoryOwner = "<REPO_OWNER>"
 recipientAddress = "<RECIPIENT_ADDRESS>"
+smtpPassword = "<SMTP_PASSWORD>"
+smtpUsername = "<SMTP_USERNAME>"
+smtpHost = "<SMTP_HOST_NAME>"
+fromAdress = "<SMTP_FROM_ADDRESS>"
 ```
 * GITHUB_ACCESS_TOKEN - obtain a [Personal access token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) or [GitHub OAuth App token](https://docs.github.com/en/developers/apps/creating-an-oauth-app).
 * REPO_NAME - [create a repository](https://docs.github.com/en/get-started/quickstart/create-a-repo)
@@ -30,5 +34,4 @@ recipientAddress = "<RECIPIENT_ADDRESS>"
 
 ## Testing
 Run the Ballerina project by executing `bal run` from the root.
-
 Once successfully executed, the GitHub issue summary report will be sent to the specified email.

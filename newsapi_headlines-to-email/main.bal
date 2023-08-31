@@ -1,30 +1,37 @@
+import ballerina/email;
 import ballerina/log;
 import ballerinax/newsapi;
-import wso2/choreo.sendemail;
 
 //News API configuration
 configurable newsapi:ApiKeysConfig apiKeyConfig = ?;
 configurable string emailAddress = ?;
+configurable string smtpPassword = ?;
+configurable string smtpUsername = ?;
+configurable string smtpHost = ?;
+configurable string fromAddress = ?;
 
 public function main() returns error? {
-    string mailBody = "";
     newsapi:Client newsClient = check new (apiKeyConfig, {}, "https://newsapi.org/v2");
-    newsapi:WSNewsTopHeadlineResponse topHeadlines = check newsClient->listTopHeadlines(sources="bbc-news", page=1);
-    log:printInfo(topHeadlines.toString());
+    email:SmtpClient smtpClient = check new (smtpHost, smtpUsername, smtpPassword);
+    newsapi:WSNewsTopHeadlineResponse topHeadlines = check newsClient->listTopHeadlines(sources = "bbc-news", page = 1);
     newsapi:WSNewsArticle[]? articles = topHeadlines?.articles;
-    if articles is newsapi:WSNewsArticle[] && articles.length() != 0 {
-        mailBody = "BBC top news are,\n";
-        foreach var article in articles {
-            string? title = article?.title;
-            if title is string {
-                mailBody = mailBody + string `\t* ${title}\n`;
-                log:printInfo(mailBody);
-            }
-        }
-        sendemail:Client sendemailEndpoint = check new ();
-        string sendEmailResponse = check sendemailEndpoint->sendEmail(emailAddress, "BBC Headlines", mailBody);
-        log:printInfo("Email sent successfully!" + sendEmailResponse);
-    } else {
+    if articles is () || articles.length() == 0 {
         log:printInfo("No news found");
+        return;
     }
+    string mailBody = "BBC top news are,\n";
+    foreach newsapi:WSNewsArticle article in articles {
+        string? title = article?.title;
+        if title is string {
+            mailBody = mailBody + string `${title}${"\n"}`;
+        }
+    }
+    email:Message email = {
+        to: emailAddress,
+        'from: fromAddress,
+        subject: "BBC Headlines",
+        body: mailBody
+    };
+    check smtpClient->sendMessage(email);
+    log:printInfo("Email sent successfully!");
 }
