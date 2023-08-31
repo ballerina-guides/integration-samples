@@ -11,9 +11,9 @@ configurable string smtpHost = ?;
 configurable string fromAddress = ?;
 
 public function main() returns error? {
-    newsapi:Client newsClient = check new (apiKeyConfig, {}, "https://newsapi.org/v2");
+    newsapi:Client newsapi = check new (apiKeyConfig, {}, "https://newsapi.org/v2");
     email:SmtpClient smtpClient = check new (smtpHost, smtpUsername, smtpPassword);
-    newsapi:WSNewsTopHeadlineResponse topHeadlines = check newsClient->listTopHeadlines(sources = "bbc-news", page = 1);
+    newsapi:WSNewsTopHeadlineResponse topHeadlines = check newsapi->listTopHeadlines(sources = "bbc-news", page = 1);
     newsapi:WSNewsArticle[]? articles = topHeadlines?.articles;
     if articles is () || articles.length() == 0 {
         log:printInfo("No news found");
