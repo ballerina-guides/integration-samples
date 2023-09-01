@@ -17,7 +17,6 @@ configurable string recipientAddress = ?;
 configurable string fromAddress = ?;
 
 public function main() returns error? {
-    string assigneeSummary = "";
     github:Client github = check new ({
         auth: {
             token: githubAccessToken
@@ -26,6 +25,7 @@ public function main() returns error? {
     email:SmtpClient smtpClient = check new (host = smtpHost, username = smtpUsername, password = smtpPassword);
 
     //Get collaborator list
+    string assigneeSummary = "";
     stream<github:User, github:Error?> collaborators = check github->getCollaborators(orgName, repoName);
     check collaborators.forEach(function(github:User user) {
         string query = string `repo:${orgName}/${repoName} is:issue assignee:${user.login}`;
