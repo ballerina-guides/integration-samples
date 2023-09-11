@@ -1,14 +1,14 @@
-# Sync Hubspot Contacts with Google Contacts.
-This sample creates a new contact on Google Contacts for each contact you have on Hubspot contacts.
+# Sync HubSpot Contacts with Google Contacts.
+This sample creates a new contact on Google Contacts for each contact you have on HubSpot contacts.
 
 ## Use case
-Manage your contacts across multiple platforms. By using this integration, you can automatically sync your contacts from Hubspot to Google Contacts.
+Manage your contacts across multiple platforms. By using this integration, you can automatically sync your contacts from HubSpot to Google Contacts.
 
 ![Flow diagram](/hubspot-contacts-to-google-contacts/docs/images/flow.png)
 
 ## Prerequisites
 * Google account with access to [Google Contacts](https://contacts.google.com/)
-* [Hubspot](https://www.hubspot.com/home-page) account
+* [HubSpot](https://www.hubspot.com/home-page) account
 
 ### Setting up a Google account
 1. Visit [Google API Console](https://console.developers.google.com), click **Create Project**, and follow the wizard to create a new project.
@@ -21,7 +21,7 @@ access token and refresh token).
 6. In a separate browser window or tab, visit [OAuth 2.0 playground](https://developers.google.com/oauthplayground), select the required Google People API scopes, and then click **Authorize APIs**.
 7. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token and access token.
 
-### Setting up Hubspot developer account
+### Setting up HubSpot developer account
 1. Visit https://developers.hubspot.com and create a developer account.
 2. Create a [private app](https://developers.hubspot.com/docs/api/private-apps) and obtain your access token.
 
