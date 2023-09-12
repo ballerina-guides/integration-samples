@@ -22,7 +22,7 @@ public function main() returns error? {
             token: githubAccessToken
         }
     });
-    email:SmtpClient smtpClient = check new (host = smtpHost, username = smtpUsername, password = smtpPassword);
+    email:SmtpClient email = check new (host = smtpHost, username = smtpUsername, password = smtpPassword);
 
     //Get collaborator list
     string assigneeSummary = "";
@@ -64,6 +64,6 @@ public function main() returns error? {
         subject: "Git Issue Summary",
         body: issueSummary
     };
-    check smtpClient->sendMessage(email);
+    check email->sendMessage(email);
     log:printInfo("Email sent successfully!");
 }

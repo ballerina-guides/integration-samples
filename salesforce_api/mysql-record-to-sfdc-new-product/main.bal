@@ -1,5 +1,5 @@
 import ballerinax/mysql;
-import ballerinax/salesforce as sfdc;
+import ballerinax/salesforce;
 
 type Product record {
     string Name;
@@ -27,7 +27,7 @@ configurable string password = ?;
 configurable string salesforceAccessToken = ?;
 configurable string salesforceBaseUrl = ?;
 
-sfdc:Client sfdcClient = check new ({
+salesforce:Client salesforce = check new ({
     baseUrl: salesforceBaseUrl,
     auth: {
         token: salesforceAccessToken
@@ -35,8 +35,8 @@ sfdc:Client sfdcClient = check new ({
 });
 
 public function main() returns error? {
-    mysql:Client dbClient = check new (host, user, password, database, port);
-    stream<ProductRecieved, error?> streamOutput = dbClient->query(
+    mysql:Client mysql = check new (host, user, password, database, port);
+    stream<ProductRecieved, error?> streamOutput = mysql->query(
         `SELECT name, unitType, currencyISO, productId FROM products WHERE processed = false`);
     ProductRecieved[] productsRecieved = check from ProductRecieved items in streamOutput
         select items;
@@ -46,8 +46,8 @@ public function main() returns error? {
             Product_Unit__c: prductRecieved.unitType,
             CurrencyIsoCode: prductRecieved.currencyISO
         };
-        _ = check sfdcClient->create("Product2", product);
-        _ = check dbClient->execute(
+        _ = check salesforce->create("Product2", product);
+        _ = check mysql->execute(
             `UPDATE products SET processed = true WHERE productId = ${prductRecieved.productId}`);
     }
 }

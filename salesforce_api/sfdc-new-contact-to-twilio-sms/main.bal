@@ -1,5 +1,5 @@
 import ballerina/log;
-import ballerinax/trigger.salesforce as sfdcListener;
+import ballerinax/trigger.salesforce;
 import ballerinax/twilio;
 
 type SalesforceListenerConfig record {|
@@ -22,21 +22,21 @@ configurable TwilioClientConfig twilioClientConfig = ?;
 configurable string fromNumber = ?;
 configurable string toNumber = ?;
 
-listener sfdcListener:Listener sfdcEventListener = new ({
+listener salesforce:Listener sfdcEventListener = new ({
     username: salesforceListenerConfig.username,
     password: salesforceListenerConfig.password,
     channelName: CHANNEL_NAME
 });
 
-final twilio:Client twilioClient = check new ({
+final twilio:Client twilio = check new ({
     twilioAuth: {
         accountSId: twilioClientConfig.accountSId,
         authToken: twilioClientConfig.authToken
     }
 });
 
-service sfdcListener:RecordService on sfdcEventListener {
-    isolated remote function onCreate(sfdcListener:EventData payload) returns error? {
+service salesforce:RecordService on sfdcEventListener {
+    isolated remote function onCreate(salesforce:EventData payload) returns error? {
         string firstName = "";
         string lastName = "";
         string[] nameParts = re `,`.split(payload.changedData["Name"].toString());
@@ -46,21 +46,21 @@ service sfdcListener:RecordService on sfdcEventListener {
         } else {
             lastName = re `=`.split(re `\}`.replace(nameParts[0], ""))[1];
         }
-        twilio:SmsResponse response = check twilioClient->sendSms(fromNumber, toNumber,
+        twilio:SmsResponse response = check twilio->sendSms(fromNumber, toNumber,
             string `New contact is created! | Name: ${firstName} ${lastName} | Created Date: 
             ${(check payload.changedData.CreatedDate).toString()}`);
         log:printInfo("SMS(SID: " + response.sid + ") sent successfully");
     }
 
-    isolated remote function onUpdate(sfdcListener:EventData payload) returns error? {
+    isolated remote function onUpdate(salesforce:EventData payload) returns error? {
         return;
     }
 
-    isolated remote function onDelete(sfdcListener:EventData payload) returns error? {
+    isolated remote function onDelete(salesforce:EventData payload) returns error? {
         return;
     }
 
-    isolated remote function onRestore(sfdcListener:EventData payload) returns error? {
+    isolated remote function onRestore(salesforce:EventData payload) returns error? {
         return;
     }
 }

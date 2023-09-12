@@ -19,7 +19,7 @@ configurable string gSheetsAccessToken = ?;
 configurable string salesforceAccessToken = ?;
 configurable string salesforceBaseUrl = ?;
 
-sheets:Client sheetsClient = check new ({auth: {token: gSheetsAccessToken}});
+sheets:Client sheets = check new ({auth: {token: gSheetsAccessToken}});
 
 sfdc:Client sfdcClient = check new ({
     baseUrl: salesforceBaseUrl,
@@ -29,7 +29,7 @@ sfdc:Client sfdcClient = check new ({
 });
 
 public function main() returns error? {
-    sheets:Range range = check sheetsClient->getRange(spreadsheetId, worksheetName, "A1:G");
+    sheets:Range range = check sheets->getRange(spreadsheetId, worksheetName, "A1:G");
     (int|string|decimal)[] headers = range.values[0];
     foreach (int|string|decimal)[] item in range.values.slice(HEADINGS_ROW) {
         int? indexOfEmail = headers.indexOf("Email");
@@ -40,7 +40,7 @@ public function main() returns error? {
             string `SELECT Id, Email FROM Contact WHERE Email='${item[indexOfEmail]}'`);
         if retrievedStream.next() !is () {
             log:printInfo(string `Contact already exists. Email : ${item[indexOfEmail]}`);
-            _ = check sheetsClient->appendValue(spreadsheetId, item, {sheetName: duplicateWorksheetName});
+            _ = check sheets->appendValue(spreadsheetId, item, {sheetName: duplicateWorksheetName});
             continue;
         }
         record {} newContact = map from int index in 0 ..< headers.length()

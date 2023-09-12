@@ -5,7 +5,7 @@
 
 [ballerina]
 dependencies-toml-version = "2"
-distribution-version = "2201.7.0"
+distribution-version = "2201.7.2"
 
 [[package]]
 org = "ballerina"
@@ -41,7 +41,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "crypto"
-version = "2.4.0"
+version = "2.4.1"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "time"}
@@ -88,7 +88,7 @@ modules = [
 [[package]]
 org = "ballerina"
 name = "http"
-version = "2.9.2"
+version = "2.9.3"
 dependencies = [
 	{org = "ballerina", name = "auth"},
 	{org = "ballerina", name = "cache"},
@@ -412,7 +412,7 @@ modules = [
 ]
 
 [[package]]
-org = "chathura"
+org = "integration_samples"
 name = "ftp_edi_message_to_salesforce_opportunity"
 version = "0.1.0"
 dependencies = [
@@ -424,6 +424,6 @@ dependencies = [
 	{org = "ballerinax", name = "salesforce"}
 ]
 modules = [
-	{org = "chathura", packageName = "ftp_edi_message_to_salesforce_opportunity", moduleName = "ftp_edi_message_to_salesforce_opportunity"}
+	{org = "integration_samples", packageName = "ftp_edi_message_to_salesforce_opportunity", moduleName = "ftp_edi_message_to_salesforce_opportunity"}
 ]
 

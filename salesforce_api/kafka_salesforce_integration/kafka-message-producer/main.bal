@@ -7,14 +7,14 @@ public type ProductPrice readonly & record {|
 |};
 
 service / on new http:Listener(9090) {
-    private final kafka:Producer priceProducer;
+    private final kafka:Producer kafka;
 
     function init() returns error? {
-        self.priceProducer = check new (kafka:DEFAULT_URL);
+        self.kafka = check new (kafka:DEFAULT_URL);
     }
 
     resource function post orders(@http:Payload anydata productPrice) returns http:Accepted|error {
-        check self.priceProducer->send({
+        check self.kafka->send({
             topic: "product-price-updates",
             value: productPrice
         });
