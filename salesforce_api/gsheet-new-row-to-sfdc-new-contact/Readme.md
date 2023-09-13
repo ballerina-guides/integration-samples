@@ -54,7 +54,7 @@ Create a file called `Config.toml` at the root of the project.
 spreadsheetId = "<SPREADSHEET_ID>"
 worksheetName = "<WORKSHEET_NAME>"
 duplicateWorksheetName = "<DUPLICATE_WORKSHEET_NAME>"
-gSheetsAccessToken = "<GOOGLE_SHEETS_ACCESS_TOKEN>"
+sheetsAccessToken = "<GOOGLE_SHEETS_ACCESS_TOKEN>"
 salesforceBaseUrl = "<SALESFORCE_BASE_URL>"
 salesforceAccessToken = "<SALESFORCE_ACCESS_TOKEN>"
 ```

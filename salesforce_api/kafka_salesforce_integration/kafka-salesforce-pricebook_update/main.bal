@@ -1,5 +1,5 @@
 import ballerinax/kafka;
-import ballerinax/salesforce as sfdc;
+import ballerinax/salesforce;
 
 configurable string salesforceAccessToken = ?;
 configurable string salesforceBaseUrl = ?;
@@ -19,7 +19,7 @@ listener kafka:Listener orderListener = new (kafka:DEFAULT_URL, {
     topics: "product_price_updates"
 });
 
-final sfdc:Client sfdcClient = check new ({
+final salesforce:Client salesforce = check new ({
     baseUrl: salesforceBaseUrl,
     auth: {
         token: salesforceAccessToken
@@ -29,7 +29,7 @@ final sfdc:Client sfdcClient = check new ({
 service on orderListener {
     isolated remote function onConsumerRecord(ProductPrice[] prices) returns error? {
         foreach ProductPrice {name, unitPrice} in prices {
-            stream<record {}, error?> retrievedStream = check sfdcClient->query(
+            stream<record {}, error?> retrievedStream = check salesforce->query(
                 string `SELECT Id FROM PricebookEntry 
                     WHERE Pricebook2Id = '${salesforcePriceBookId}' AND 
                     Name = '${name}'`);
@@ -38,7 +38,7 @@ service on orderListener {
             anydata pricebookEntryId = retrieved[0]["Id"];
             if pricebookEntryId is string {
                 ProductPriceUpdate updatedPrice = {UnitPrice: unitPrice};
-                check sfdcClient->update("PricebookEntry", pricebookEntryId, updatedPrice);
+                check salesforce->update("PricebookEntry", pricebookEntryId, updatedPrice);
             }
         }
     }
