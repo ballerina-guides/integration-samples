@@ -158,7 +158,7 @@ function generateLead(Email email) returns Lead? {
     };
 
     do {
-        openAI:CreateChatCompletionResponse response = check openAIClient->/chat/completions.post(request);
+        openAI:CreateChatCompletionResponse response = check openAI->/chat/completions.post(request);
         if response.choices.length() < 1 {
             check error("Unable to find any choices in the response.");
         }
@@ -173,7 +173,7 @@ function generateLead(Email email) returns Lead? {
 function addLeadsToSalesforce(Lead[] leads) {
     from Lead lead in leads
     do {
-        sfdc:CreationResponse|error createResponse = sfdcClient->create("EmailLead__c", lead);
+        salesforce:CreationResponse|error createResponse = salesforce->create("EmailLead__c", lead);
         if createResponse is error {
             log:printError("An error occured while creating a Lead object on salesforce.", 
                 createResponse, createResponse.stackTrace(), lead = lead);

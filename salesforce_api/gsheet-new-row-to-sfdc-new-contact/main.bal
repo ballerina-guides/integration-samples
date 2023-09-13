@@ -1,6 +1,6 @@
 import ballerina/log;
 import ballerinax/googleapis.sheets;
-import ballerinax/salesforce as sfdc;
+import ballerinax/salesforce;
 
 public type Contact record {|
     string Id;
@@ -21,7 +21,7 @@ configurable string salesforceBaseUrl = ?;
 
 sheets:Client sheets = check new ({auth: {token: gSheetsAccessToken}});
 
-sfdc:Client sfdcClient = check new ({
+salesforce:Client salesforce = check new ({
     baseUrl: salesforceBaseUrl,
     auth: {
         token: salesforceAccessToken
@@ -36,7 +36,7 @@ public function main() returns error? {
         if indexOfEmail is () {
             return error("Email column not found");
         }
-        stream<Contact, error?> retrievedStream = check sfdcClient->query(
+        stream<Contact, error?> retrievedStream = check salesforce->query(
             string `SELECT Id, Email FROM Contact WHERE Email='${item[indexOfEmail]}'`);
         if retrievedStream.next() !is () {
             log:printInfo(string `Contact already exists. Email : ${item[indexOfEmail]}`);
@@ -46,7 +46,7 @@ public function main() returns error? {
         record {} newContact = map from int index in 0 ..< headers.length()
             let int|string|decimal header = headers[index]
             select [header.toString(), item[index]];
-        _ = check sfdcClient->create("Contact", newContact);
+        _ = check salesforce->create("Contact", newContact);
         log:printInfo(string `Contact created successfully!. Email : ${item[indexOfEmail]}`);
     }
 }
