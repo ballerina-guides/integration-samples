@@ -16,7 +16,7 @@ configurable string flyerFilePath = ?;
 public function main() returns error? {
     shopify:Client shopify = check new ({xShopifyAccessToken: xShopifyAccessToken}, shopifyServiceUrl);
     mail:Client outlook = check new ({ auth: { token: outlookAccessToken }});
-    onedrive:Client oneDrive = check new ({auth: { token: oneDriveAccessToken}});
+    onedrive:Client onedrive = check new ({auth: { token: oneDriveAccessToken}});
 
     string dateOriginTime = time:utcToString(time:utcAddSeconds(time:utcNow(), -300.0));
     string currentTime = time:utcToString(time:utcNow());
@@ -33,7 +33,7 @@ public function main() returns error? {
         });
     }
 
-    onedrive:File fileContents = check oneDrive->downloadFileByPath(flyerFilePath);
+    onedrive:File fileContents = check onedrive->downloadFileByPath(flyerFilePath);
     byte[] byteContent = fileContents.content ?: [];
 
     if customers.length() > 0 {

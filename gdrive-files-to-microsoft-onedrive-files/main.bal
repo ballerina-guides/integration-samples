@@ -12,7 +12,7 @@ configurable boolean filesOverridable = ?;
 
 public function main() returns error? {
     drive:Client gDrive = check new ({auth: {token: gDriveAccessToken}});
-    onedrive:Client oneDrive = check new ({auth: {token: oneDriveAccessToken}});
+    onedrive:Client onedrive = check new ({auth: {token: oneDriveAccessToken}});
 
     string gDriveQuery = string `'${gDriveFolderId}' in parents and trashed = false`;
     stream<drive:File> filesInGDrive = check gDrive->getAllFiles(gDriveQuery);
@@ -27,7 +27,7 @@ public function main() returns error? {
             continue;
         }
         if !filesOverridable {
-            boolean|error isExistingFile = checkIfFileExistsInOneDrive(fileName, oneDrive);
+            boolean|error isExistingFile = checkIfFileExistsInOneDrive(fileName, onedrive);
             if isExistingFile is error {
                 log:printError("Searching files in Microsoft OneDrive failed!", isExistingFile);
                 continue;
@@ -40,7 +40,7 @@ public function main() returns error? {
                 log:printError("Retrieving file from Google Drive failed!", fileContent);
                 continue;
             }
-            onedrive:DriveItemData|error driveItemData = oneDrive->
+            onedrive:DriveItemData|error driveItemData = onedrive->
                     uploadFileToFolderByPath(oneDrivePath, fileName, fileContent?.content,
                     fileContent?.mimeType);
             if driveItemData is error {

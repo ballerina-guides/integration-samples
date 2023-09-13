@@ -3,27 +3,27 @@ import ballerina/ftp;
 import ballerina/io;
 
 import ballerinax/edifact.d03a.retail.mREQOTE;
-import ballerinax/salesforce;
+import ballerinax/salesforce as sf;
 
 configurable ftp:ClientConfiguration ftpConfig = ?;
 configurable string ftpNewQuotesPath = ?;
 configurable string ftpProcessedQuotesPath = ?;
-configurable salesforce:ConnectionConfig salesforceConfig = ?;
+configurable sf:ConnectionConfig salesforceConfig = ?;
 configurable string salesforcePriceBookId = ?;
 
 public function main() returns error? {
-    salesforce:Client salesforce = check new (salesforceConfig);
-    ftp:Client ftp = check new ftp:Client(ftpConfig);
+    sf:Client salesforce = check new (salesforceConfig);
+    ftp:Client fileServer = check new ftp:Client(ftpConfig);
 
     // Get new quotes from the FTP new quotes directory, and iterate through them.
-    ftp:FileInfo[] quoteList = check ftp->list(ftpNewQuotesPath);
+    ftp:FileInfo[] quoteList = check fileServer->list(ftpNewQuotesPath);
     foreach ftp:FileInfo quoteFile in quoteList {
         if !quoteFile.name.endsWith(".edi") {
             continue;
         }
 
         // Fetch the EDI file containing the quote from the FTP server.
-        stream<byte[] & readonly, io:Error?> fileStream = check ftp->get(quoteFile.path);
+        stream<byte[] & readonly, io:Error?> fileStream = check fileServer->get(quoteFile.path);
         string quoteText = check streamToString(fileStream);
 
         // Parse the EDI file and transform in to Ballerina record containing only the required data.
@@ -50,7 +50,7 @@ public function main() returns error? {
         record {|Id value;|}? existingOpp = check oppQuery.next();
         check oppQuery.close();
         if existingOpp is () {
-            salesforce:CreationResponse oppResult = check salesforce->create("Opportunity", opp);
+            sf:CreationResponse oppResult = check salesforce->create("Opportunity", opp);
             oppId = oppResult.id;
         } else {
             oppId = existingOpp.value.Id;
@@ -74,8 +74,8 @@ public function main() returns error? {
         }
 
         // Move the processed quote to the processed quotes FTP directory.
-        check ftp->put(check file:joinPath(ftpProcessedQuotesPath, quoteFile.name), quoteText.toBytes());
-        check ftp->delete(quoteFile.path);
+        check fileServer->put(check file:joinPath(ftpProcessedQuotesPath, quoteFile.name), quoteText.toBytes());
+        check fileServer->delete(quoteFile.path);
     }
 }
 

@@ -3,7 +3,7 @@ import ballerina/log;
 import ballerina/mime;
 import ballerinax/googleapis.gmail;
 import ballerinax/openai.chat as openAI;
-import ballerinax/salesforce;
+import ballerinax/salesforce as sf;
 
 type Email record {|
     string 'from;
@@ -33,7 +33,7 @@ const LABEL = "Lead";
 
 final gmail:Client gmail = check new ({auth: {token: gmailAccessToken}});
 final openAI:Client openAI = check new ({auth: {token: openAIKey}});
-final salesforce:Client salesforce = check new ({baseUrl: salesforceBaseUrl, auth: {token: salesforceAccessToken}});
+final sf:Client salesforce = check new ({baseUrl: salesforceBaseUrl, auth: {token: salesforceAccessToken}});
 
 public function main() returns error? {
     while true {
@@ -173,7 +173,7 @@ function generateLead(Email email) returns Lead? {
 function addLeadsToSalesforce(Lead[] leads) {
     from Lead lead in leads
     do {
-        salesforce:CreationResponse|error createResponse = salesforce->create("EmailLead__c", lead);
+        sf:CreationResponse|error createResponse = salesforce->create("EmailLead__c", lead);
         if createResponse is error {
             log:printError("An error occured while creating a Lead object on salesforce.", 
                 createResponse, createResponse.stackTrace(), lead = lead);

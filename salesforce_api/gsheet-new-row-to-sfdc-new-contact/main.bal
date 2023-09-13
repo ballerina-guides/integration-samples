@@ -13,13 +13,13 @@ const int HEADINGS_ROW = 1;
 configurable string spreadsheetId = ?;
 configurable string worksheetName = ?;
 configurable string duplicateWorksheetName = ?;
-configurable string gSheetsAccessToken = ?;
+configurable string sheetsAccessToken = ?;
 
 // Salesforce configuration parameters
 configurable string salesforceAccessToken = ?;
 configurable string salesforceBaseUrl = ?;
 
-sheets:Client sheets = check new ({auth: {token: gSheetsAccessToken}});
+sheets:Client sheets = check new ({auth: {token: sheetsAccessToken}});
 
 salesforce:Client salesforce = check new ({
     baseUrl: salesforceBaseUrl,

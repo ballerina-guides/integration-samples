@@ -16,7 +16,7 @@ configurable string emailAddress = ?;
 
 public function main() returns error? {
     newsapi:Client newsapi = check new (apiKeyConfig, {}, "https://newsapi.org/v2");
-    email:SmtpClient smtpClient = check new (smtpHost, smtpUsername, smtpPassword);
+    email:SmtpClient email = check new (smtpHost, smtpUsername, smtpPassword);
     newsapi:WSNewsTopHeadlineResponse topHeadlines = check newsapi->listTopHeadlines(sources = "bbc-news", page = 1);
     newsapi:WSNewsArticle[]? articles = topHeadlines?.articles;
     if articles is () || articles.length() == 0 {
@@ -30,12 +30,12 @@ public function main() returns error? {
             mailBody = mailBody + string `${title}${"\n"}`;
         }
     }
-    email:Message email = {
+    email:Message message = {
         to: emailAddress,
         'from: fromAddress,
         subject: "BBC Headlines",
         body: mailBody
     };
-    check smtpClient->sendMessage(email);
+    check email->sendMessage(message);
     log:printInfo("Email sent successfully!");
 }
