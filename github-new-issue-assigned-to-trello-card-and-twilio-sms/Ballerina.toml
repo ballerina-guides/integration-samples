@@ -1,0 +1,8 @@
+[package]
+org = "integration_samples"
+name = "github_new_issue_assigned_to_trello_card_and_twilio_sms"
+version = "0.1.0"
+distribution = "2201.6.0"
+
+[build-options]
+observabilityIncluded = true
