@@ -1,0 +1,8 @@
+[package]
+org = "chathura"
+name = "shopify_to_salesforce"
+version = "0.1.0"
+distribution = "2201.8.1"
+
+[build-options]
+observabilityIncluded = true
