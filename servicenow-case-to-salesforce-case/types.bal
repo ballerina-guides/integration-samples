@@ -1,3 +1,4 @@
+import ballerina/time;
 type CaseData record {
     string number;
     string sys_created_on;
@@ -16,4 +17,10 @@ type SalesforceCase record {|
 
 type Id record {|
     string Id;
+|};
+
+type DateRange record {|
+    string 'start;
+    string end;
+    time:Civil now;
 |};

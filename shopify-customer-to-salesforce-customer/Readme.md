@@ -29,6 +29,7 @@ It is important to synchronize customer and sales data among ecommerce platforms
 7. Create a new custom object in Salesforce named `Customer`, and following fields to it (A customer object is created as Salesforce built-in objects are created mainly for B2B use cases).
     *   Name - Text(80)
     *   Email - Email type
+    *   Address - Long Text Area(500)
 
 ### Setting up the Shopify account
 1. Create a new Shopify partner account from `https://www.shopify.com/partners`

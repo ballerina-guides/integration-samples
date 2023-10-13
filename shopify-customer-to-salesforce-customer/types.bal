@@ -16,7 +16,7 @@ type Address record {
 
 type SalesforceCustomer record {|
     string Name;
-    string Email__c?;
+    string Email__c;
     string Address__c;
 |};
 
