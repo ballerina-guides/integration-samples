@@ -44,5 +44,3 @@ function updateSalesforce(SalesforceCustomer sfCustomer) returns error? {
         check salesforce->update("HmartCustomer__c", existingCustomer.value.Id, sfCustomer);
     }
 }
-
- 

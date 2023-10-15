@@ -1,5 +1,5 @@
 [package]
-org = "chathura"
+org = "integration_samples"
 name = "servicenow_case_to_salesforce_case"
 version = "0.1.0"
 distribution = "2201.7.2"

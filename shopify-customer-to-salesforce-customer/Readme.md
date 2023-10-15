@@ -57,4 +57,3 @@ refreshUrl = "<salesforce-refresh-url>"
 1. Navigate to the online store view of the development store and register a new customer by providing an email address. Validate the confirmation email sent to the provided email address.
 2. Login to Salesforce and check the Customers records. New customer record with the given email will be created.
 3. In the Shopify store, change the customer's first name and last name. Customer name of the corresponding customer will be updated in Salesforce.
-

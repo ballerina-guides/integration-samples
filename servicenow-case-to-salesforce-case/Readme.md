@@ -77,4 +77,3 @@ refreshUrl = "<salesforce-refresh-url>"
 3. Change the date in `resources/syncdata` file to some date before the creation of ServiceNow cases.
 4. Run the sample using the `bal run` command.
 5. Check the `Support Cases` section in the `Related` tab of the newly created account in Salesforce. Details of all support cases created in ServiceNow will appear under this section. 
-
