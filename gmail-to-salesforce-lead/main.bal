@@ -5,46 +5,23 @@ import ballerinax/googleapis.gmail;
 import ballerinax/openai.chat;
 import ballerinax/salesforce as sf;
 
-type Email record {|
-    string 'from;
-    string subject;
-    string body;
-|};
-
-type Name record {|
-    string firstName__c;
-    string lastName__c;
-|};
-
-type Lead record {|
-    *Name;
-    string email__c;
-    string phoneNumber__c;
-    string company__c;
-    string designation__c;
-|};
-
 configurable string gmailAccessToken = ?;
 configurable string openAIKey = ?;
 configurable string salesforceBaseUrl = ?;
 configurable string salesforceAccessToken = ?;
 
 const LABEL = "Lead";
-
 final gmail:Client gmail = check new ({auth: {token: gmailAccessToken}});
 final chat:Client openAiChat = check new ({auth: {token: openAIKey}});
 final sf:Client salesforce = check new ({baseUrl: salesforceBaseUrl, auth: {token: salesforceAccessToken}});
 
 public function main() returns error? {
-    while true {
-        Email[] emails = check getEmails(LABEL);
-        Lead[] leads = from Email email in emails
-                       let Lead? lead = generateLead(email)
-                       where lead is Lead
-                       select lead;
-        addLeadsToSalesforce(leads);
-        runtime:sleep(600);
-    }
+    Email[] emails = check getEmails(LABEL);
+    Lead[] leads = from Email email in emails
+        let Lead? lead = generateLead(email)
+        where lead is Lead
+        select lead;
+    addLeadsToSalesforce(leads);
 }
 
 function getEmails(string label) returns Email[]|error {
@@ -58,16 +35,16 @@ function getEmails(string label) returns Email[]|error {
     gmail:Message[] matchingEmails = getMatchingEmails(gmail, matchingMailThreads);
 
     return from gmail:Message message in matchingEmails
-           let Email|error email = parseEmail(message)
-           where email is Email
-           select email;
+        let Email|error email = parseEmail(message)
+        where email is Email
+        select email;
 }
 
 function getLabelIds(gmail:Client gmail, string[] labelsToMatch) returns string[]|error {
     gmail:LabelList labelList = check gmail->listLabels("me");
     return from gmail:Label {name, id} in labelList.labels
-           where labelsToMatch.indexOf(name) != ()
-           select id;
+        where labelsToMatch.indexOf(name) != ()
+        select id;
 }
 
 function getMatchingMailThreads(gmail:Client gmail, string[] labelIdsToMatch) returns gmail:MailThread[]|error {
@@ -77,7 +54,7 @@ function getMatchingMailThreads(gmail:Client gmail, string[] labelIdsToMatch) re
     };
 
     return from gmail:MailThread mailThread in check gmail->listThreads(filter = searchFilter)
-           select mailThread;
+        select mailThread;
 }
 
 function removeLabels(gmail:Client gmail, gmail:MailThread[] mailThreads, string[] labelIds) {
@@ -96,7 +73,7 @@ function getMatchingEmails(gmail:Client gmail, gmail:MailThread[] mailThreads) r
     foreach gmail:MailThread mailThread in mailThreads {
         gmail:MailThread|error response = gmail->readThread(mailThread.id);
         if response is error {
-            log:printError("An error occured while reading the email.", 
+            log:printError("An error occured while reading the email.",
                 response, response.stackTrace(), threadId = mailThread.id);
             continue;
         }
@@ -175,7 +152,7 @@ function addLeadsToSalesforce(Lead[] leads) {
     do {
         sf:CreationResponse|error createResponse = salesforce->create("EmailLead__c", lead);
         if createResponse is error {
-            log:printError("An error occured while creating a Lead object on salesforce.", 
+            log:printError("An error occured while creating a Lead object on salesforce.",
                 createResponse, createResponse.stackTrace(), lead = lead);
         } else {
             log:printInfo("Lead successfully created.", lead = lead);
