@@ -8,19 +8,19 @@ const HTTP_STATUS_CREATED = 201;
 const HEADER_KEY_CSRF_TOKEN = "x-csrf-token";
 const HEADER_FETCH_VALUE = "fetch";
 
-map<string> supplierMap = {"7336631533890": "17300096"};
-map<string> organizationMap = {"US Steel Corp": "1710"};
-map<string> groupMap = {"US Steel Corp": "001"};
-map<string> plantMap = {"US Steel Corp": "1710"};
-map<string> materialMap = {"8882299109698": "E001"};
-map<string> taxJurisdictionMap = {"United States": "KY00000000"};
+final map<string> & readonly supplierMap = {"7336631533890": "17300096"};
+final map<string> & readonly organizationMap = {"US Steel Corp": "1710"};
+final map<string> & readonly groupMap = {"US Steel Corp": "001"};
+final map<string> & readonly plantMap = {"US Steel Corp": "1710"};
+final map<string> & readonly materialMap = {"8882299109698": "E001"};
+final map<string> & readonly taxJurisdictionMap = {"United States": "KY00000000"};
 
 final http:Client sapHttpClient = check getSAPHttpClient();
 
 configurable SAPAuthConfig sapAuthConfig = ?;
 
-service /sap_bridge on new http:Listener(9090) {
-    resource function post orders(@http:Payload ShopifyOrder shopifyOrder) {
+service /sap\-bridge on new http:Listener(9090) {
+    isolated resource function post orders(ShopifyOrder shopifyOrder) {
         log:printInfo("Received order with confirmation number: " + shopifyOrder.confirmation_number);
         SAPPurchaseOrder|error sapOrder = transformCustomerData(shopifyOrder);
         if sapOrder is error {
@@ -39,7 +39,7 @@ isolated function getSAPHttpClient() returns http:Client|error {
     return new (url = SAP_URL, auth = basicAuthHandler, cookieConfig = {enabled: true});
 }
 
-function transformCustomerData(ShopifyOrder shopifyOrder) returns SAPPurchaseOrder|error {
+isolated function transformCustomerData(ShopifyOrder shopifyOrder) returns SAPPurchaseOrder|error {
     string purchaseOrderType = "NB";
     string supplier = supplierMap.get(shopifyOrder.customer.id.toString());
     string company = shopifyOrder.customer.default_address.company;
