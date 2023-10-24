@@ -3,8 +3,6 @@ import ballerina/log;
 
 const SAP_REQUEST_PATH = "/purchaseorder/0001/PurchaseOrder";
 const SAP_URL = "https://my401785.s4hana.cloud.sap/sap/opu/odata4/sap/api_purchaseorder_2/srvd_a2x/sap/";
-const HTTP_STATUS_OK = 200;
-const HTTP_STATUS_CREATED = 201;
 const HEADER_KEY_CSRF_TOKEN = "x-csrf-token";
 const HEADER_FETCH_VALUE = "fetch";
 
@@ -22,7 +20,7 @@ configurable SAPAuthConfig sapAuthConfig = ?;
 service /sap\-bridge on new http:Listener(9090) {
     isolated resource function post orders(ShopifyOrder shopifyOrder) {
         log:printInfo("Received order with confirmation number: " + shopifyOrder.confirmation_number);
-        SAPPurchaseOrder|error sapOrder = transformCustomerData(shopifyOrder);
+        SAPPurchaseOrder|error sapOrder = transformOrderData(shopifyOrder);
         if sapOrder is error {
             log:printError("Error while transforming order: " + sapOrder.message());
             return;
@@ -39,7 +37,7 @@ isolated function getSAPHttpClient() returns http:Client|error {
     return new (url = SAP_URL, auth = basicAuthHandler, cookieConfig = {enabled: true});
 }
 
-isolated function transformCustomerData(ShopifyOrder shopifyOrder) returns SAPPurchaseOrder|error {
+isolated function transformOrderData(ShopifyOrder shopifyOrder) returns SAPPurchaseOrder|error {
     string purchaseOrderType = "NB";
     string supplier = supplierMap.get(shopifyOrder.customer.id.toString());
     string company = shopifyOrder.customer.default_address.company;
@@ -80,17 +78,18 @@ isolated function createSAPSalesOrder(SAPPurchaseOrder sapOrder) returns error? 
         message = sapOrder,
         headers = headerParams
         );
-    if response is http:Response {
-        if response.statusCode == HTTP_STATUS_CREATED {
-            json responseBody = check response.getJsonPayload();
-            string purchaseOrderId = check responseBody.PurchaseOrder;
-            log:printInfo("Successfully created an SAP purchase order with id: " + purchaseOrderId);
-            return;
-        }
-        log:printError("Error: " + check response.getTextPayload());
+    if response is http:ClientError {
+        log:printError("Error: " + response.message());
         return;
     }
-    log:printError("Error: " + response.message());
+    if response.statusCode == http:STATUS_CREATED {
+        json responseBody = check response.getJsonPayload();
+        string purchaseOrderId = check responseBody.PurchaseOrder;
+        log:printInfo("Successfully created an SAP purchase order with id: " + purchaseOrderId);
+        return;
+    }
+    log:printError("Error: " + check response.getTextPayload());
+    return;
 }
 
 isolated function getCsrfToken() returns string|error {
@@ -98,11 +97,11 @@ isolated function getCsrfToken() returns string|error {
         path = SAP_REQUEST_PATH,
         headers = {[HEADER_KEY_CSRF_TOKEN] : HEADER_FETCH_VALUE}
         );
-    if response is http:Response {
-        if response.statusCode == HTTP_STATUS_OK {
-            return (check response.getHeaders(HEADER_KEY_CSRF_TOKEN))[0];
-        }
-        return error(string `Error: ${response.statusCode}`);
+    if response is http:ClientError {
+        return response;
     }
-    return response;
+    if response.statusCode == http:STATUS_OK {
+        return (check response.getHeaders(HEADER_KEY_CSRF_TOKEN))[0];
+    }
+    return error(string `Error: ${response.statusCode}`);
 }
