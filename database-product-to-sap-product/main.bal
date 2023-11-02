@@ -1,23 +1,24 @@
 import ballerina/http;
 import ballerina/log;
+import ballerina/persist;
 
 const SAP_REQUEST_PATH = "/sap/API_PRODUCT_SRV/A_Product";
 const SAP_URL = "https://my401785.s4hana.cloud.sap/sap/opu/odata";
 const HEADER_KEY_CSRF_TOKEN = "x-csrf-token";
 const HEADER_FETCH_VALUE = "fetch";
 
-final map<string> & readonly productIdMap = {"001": "F-10B"};
-final map<string> & readonly productTypeMap = {"Finished Product": "FERT"};
-final map<string> & readonly productGroupMap = {"Finished Goods": "L004"};
-final map<string> & readonly baseUnitMap = {"Piece": "PC"};
-final map<string> & readonly industryMap = {"Computer Hardware": "M"};
+final map<string> & readonly productIdMap = {"001": "F-10B", "002": "PIP01"};
+final map<string> & readonly productTypeMap = {"Finished Product": "FERT", "Metal Tubing": "PIPE"};
+final map<string> & readonly productGroupMap = {"Finished Goods": "L004", "Raw Material": "L002"};
+final map<string> & readonly baseUnitMap = {"Piece": "PC", "Liter": "L"};
+final map<string> & readonly industryMap = {"Manufacturing": "M"};
 
 final http:Client sapHttpClient = check getSAPHttpClient();
 
 configurable SAPAuthConfig sapAuthConfig = ?;
 
 public function main() {
-    ProductFromDatabase[]|error dbProducts = getProductDataFromDatabase();
+    Product[]|error dbProducts = getProductDataFromDatabase();
     if dbProducts is error {
         log:printError(string `Error while retrieving products from the database: ${dbProducts.message()}`);
         return;
@@ -39,38 +40,32 @@ isolated function getSAPHttpClient() returns http:Client|error {
     return new (url = SAP_URL, auth = basicAuthHandler, cookieConfig = {enabled: true});
 }
 
-isolated function getProductDataFromDatabase() returns ProductFromDatabase[]|error {
-    // TODO: retrieve data from the database
-    return [{
-        id: "001",
-        description: "MacBookPro",
-        'type: "Finished Product",
-        baseUnit: "Piece",
-        group: "Finished Goods",
-        grossWeight: 1.75,
-        netWeight: 1.5,
-        industry: "Computer Hardware",
-        weightUnit: "KG"
-    }];
+isolated function getProductDataFromDatabase() returns Product[]|error {
+    Client sClient = check new ();
+    stream<Product, persist:Error?> products = sClient->/products();
+    return from var product in products
+        where product is Product
+        select product;
 }
 
-isolated function transformProductData(ProductFromDatabase[] dbProducts) returns SAPProduct[]|error {
-    return from ProductFromDatabase dbProduct in dbProducts select {
-        Product: productIdMap.get(dbProduct.id),
-        ProductType: productTypeMap.get(dbProduct.'type),
-        ProductGroup: productGroupMap.get(dbProduct.group),
-        BaseUnit: baseUnitMap.get(dbProduct.baseUnit),
-        GrossWeight: dbProduct.grossWeight.toBalString(),
-        NetWeight: dbProduct.netWeight.toBalString(),
-        WeightUnit: dbProduct.weightUnit,
-        IndustrySector: industryMap.get(dbProduct.industry),
-        to_Description: {results: []}
-    };
+isolated function transformProductData(Product[] dbProducts) returns SAPProduct[]|error {
+    return from Product dbProduct in dbProducts
+        select {
+            Product: productIdMap.get(dbProduct.id),
+            ProductType: productTypeMap.get(dbProduct.'type),
+            ProductGroup: productGroupMap.get(dbProduct.group),
+            BaseUnit: baseUnitMap.get(dbProduct.baseUnit),
+            GrossWeight: dbProduct.grossWeight.toBalString(),
+            NetWeight: dbProduct.netWeight.toBalString(),
+            WeightUnit: dbProduct.weightUnit,
+            IndustrySector: industryMap.get(dbProduct.industry),
+            to_Description: {results: []}
+        };
 }
 
 isolated function createSAPProducts(SAPProduct[] sapProducts) returns error? {
     string csrfToken = check getCsrfToken();
-    map<string|string[]> headerParams = {[HEADER_KEY_CSRF_TOKEN] : csrfToken, "Accept" : "application/json"};
+    map<string|string[]> headerParams = {[HEADER_KEY_CSRF_TOKEN] : csrfToken, "Accept": "application/json"};
     foreach SAPProduct sapProduct in sapProducts {
         string productId = sapProduct.Product;
         http:Response|http:ClientError response = sapHttpClient->post(

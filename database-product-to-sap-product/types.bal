@@ -3,18 +3,6 @@ type SAPAuthConfig record {|
     string password;
 |};
 
-type ProductFromDatabase record {|
-    string id;
-    string description;
-    string 'type;
-    string baseUnit;
-    string group;
-    float grossWeight;
-    float netWeight;
-    string industry;
-    string weightUnit;
-|};
-
 type SAPProduct record {
     string Product;
     string ProductType;

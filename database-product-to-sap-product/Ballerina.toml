@@ -6,3 +6,12 @@ distribution = "2201.8.2"
 
 [build-options]
 observabilityIncluded = true
+
+[persist]
+datastore = "mysql"
+module = "database_product_to_sap_product"
+
+[[platform.java17.dependency]]
+groupId = "io.ballerina.stdlib"
+artifactId = "persist.sql-native"
+version = "1.2.0"
