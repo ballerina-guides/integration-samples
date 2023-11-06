@@ -1,4 +1,3 @@
-import ballerina/log;
 import ballerinax/trigger.salesforce;
 import ballerinax/twilio;
 
@@ -12,8 +11,6 @@ type TwilioClientConfig record {|
     string authToken;
 |};
 
-const string CHANNEL_NAME = "/data/ContactChangeEvent";
-
 // Salesforce configuration parameters
 configurable SalesforceListenerConfig salesforceListenerConfig = ?;
 
@@ -25,7 +22,8 @@ configurable string toNumber = ?;
 listener salesforce:Listener sfdcEventListener = new ({
     username: salesforceListenerConfig.username,
     password: salesforceListenerConfig.password,
-    channelName: CHANNEL_NAME
+    channelName: "/data/ContactChangeEvent",
+    environment: "Sandbox"
 });
 
 final twilio:Client twilio = check new ({
@@ -37,19 +35,14 @@ final twilio:Client twilio = check new ({
 
 service salesforce:RecordService on sfdcEventListener {
     isolated remote function onCreate(salesforce:EventData payload) returns error? {
-        string firstName = "";
-        string lastName = "";
         string[] nameParts = re `,`.split(payload.changedData["Name"].toString());
-        if nameParts.length() >= 2 {
-            firstName = re `=`.split(nameParts[0])[1];
-            lastName = re `=`.split(re `\}`.replace(nameParts[1], ""))[1];
-        } else {
-            lastName = re `=`.split(re `\}`.replace(nameParts[0], ""))[1];
-        }
-        twilio:SmsResponse response = check twilio->sendSms(fromNumber, toNumber,
+        string firstName = (nameParts.length() >= 2) ? re `=`.split(nameParts[0])[1] : "";
+        string lastName = (nameParts.length() >= 2) ?
+            re `=`.split(re `\}`.replace(nameParts[1], ""))[1] :
+            re `=`.split(re `\}`.replace(nameParts[0], ""))[1];
+        _ = check twilio->sendSms(fromNumber, toNumber,
             string `New contact is created! | Name: ${firstName} ${lastName} | Created Date: 
             ${(check payload.changedData.CreatedDate).toString()}`);
-        log:printInfo("SMS(SID: " + response.sid + ") sent successfully");
     }
 
     isolated remote function onUpdate(salesforce:EventData payload) returns error? {

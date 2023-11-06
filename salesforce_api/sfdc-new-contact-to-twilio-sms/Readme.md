@@ -1,13 +1,13 @@
-# Salesforce New Lead to Twilio SMS
+# Salesforce New Contact to Twilio SMS
 
 This example sends a [Twilio](https://www.twilio.com/) SMS for every new [Salesforce](https://www.salesforce.com/) contact.
 
 ## Use case
 Twilio is a cloud communications platform as a service (CPaaS) company. It allows software developers to programmatically make and receive phone calls, send and receive text messages, and perform other communication functions using its web service APIs. 
 
-As most organizations maintain a well-organized sales process, it is important to follow up with leads as soon as they are added to Salesforce. There may be a specific person who wanted to be on alert of new Salesforce leads. Any time you create a new lead in Salesforce, an SMS message will be automatically sent to the specific person via Twilio. 
+As most organizations maintain a well-organized sales process, it is important to follow up with Contacts as soon as they are added to Salesforce. There may be a specific person who wanted to be on alert of new Salesforce contacts. Any time you create a new Contact in Salesforce, an SMS message will be automatically sent to the specific person via Twilio. 
 
-The following sample demonstrates a scenario in which a Twilio SMS message containing all the defined fields in lead SObject is sent to a given mobile number when a new lead is created in Salesforce.
+The following sample demonstrates a scenario in which a Twilio SMS message containing all the defined fields in Contacts SObject is sent to a given mobile number when a new Contact is created in Salesforce.
 
 ## Prerequisites
 * Twilio account
@@ -36,12 +36,12 @@ fromNumber = "<TWILIO_FROM_MOBILE_NUMBER>"
 toNumber = "<TWILIO_TO_MOBILE_NUMBER>"  
 
 [<ORG_NAME>.sfdc_new_contact_to_twilio_sms.salesforceListenerConfig]
-sfdcUsername = "<SALESFORCE_USERNAME>"  
-sfdcPassword = "<SALESFORCE_PASSWORD>" 
+username = "<SALESFORCE_USERNAME>"  
+password = "<SALESFORCE_PASSWORD>" 
 
 [<ORG_NAME>.sfdc_new_contact_to_twilio_sms.twilioClientConfig]
-twilioAccountSid = "<TWILIO_ACCOUNT_SID>"  
-twilioAuthToken = "<TWILIO_AUTH_TOKEN>"
+accountSId = "<TWILIO_ACCOUNT_SID>"  
+authToken = "<TWILIO_AUTH_TOKEN>"
 
 ```
 Phone numbers must be provided in E.164 format: +<country code><number>, for example: +16175551212
