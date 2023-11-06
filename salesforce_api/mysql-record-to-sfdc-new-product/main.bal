@@ -14,8 +14,6 @@ type ProductRecieved record {
     string productId;
 };
 
-const int HEADINGS_ROW = 1;
-
 //mySQL configuration parameters
 configurable int port = ?;
 configurable string host = ?;
@@ -34,8 +32,9 @@ salesforce:Client salesforce = check new ({
     }
 });
 
+mysql:Client mysql = check new (host, user, password, database, port);
+
 public function main() returns error? {
-    mysql:Client mysql = check new (host, user, password, database, port);
     stream<ProductRecieved, error?> streamOutput = mysql->query(
         `SELECT name, unitType, currencyISO, productId FROM products WHERE processed = false`);
     ProductRecieved[] productsRecieved = check from ProductRecieved items in streamOutput
