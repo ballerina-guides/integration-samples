@@ -1,4 +1,3 @@
-import ballerina/file;
 import ballerina/ftp;
 import ballerina/io;
 import ballerinax/edifact.d03a.retail.mREQOTE;
