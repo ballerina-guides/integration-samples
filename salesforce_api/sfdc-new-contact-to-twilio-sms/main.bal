@@ -22,9 +22,7 @@ configurable string toNumber = ?;
 listener salesforce:Listener sfdcEventListener = new ({
     username: salesforceListenerConfig.username,
     password: salesforceListenerConfig.password,
-    channelName: "/data/ContactChangeEvent",
-    environment: "Sandbox"
-});
+    channelName: "/data/ContactChangeEvent"});
 
 final twilio:Client twilio = check new ({
     twilioAuth: {
