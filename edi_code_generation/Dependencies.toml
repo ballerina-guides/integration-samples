@@ -112,7 +112,6 @@ dependencies = [
 	{org = "ballerinai", name = "observe"}
 ]
 modules = [
-	{org = "praneesha", packageName = "edi_code_generation", moduleName = "edi_code_generation"},
-	{org = "praneesha", packageName = "edi_code_generation", moduleName = "edi_code_generation.hmartOrder"}
+	{org = "praneesha", packageName = "edi_code_generation", moduleName = "edi_code_generation"}
 ]
 
