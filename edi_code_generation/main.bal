@@ -24,4 +24,3 @@ public function write_edi() returns error? {
     string orderEDI = check toEdiString(salesOrder);
     io:println("EDI message: \n" + orderEDI);
 }
-

@@ -1,8 +1,5 @@
 [package]
-org = "praneesha"
+org = "edi_code_generation"
 name = "edi_code_generation"
 version = "0.1.0"
 distribution = "2201.8.2"
-
-[build-options]
-observabilityIncluded = true

@@ -3,7 +3,7 @@ import citymart/porder.mORDERS;
 
 
 service / on new http:Listener(8090) {
-   resource function post .(http:Request req) returns string|error|http:Response {
+   resource function post getEDI(http:Request req) returns string|error|http:Response {
        // get EDI message from the payload
        string ediMsg = check req.getTextPayload();
        //  transformation and data mapping : process EDI message request
