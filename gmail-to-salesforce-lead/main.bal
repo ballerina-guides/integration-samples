@@ -1,5 +1,3 @@
-import ballerina/lang.runtime;
-import ballerina/log;
 import ballerina/mime;
 import ballerinax/googleapis.gmail;
 import ballerinax/openai.chat;
@@ -29,87 +27,42 @@ configurable string openAIKey = ?;
 configurable string salesforceBaseUrl = ?;
 configurable string salesforceAccessToken = ?;
 
-const LABEL = "Lead";
-
-final gmail:Client gmail = check new ({auth: {token: gmailAccessToken}});
-final chat:Client openAiChat = check new ({auth: {token: openAIKey}});
-final sf:Client salesforce = check new ({baseUrl: salesforceBaseUrl, auth: {token: salesforceAccessToken}});
+gmail:Client gmail = check new ({auth: {token: gmailAccessToken}});
+chat:Client openAiChat = check new ({auth: {token: openAIKey}});
+sf:Client salesforce = check new ({baseUrl: salesforceBaseUrl, auth: {token: salesforceAccessToken}});
 
 public function main() returns error? {
-    while true {
-        Email[] emails = check getEmails(LABEL);
-        Lead[] leads = from Email email in emails
-                       let Lead? lead = generateLead(email)
-                       where lead is Lead
-                       select lead;
-        addLeadsToSalesforce(leads);
-        runtime:sleep(600);
-    }
-}
-
-function getEmails(string label) returns Email[]|error {
-    string[] labelIdsToMatch = check getLabelIds(gmail, [label]);
-    if labelIdsToMatch.length() == 0 {
-        return error("Unable to find any labels to match.");
-    }
-
-    gmail:MailThread[] matchingMailThreads = check getMatchingMailThreads(gmail, labelIdsToMatch);
-    removeLabels(gmail, matchingMailThreads, labelIdsToMatch);
-    gmail:Message[] matchingEmails = getMatchingEmails(gmail, matchingMailThreads);
-
-    return from gmail:Message message in matchingEmails
-           let Email|error email = parseEmail(message)
-           where email is Email
-           select email;
-}
-
-function getLabelIds(gmail:Client gmail, string[] labelsToMatch) returns string[]|error {
     gmail:LabelList labelList = check gmail->listLabels("me");
-    return from gmail:Label {name, id} in labelList.labels
-           where labelsToMatch.indexOf(name) != ()
-           select id;
-}
-
-function getMatchingMailThreads(gmail:Client gmail, string[] labelIdsToMatch) returns gmail:MailThread[]|error {
+    string[] labelIdsToMatch = from gmail:Label {name, id} in labelList.labels
+        where ["Lead"].indexOf(name) != ()
+        select id;
     gmail:MsgSearchFilter searchFilter = {
         includeSpamTrash: false,
         labelIds: labelIdsToMatch
     };
-
-    return from gmail:MailThread mailThread in check gmail->listThreads(filter = searchFilter)
-           select mailThread;
-}
-
-function removeLabels(gmail:Client gmail, gmail:MailThread[] mailThreads, string[] labelIds) {
-    foreach gmail:MailThread mailThread in mailThreads {
-        gmail:MailThread|error removeLabelResponse = gmail->modifyThread(mailThread.id, [], labelIds);
-        if removeLabelResponse is error {
-            log:printError("An error occured in removing the labels from the thread.",
-                removeLabelResponse, removeLabelResponse.stackTrace(), threadId = mailThread.id, labelIds = labelIds);
-        }
+    gmail:MailThread[] matchingMailThreads = check from gmail:MailThread mailThread
+        in check gmail->listThreads(filter = searchFilter)
+        select mailThread;
+    foreach gmail:MailThread mailThread in matchingMailThreads {
+        _ = check gmail->modifyThread(mailThread.id, [], labelIdsToMatch);
     }
-}
-
-function getMatchingEmails(gmail:Client gmail, gmail:MailThread[] mailThreads) returns gmail:Message[] {
-    gmail:Message[] messages = [];
-
-    foreach gmail:MailThread mailThread in mailThreads {
-        gmail:MailThread|error response = gmail->readThread(mailThread.id);
-        if response is error {
-            log:printError("An error occured while reading the email.", 
-                response, response.stackTrace(), threadId = mailThread.id);
-            continue;
-        }
-
-        if !(response.messages is gmail:Message[]) || (<gmail:Message[]>response.messages).length() < 1 {
-            log:printError("Unable to find any messages in the thread.", threadId = mailThread.id);
-            continue;
-        }
-
-        messages.push((<gmail:Message[]>response.messages)[0]);
+    gmail:Message[] matchingEmails = [];
+    foreach gmail:MailThread mailThread in matchingMailThreads {
+        gmail:MailThread response = check gmail->readThread(mailThread.id);
+        matchingEmails.push((<gmail:Message[]>response.messages)[0]);
     }
-
-    return messages;
+    Email[] emails = from gmail:Message message in matchingEmails
+        let Email|error email = parseEmail(message)
+        where email is Email
+        select email;
+    Lead[] leads = from Email email in emails
+        let Lead? lead = check generateLead(email, openAiChat)
+        where lead is Lead
+        select lead;
+    from Lead lead in leads
+    do {
+        _ = check salesforce->create("EmailLead__c", lead);
+    };
 }
 
 function parseEmail(gmail:Message message) returns Email|error {
@@ -124,19 +77,18 @@ function parseEmail(gmail:Message message) returns Email|error {
             body: body
         };
     } on fail error e {
-        log:printError("An error occured while parsing the email.", e, e.stackTrace(), message = message);
         return e;
     }
 }
 
-function generateLead(Email email) returns Lead? {
+function generateLead(Email email, chat:Client openAiChat) returns Lead|error {
     chat:CreateChatCompletionRequest request = {
         model: "gpt-3.5-turbo",
         messages: [
             {
                 role: "user",
-                content: string `
-            Extract the following details in JSON from the email.
+                content: string
+            `Extract the following details in JSON from the email.
                 {
                     firstName__c: string, // Mandatory
                     lastName__c: string, // Mandatory
@@ -151,8 +103,7 @@ function generateLead(Email email) returns Lead? {
                 from: ${email.'from},
                 subject: ${email.subject},
                 body: ${email.body}
-            }
-        `
+            }`
             }
         ]
     };
@@ -165,20 +116,6 @@ function generateLead(Email email) returns Lead? {
         string content = check response.choices[0].message?.content.ensureType(string);
         return check content.fromJsonStringWithType(Lead);
     } on fail error e {
-        log:printError("An error occured while generating the lead.", e, e.stackTrace(), email = email);
-        return;
+        return e;
     }
-}
-
-function addLeadsToSalesforce(Lead[] leads) {
-    from Lead lead in leads
-    do {
-        sf:CreationResponse|error createResponse = salesforce->create("EmailLead__c", lead);
-        if createResponse is error {
-            log:printError("An error occured while creating a Lead object on salesforce.", 
-                createResponse, createResponse.stackTrace(), lead = lead);
-        } else {
-            log:printInfo("Lead successfully created.", lead = lead);
-        }
-    };
-}
+};
