@@ -60,10 +60,10 @@ function fetchCasesFromServiceNow(string fetchFrom, string fetchTill) returns Ca
 function addCasesToSalesforce(CaseData[] cases) returns error? {
     sf:Client salesforce = check new (salesforceConfig);
     foreach CaseData caseData in cases {
-        stream<Id, error?> customerQuery = check salesforce->query(
+        stream<Id, error?> customerStream = check salesforce->query(
             string `SELECT Id FROM Account WHERE Name = '${caseData.account.name}'`);
-        record {|Id value;|}? existingCustomer = check customerQuery.next();
-        check customerQuery.close();
+        record {|Id value;|}? existingCustomer = check customerStream.next();
+        check customerStream.close();
         if existingCustomer is () {
             log:printInfo("Customer not found in Salesforce: " + caseData.account.name);
             continue;
