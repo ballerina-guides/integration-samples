@@ -66,7 +66,8 @@ function getSalesforceOpportunityId(string accountId, string oppName) returns st
 
 function createLineItems(ItemData[] items, string oppId) returns error? {
     foreach ItemData item in items {
-        stream<PriceBookEntry, error?> query = check salesforce->query(string `SELECT UnitPrice FROM PricebookEntry WHERE Pricebook2Id = '01s6C000000UN4PQAW' AND Product2Id = '${item.itemId}'`);
+        stream<PriceBookEntry, error?> query = check salesforce->query(
+            string `SELECT UnitPrice FROM PricebookEntry WHERE Pricebook2Id = '01s6C000000UN4PQAW' AND Product2Id = '${item.itemId}'`);
         record {|PriceBookEntry value;|}? unionResult = check query.next();
         check query.close();
         if unionResult is () {
