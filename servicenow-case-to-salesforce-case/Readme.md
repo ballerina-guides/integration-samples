@@ -4,7 +4,7 @@ This sample fetches cases from ServiceNow for a given time period and adds those
 
 ## Use case
 
-ServiceNow is a widely used platform for reporting customer issues, which are attended by the support staff of organizations. However, sales staff should also be aware of support issues reported by their customers, especially if there are high priority issues. Therefore, it is important have a view on support issues in Salesforce, which is main platform used by Salesforce.
+ServiceNow is a widely used platform for reporting customer issues, which are attended by the support staff of organizations. However, sales staff should also be aware of support issues reported by their customers, especially if there are high priority issues. Therefore, it is important to have a view of support issues in Salesforce, which is the main platform used by Salesforce.
 
 This sample can be executed periodically to fetch all unsynced support issues from ServiceNow and add high priority cases to Salesforce under the corresponding Salesforce account.
 
@@ -28,7 +28,7 @@ This sample can be executed periodically to fetch all unsynced support issues fr
 4. Provide the client ID and client secret to obtain the refresh token and access token. For more information on obtaining OAuth2 credentials, go to [Salesforce documentation](https://help.salesforce.com/articleView?id=remoteaccess_authenticate_overview.htm).
 5. Fill in details under the `Salesforce configuration` in the `Config.toml` with Salesforce access details.
 6. Create a sample Account named `Avino` in Salesforce.
-7. Create a new custom object in Salesforce named `Support Case`, and following fields to it.
+7. Create a new custom object in Salesforce named `Support Case`, and the following fields to it.
     *   Support Case ID - Text(80)
     *   Account - Master-Detail(Account)
     *   Created on - Text(100)
@@ -72,7 +72,7 @@ refreshUrl = "<salesforce-refresh-url>"
 
 ## Testing
 
-1. Create an account in ServiceNow and create few support cases under that account.
+1. Create an account in ServiceNow and create a few support cases under that account.
 2. Create an account with the same name in Salesforce.
 3. Change the date in `resources/syncdata` file to some date before the creation of ServiceNow cases.
 4. Run the sample using the `bal run` command.

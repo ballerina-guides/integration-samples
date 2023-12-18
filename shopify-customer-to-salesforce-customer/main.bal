@@ -10,7 +10,7 @@ service /salesforce_bridge on new http:Listener(9090) {
     resource function post customers(@http:Payload ShopifyCustomer shopifyCustomer) returns error? {
         SalesforceCustomer salesforceCustomer = transformCustomerData(shopifyCustomer);
         error? e = updateSalesforce(salesforceCustomer);
-        if (e is error) {
+        if e is error {
             log:printError("Error occurred while updating Salesforce for customer: " + salesforceCustomer.toJsonString(), e);
             return e;
         }

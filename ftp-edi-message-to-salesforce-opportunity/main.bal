@@ -12,8 +12,8 @@ configurable string ftpProcessedQuotesPath = ?;
 configurable sf:ConnectionConfig salesforceConfig = ?;
 configurable string salesforcePriceBookId = ?;
 
-ftp:Client fileServer = check new ftp:Client(ftpConfig);
-sf:Client salesforce = check new (salesforceConfig);
+final ftp:Client fileServer = check new (ftpConfig);
+final sf:Client salesforce = check new (salesforceConfig);
 
 public function main() returns error? {
     ftp:FileInfo[] quoteList = check fileServer->list(ftpNewQuotesPath);

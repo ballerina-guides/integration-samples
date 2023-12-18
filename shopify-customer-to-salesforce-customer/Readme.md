@@ -4,7 +4,7 @@ This sample listens for notifications from Shopify on customer updates and creat
 
 ## Use case
 
-It is important to synchronize customer and sales data among ecommerce platforms and Salesforce. In Shopify, a popular ecommerce platform, customers can register by providing their email addresses. Then customers can update their details later at anytime. This sample listens for customer data updates in Shopify and create or update corresponding customer details in Salesforce.
+It is important to synchronize customer and sales data among e-commerce platforms and Salesforce. In Shopify, a popular e-commerce platform, customers can register by providing their email addresses. Then, customers can update their details later at any time. This sample listens for customer data updates in Shopify and creates or updates corresponding customer details in Salesforce.
 
 ## Prerequisites
 * Salesforce account
@@ -55,5 +55,5 @@ refreshUrl = "<salesforce-refresh-url>"
 ## Testing
 
 1. Navigate to the online store view of the development store and register a new customer by providing an email address. Validate the confirmation email sent to the provided email address.
-2. Login to Salesforce and check the Customers records. New customer record with the given email will be created.
-3. In the Shopify store, change the customer's first name and last name. Customer name of the corresponding customer will be updated in Salesforce.
+2. Login to Salesforce and check the Customer records. A new customer record with the given email will be created.
+3. In the Shopify store, change the customer's first name and last name. The customer name of the corresponding customer will be updated in Salesforce.
