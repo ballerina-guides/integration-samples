@@ -34,10 +34,10 @@ function transformCustomerData(ShopifyCustomer shopifyCustomer) returns Salesfor
 }
 
 function updateSalesforce(SalesforceCustomer sfCustomer) returns error? {
-    stream<Id, error?> customerQuery = check salesforce->query(
+    stream<Id, error?> customerStream = check salesforce->query(
             string `SELECT Id FROM HmartCustomer__c WHERE Email__c = '${sfCustomer.Email__c}'`);
-    record {|Id value;|}? existingCustomer = check customerQuery.next();
-    check customerQuery.close();
+    record {|Id value;|}? existingCustomer = check customerStream.next();
+    check customerStream.close();
     if existingCustomer is () {
         _ = check salesforce->create("HmartCustomer__c", sfCustomer);
     } else {
