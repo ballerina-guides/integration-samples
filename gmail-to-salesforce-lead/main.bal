@@ -33,6 +33,47 @@ sf:Client salesforce = check new ({baseUrl: salesforceBaseUrl, auth: {token: sal
 
 public function main() returns error? {
     gmail:LabelList labelList = check gmail->listLabels("me");
+    Email[] emails = check getMatchingEmails(labelList);
+    foreach Email email in emails {
+        chat:CreateChatCompletionRequest request = {
+            model: "gpt-3.5-turbo",
+            messages: [
+                {
+                    role: "user",
+                    content: string
+                        `Extract the following details in JSON from the email.
+                    {
+                        firstName__c: string, // Mandatory
+                        lastName__c: string, // Mandatory
+                        email__c: string // Mandatory
+                        phoneNumber__c: string, // With country code. Use N/A if unable to find
+                        company__c: string, // Mandatory
+                        designation__c: string // Not mandatory. Use N/A if unable to find
+                    }
+                Here is the email:    
+                {
+                    from: ${email.'from},
+                    subject: ${email.subject},
+                    body: ${email.body}
+                }`
+                }
+            ]
+        };
+        do {
+            chat:CreateChatCompletionResponse response = check openAiChat->/chat/completions.post(request);
+            if response.choices.length() < 1 {
+                check error("Unable to find any choices in the response.");
+            }
+            string content = check response.choices[0].message?.content.ensureType(string);
+            _ = check salesforce->create("EmailLead__c",
+                check content.fromJsonStringWithType(Lead));
+        } on fail error e {
+            return e;
+        }
+    }
+}
+
+function getMatchingEmails(gmail:LabelList labelList) returns error|Email[] {
     string[] labelIdsToMatch = from gmail:Label {name, id} in labelList.labels
         where ["Lead"].indexOf(name) != ()
         select id;
@@ -55,14 +96,7 @@ public function main() returns error? {
         let Email|error email = parseEmail(message)
         where email is Email
         select email;
-    Lead[] leads = from Email email in emails
-        let Lead? lead = check generateLead(email, openAiChat)
-        where lead is Lead
-        select lead;
-    from Lead lead in leads
-    do {
-        _ = check salesforce->create("EmailLead__c", lead);
-    };
+    return emails;
 }
 
 function parseEmail(gmail:Message message) returns Email|error {
@@ -80,42 +114,3 @@ function parseEmail(gmail:Message message) returns Email|error {
         return e;
     }
 }
-
-function generateLead(Email email, chat:Client openAiChat) returns Lead|error {
-    chat:CreateChatCompletionRequest request = {
-        model: "gpt-3.5-turbo",
-        messages: [
-            {
-                role: "user",
-                content: string
-            `Extract the following details in JSON from the email.
-                {
-                    firstName__c: string, // Mandatory
-                    lastName__c: string, // Mandatory
-                    email__c: string // Mandatory
-                    phoneNumber__c: string, // With country code. Use N/A if unable to find
-                    company__c: string, // Mandatory
-                    designation__c: string // Not mandatory. Use N/A if unable to find
-                }
-
-            Here is the email:    
-            {
-                from: ${email.'from},
-                subject: ${email.subject},
-                body: ${email.body}
-            }`
-            }
-        ]
-    };
-
-    do {
-        chat:CreateChatCompletionResponse response = check openAiChat->/chat/completions.post(request);
-        if response.choices.length() < 1 {
-            check error("Unable to find any choices in the response.");
-        }
-        string content = check response.choices[0].message?.content.ensureType(string);
-        return check content.fromJsonStringWithType(Lead);
-    } on fail error e {
-        return e;
-    }
-};
