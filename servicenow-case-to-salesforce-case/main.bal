@@ -46,10 +46,10 @@ function calculateFetchingPeriod() returns DateRange|error {
     return {'start, end, now};
 }
 
-function fetchCasesFromServiceNow(string fetchFrom, string fetchTill) returns CaseData[]|error {
-    string query = string `sys_created_onBETWEENjavascript:gs.dateGenerate(${fetchFrom})@javascript:gs.dateGenerate(${fetchTill})`;
+function fetchCasesFromServiceNow(string fetchFrom, string fetchTill) returns CaseData[]|error {    
     http:Client servicenow = check new (string `https://${servicenowInstance}.service-now.com/api/sn_customerservice`);
     string serviceNowCredentials = check mime:base64Encode(serviceNowUsername + ":" + serviceNowPassword, "UTF-8").ensureType();
+    string query = string `sys_created_onBETWEENjavascript:gs.dateGenerate(${fetchFrom})@javascript:gs.dateGenerate(${fetchTill})`;
     record {CaseData[] result;} caseResponse = check servicenow->/case(
         headers = {"Authorization": "Basic " + serviceNowCredentials},
         sysparm_query = check url:encode(query, "UTF-8")
