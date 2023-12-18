@@ -1,10 +1,10 @@
 # ServiceNow case to Salesforce case
 
-This sample fetches cases from ServiceNow for a given time period and adds those as support cases in Salesforce under the corresponding Salesforce account.
+This sample fetches cases from [ServiceNow](https://www.servicenow.com/) for a given time period and adds those as support cases in [Salesforce](https://www.salesforce.com/) under the corresponding Salesforce account.
 
 ## Use case
 
-ServiceNow is a widely used platform for reporting customer issues, which are attended by the support staff of organizations. However, sales staff should also be aware of support issues reported by their customers, especially if there are high priority issues. Therefore, it is important to have a view of support issues in Salesforce, which is the main platform used by Salesforce.
+ServiceNow is a widely used platform for reporting customer issues, which are attended by the support staff of organizations. However, sales staff should also be aware of support issues reported by their customers, especially if there are high priority issues. Therefore, it is important to have a view of support issues in Salesforce, which is the main platform used by the sales staff.
 
 This sample can be executed periodically to fetch all unsynced support issues from ServiceNow and add high priority cases to Salesforce under the corresponding Salesforce account.
 
