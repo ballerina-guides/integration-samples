@@ -1,4 +1,5 @@
 import ballerina/time;
+
 type CaseData record {
     string number;
     string sys_created_on;
