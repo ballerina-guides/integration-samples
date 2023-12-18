@@ -4,9 +4,9 @@ This sample fetches cases from [ServiceNow](https://www.servicenow.com/) for a g
 
 ## Use case
 
-ServiceNow is a widely used platform for reporting customer issues, which are attended by the support staff of organizations. However, sales staff should also be aware of support issues reported by their customers, especially if there are high priority issues. Therefore, it is important to have a view of support issues in Salesforce, which is the main platform used by the sales staff.
+ServiceNow is a widely used platform for reporting customer issues, which are attended by the support staff of organizations. However, sales staff should also be aware of support issues reported by their customers, especially if there are high-priority issues. Therefore, it is important to have a view of support issues in Salesforce, which is the main platform used by the sales staff.
 
-This sample can be executed periodically to fetch all unsynced support issues from ServiceNow and add high priority cases to Salesforce under the corresponding Salesforce account.
+This sample can be executed periodically to fetch all unsynced support issues from ServiceNow and add high-priority cases to Salesforce under the corresponding Salesforce account. `resources/syncdata` file contains the most recent data synchronization date. Only the issues added after this date will be considered by this sample.
 
 ## Prerequisites
 * Salesforce account
