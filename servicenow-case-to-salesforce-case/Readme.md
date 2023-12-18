@@ -39,9 +39,9 @@ This sample can be executed periodically to fetch all unsynced support issues fr
 1. If a ServiceNow account is available with the Customer Service Management plugin installed, step 2 can be skipped.
 2. Create a new account in [ServiceNow Developer site](https://developer.servicenow.com) and obtain a Personal Development Instance (PDI) as mentioned [here](https://developer.servicenow.com/dev.do#!/learn/learning-plans/tokyo/new_to_servicenow/app_store_learnv2_buildmyfirstapp_tokyo_personal_developer_instances)
 3. Activate the Customer Service Management plugin and assign the following roles to the user account.
-    *   sn_customerservice_agent
-    *   sn_customerservice_manager
-    *   csm_ws_integration
+    *   `sn_customerservice_agent`
+    *   `sn_customerservice_manager`
+    *   `csm_ws_integration`
 4. Fill in the details under `ServiceNow configuration` in the `Config.toml` with ServiceNow account details.
 
 ### Config.toml
