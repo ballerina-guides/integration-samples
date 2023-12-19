@@ -40,8 +40,7 @@ public function main() returns error? {
             messages: [
                 {
                     role: "user",
-                    content: string
-                        `Extract the following details in JSON from the email.
+                    content: string `Extract the following details in JSON from the email.
                     {
                         firstName__c: string, // Mandatory
                         lastName__c: string, // Mandatory
@@ -50,30 +49,26 @@ public function main() returns error? {
                         company__c: string, // Mandatory
                         designation__c: string // Not mandatory. Use N/A if unable to find
                     }
-                Here is the email:    
-                {
-                    from: ${email.'from},
-                    subject: ${email.subject},
-                    body: ${email.body}
-                }`
+                    Here is the email:    
+                    {
+                        from: ${email.'from},
+                        subject: ${email.subject},
+                        body: ${email.body}
+                    }`
                 }
             ]
         };
-        do {
-            chat:CreateChatCompletionResponse response = check openAiChat->/chat/completions.post(request);
-            if response.choices.length() < 1 {
-                check error("Unable to find any choices in the response.");
-            }
-            string content = check response.choices[0].message?.content.ensureType(string);
-            _ = check salesforce->create("EmailLead__c",
-                check content.fromJsonStringWithType(Lead));
-        } on fail error e {
-            return e;
+        chat:CreateChatCompletionResponse response = check openAiChat->/chat/completions.post(request);
+        if response.choices.length() < 1 {
+            return error("Unable to find any choices in the response.");
         }
+        string content = check response.choices[0].message?.content.ensureType(string);
+        _ = check salesforce->create("EmailLead__c", check content.fromJsonStringWithType(Lead));
+
     }
 }
 
-function getMatchingEmails(gmail:LabelList labelList) returns error|Email[] {
+function getMatchingEmails(gmail:LabelList labelList) returns Email[]|error {
     string[] labelIdsToMatch = from gmail:Label {name, id} in labelList.labels
         where ["Lead"].indexOf(name) != ()
         select id;
