@@ -88,24 +88,17 @@ function getMatchingEmails(gmail:LabelList labelList) returns Email[]|error {
         matchingEmails.push((<gmail:Message[]>response.messages)[0]);
     }
     Email[] emails = from gmail:Message message in matchingEmails
-        let Email|error email = parseEmail(message)
-        where email is Email
-        select email;
+        select check parseEmail(message);
     return emails;
 }
 
 function parseEmail(gmail:Message message) returns Email|error {
-    do {
-        gmail:MessageBodyPart bodyPart = check message.emailBodyInText.ensureType(gmail:MessageBodyPart);
-        string bodyPartText = check bodyPart.data.ensureType(string);
-        string body = check mime:base64Decode(bodyPartText).ensureType(string);
-
-        return {
-            'from: check message.headerFrom.ensureType(string),
-            subject: check message.headerSubject.ensureType(string),
-            body: body
-        };
-    } on fail error e {
-        return e;
-    }
+    gmail:MessageBodyPart bodyPart = check message.emailBodyInText.ensureType(gmail:MessageBodyPart);
+    string bodyPartText = check bodyPart.data.ensureType(string);
+    string body = check mime:base64Decode(bodyPartText).ensureType(string);
+    return {
+        'from: check message.headerFrom.ensureType(string),
+        subject: check message.headerSubject.ensureType(string),
+        body: body
+    };
 }
