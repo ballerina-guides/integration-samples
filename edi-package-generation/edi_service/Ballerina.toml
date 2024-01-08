@@ -1,0 +1,12 @@
+
+[package]
+org = "edi_package_gen"
+name = "pkg_gen_test"
+version = "0.1.0"
+distribution = "2201.5.0"
+
+[[dependency]]
+org="citymart"
+name="porder"
+repository="local"
+version="0.1.0"
