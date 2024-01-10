@@ -53,7 +53,6 @@ Create a file called `Config.toml` at the root of the project.
 [<ORG_NAME>.gsheet-new-row-to-sfdc-new-contact]
 spreadsheetId = "<SPREADSHEET_ID>"
 worksheetName = "<WORKSHEET_NAME>"
-duplicateWorksheetName = "<DUPLICATE_WORKSHEET_NAME>"
 sheetsAccessToken = "<GOOGLE_SHEETS_ACCESS_TOKEN>"
 salesforceBaseUrl = "<SALESFORCE_BASE_URL>"
 salesforceAccessToken = "<SALESFORCE_ACCESS_TOKEN>"

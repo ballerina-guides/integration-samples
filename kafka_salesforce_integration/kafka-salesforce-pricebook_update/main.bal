@@ -14,9 +14,9 @@ public type ProductPriceUpdate readonly & record {|
     float UnitPrice;
 |};
 
-listener kafka:Listener orderListener = new (kafka:DEFAULT_URL, {
+listener kafka:Listener priceListener = new (kafka:DEFAULT_URL, {
     groupId: "order-group-id",
-    topics: "product_price_updates"
+    topics: "product-price-updates"
 });
 
 final salesforce:Client salesforce = check new ({
@@ -26,7 +26,7 @@ final salesforce:Client salesforce = check new ({
     }
 });
 
-service on orderListener {
+service on priceListener {
     isolated remote function onConsumerRecord(ProductPrice[] prices) returns error? {
         foreach ProductPrice {name, unitPrice} in prices {
             stream<record {}, error?> retrievedStream = check salesforce->query(

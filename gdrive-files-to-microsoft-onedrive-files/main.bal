@@ -1,4 +1,3 @@
-import ballerina/log;
 import ballerinax/googleapis.drive;
 import ballerinax/microsoft.onedrive;
 
@@ -10,12 +9,13 @@ configurable string oneDrivePath = ?;
 
 configurable boolean filesOverridable = ?;
 
-public function main() returns error? {
-    drive:Client gDrive = check new ({auth: {token: gDriveAccessToken}});
-    onedrive:Client onedrive = check new ({auth: {token: oneDriveAccessToken}});
+drive:Client gDrive = check new ({auth: {token: gDriveAccessToken}});
+onedrive:Client onedrive = check new ({auth: {token: oneDriveAccessToken}});
 
-    string gDriveQuery = string `'${gDriveFolderId}' in parents and trashed = false`;
-    stream<drive:File> filesInGDrive = check gDrive->getAllFiles(gDriveQuery);
+public function main() returns error? {
+    stream<drive:File> filesInGDrive = check gDrive->getAllFiles(
+        string `'${gDriveFolderId}' in parents and trashed = false`
+    );
 
     foreach drive:File file in filesInGDrive {
         string? fileName = file?.name;
@@ -23,13 +23,11 @@ public function main() returns error? {
         boolean writable = false;
 
         if fileName is () || fileId is () {
-            log:printError("File name or ID not found");
             continue;
         }
         if !filesOverridable {
             boolean|error isExistingFile = checkIfFileExistsInOneDrive(fileName, onedrive);
             if isExistingFile is error {
-                log:printError("Searching files in Microsoft OneDrive failed!", isExistingFile);
                 continue;
             }
             writable = !isExistingFile;
@@ -37,17 +35,14 @@ public function main() returns error? {
         if filesOverridable || writable {
             drive:FileContent|error fileContent = gDrive->getFileContent(fileId);
             if fileContent is error {
-                log:printError("Retrieving file from Google Drive failed!", fileContent);
                 continue;
             }
             onedrive:DriveItemData|error driveItemData = onedrive->
                     uploadFileToFolderByPath(oneDrivePath, fileName, fileContent?.content,
                     fileContent?.mimeType);
             if driveItemData is error {
-                log:printError("Uploading file to Microsoft OneDrive failed!", driveItemData);
                 continue;
             }
-            log:printInfo(string `File ${fileName} uploaded successfully!`);
         }
     }
 }
