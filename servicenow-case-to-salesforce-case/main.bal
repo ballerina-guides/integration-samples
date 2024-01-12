@@ -5,7 +5,7 @@ import ballerina/time;
 import ballerina/url;
 import ballerinax/salesforce as sf;
 
-configurable string servicenowInstance = ?;
+configurable string serviceNowInstance = ?;
 configurable string syncData = ?;
 configurable string serviceNowUsername = ?;
 configurable string serviceNowPassword = ?;
@@ -36,10 +36,10 @@ public function main() returns error? {
     check io:fileWriteString(syncData, check time:civilToString(fetchPeriod.now));
 }
 function fetchCasesFromServiceNow(string fetchFrom, string fetchTill) returns CaseData[]|error {    
-    http:Client servicenow = check new (string `https://${servicenowInstance}.service-now.com/api/sn_customerservice`);
-    string serviceNowCredentials = check mime:base64Encode(serviceNowUsername + ":" + serviceNowPassword, "UTF-8").ensureType();
+    http:Client serviceNow = check new (string `https://${serviceNowInstance}.service-now.com/api/sn_customerservice`);
+    string serviceNowCredentials = check mime:base64Encode(string `${serviceNowUsername}:${serviceNowPassword}`, "UTF-8").ensureType();
     string query = string `sys_created_onBETWEENjavascript:gs.dateGenerate(${fetchFrom})@javascript:gs.dateGenerate(${fetchTill})`;
-    record {CaseData[] result;} caseResponse = check servicenow->/case(
+    record {CaseData[] result;} caseResponse = check serviceNow->/case(
         headers = {"Authorization": "Basic " + serviceNowCredentials},
         sysparm_query = check url:encode(query, "UTF-8")
     );

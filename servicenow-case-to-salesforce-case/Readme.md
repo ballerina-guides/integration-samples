@@ -52,7 +52,7 @@ syncdata = "resources/syncdata"
 # ServiceNow configuration
 # ==========================
 
-servicenowInstance = "<servicenow-instance-id>"
+serviceNowInstance = "<servicenow-instance-id>"
 serviceNowUsername = "<servicenow-username>"
 serviceNowPassword = "<servicenow-password>"
 
