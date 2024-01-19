@@ -31,22 +31,21 @@ salesforce:Client salesforce = check new ({
         token: salesforceAccessToken
     }
 });
-
 mysql:Client mysql = check new (host, user, password, database, port);
 
 public function main() returns error? {
     stream<ProductRecieved, error?> streamOutput = mysql->query(
         `SELECT name, unitType, currencyISO, productId FROM products WHERE processed = false`);
-    ProductRecieved[] productsRecieved = check from ProductRecieved items in streamOutput
-        select items;
-    foreach ProductRecieved prductRecieved in productsRecieved {
+    record {|ProductRecieved value;|}|error? productRecieved = streamOutput.next();
+    while productRecieved !is error|() {
         Product product = {
-            Name: prductRecieved.name,
-            Product_Unit__c: prductRecieved.unitType,
-            CurrencyIsoCode: prductRecieved.currencyISO
+            Name: productRecieved.value.name,
+            Product_Unit__c: productRecieved.value.unitType,
+            CurrencyIsoCode: productRecieved.value.currencyISO
         };
         _ = check salesforce->create("Product2", product);
         _ = check mysql->execute(
-            `UPDATE products SET processed = true WHERE productId = ${prductRecieved.productId}`);
+            `UPDATE products SET processed = true WHERE productId = ${productRecieved.value.productId}`);
+        productRecieved = streamOutput.next();
     }
 }

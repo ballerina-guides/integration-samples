@@ -3,10 +3,10 @@ import ballerina/regex;
 import ballerinax/salesforce as sf;
 
 configurable sf:ConnectionConfig salesforceConfig = ?;
-sf:Client salesforce = check new (salesforceConfig);
+final sf:Client salesforce = check new (salesforceConfig);
 
 service /salesforce_bridge on new http:Listener(9090) {
-    resource function post customers(@http:Payload ShopifyCustomer shopifyCustomer) returns error? {
+    resource function post customers(ShopifyCustomer shopifyCustomer) returns error? {
         string firstName = shopifyCustomer.first_name ?: regex:split(shopifyCustomer.email, "@")[0];
         string lastName = shopifyCustomer.last_name ?: "";
         Address? shopifyAddress = shopifyCustomer.default_address;
