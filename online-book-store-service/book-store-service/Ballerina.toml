@@ -1,0 +1,18 @@
+[package]
+org = "integration_samples"
+name = "online_book_store_service"
+version = "0.1.0"
+distribution = "2201.6.0"
+
+[build-options]
+observabilityIncluded = true
+
+[persist]
+datastore = "inmemory"
+module = "online_book_store_service.inventory"
+
+[[platform.java11.dependency]]
+groupId = "io.ballerina.stdlib"
+artifactId = "persist.inmemory-native"
+version = "1.0.0"
+

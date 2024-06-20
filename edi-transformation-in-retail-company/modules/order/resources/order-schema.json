@@ -1,0 +1,20 @@
+{
+    "name": "Order",
+    "delimiters" : {"segment" : "~", "field" : "*", "component": ":", "repetition": "^"},
+    "segments" : [
+        {
+            "code": "ORD",
+            "tag" : "header",
+            "minOccurances" : 1,
+            "maxOccurances" : 1,
+            "fields" : [{"tag": "code", "required" : true}, {"tag" : "orderId", "required" : true}, {"tag" : "organization", "required" : true}, {"tag" : "date", "required" : true}]
+        },
+        {
+            "code": "ITM",
+            "tag" : "items",
+            "minOccurances" : 1,
+            "maxOccurances" : -1,
+            "fields" : [{"tag": "code", "required" : true}, {"tag" : "itemType", "required" : true}, {"tag" : "name", "required" : true}, {"tag" : "quantity", "dataType" : "int", "required" : true}]
+        }
+    ]
+}
