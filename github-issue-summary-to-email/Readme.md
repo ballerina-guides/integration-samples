@@ -20,13 +20,13 @@ Create a file called `Config.toml` at the root of the project.
 ```
 [<ORG_NAME>.github_issue_summary_to_email]
 githubAccessToken = "<GITHUB_ACCESS_TOKEN>"  
-repositoryName = "<REPO_NAME>"  
-repositoryOwner = "<REPO_OWNER>"
-recipientAddress = "<RECIPIENT_ADDRESS>"
+repoName = "<REPO_NAME>"
+orgName = "<REPO_OWNER>"
+recipientAddress = "<RECIPIENT_EMAILADDRESS>"
 smtpPassword = "<SMTP_PASSWORD>"
 smtpUsername = "<SMTP_USERNAME>"
 smtpHost = "<SMTP_HOST_NAME>"
-fromAdress = "<SMTP_FROM_ADDRESS>"
+fromAddress = "<SMTP_FROM_ADDRESS>"
 ```
 * GITHUB_ACCESS_TOKEN - obtain a [Personal access token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) or [GitHub OAuth App token](https://docs.github.com/en/developers/apps/creating-an-oauth-app).
 * REPO_NAME - [create a repository](https://docs.github.com/en/get-started/quickstart/create-a-repo)
