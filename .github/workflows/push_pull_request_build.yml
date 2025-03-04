@@ -5,207 +5,73 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
   workflow_dispatch:
 
 jobs:
-  build:
+  build-packages:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        package: [
+          azure-cosmosdb-data-as-rest-api,
+          clientary_invoices_to_quickbooks_online_invoices,
+          consuming_services,
+          data-oriented-programming,
+          data_integration,
+          edi-code-generation,
+          edi-package-generation,
+          ftp-edi-message-to-salesforce-opportunity,
+          gcalendar-new-event-to-trello-card,
+          gcalendar-new-event-to-trello-card-and-twillio-msg,
+          gdrive-files-to-microsoft-onedrive-files,
+          github-issue-summary-to-email,
+          github-pull-requests-to-gsheets,
+          github-pull-requests-to-stdout,
+          gmail-to-salesforce-lead,
+          graphql-social-media-service,
+          graphql_api,
+          graphql_bookstore_service,
+          gsheet-new-row-to-salesforce-new-contact,
+          hubspot-contacts-to-google-contacts,
+          kafka_consumer_producer,
+          kafka_salesforce_integration,
+          mysql-client-with-transactions,
+          mysql-record-to-salesforce-new-product,
+          newsapi_headlines-to-email,
+          pattern-scatter-gather,
+          population_service,
+          produce_and_consume_services,
+          restful-api-with-data-mapper,
+          restful_api,
+          salesforce-new-contact-to-twilio-sms,
+          servicenow-case-to-salesforce-case,
+          shopify-customer-to-salesforce-customer,
+          shopify-new-customers-to-outlook-mail,
+          working_with_data,
+          working_with_databases,
+          working_with_json
+        ]
     steps:
       - uses: actions/checkout@v3
-      - name: Build Azure CosmosDB Data as REST API Package
+      - name: Build ${{ matrix.package }} Package
         uses: ballerina-platform/ballerina-action@master
         with:
-          args: 
-            build azure-cosmosdb-data-as-rest-api
-      - name: Build Clientary Invoices to QuickBooks Online Invoices Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build clientary_invoices_to_quickbooks_online_invoices
-      - name: Build Consuming Services Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build consuming_services
-      - name: Build Data Oriented Programming Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build data-oriented-programming
-      - name: Build Data Integration Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build data_integration
-      - name: Build EDI Code Generation Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build edi-code-generation
-      - name: Build EDI Package Generation Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build edi-package-generation
-      - name: Build FTP EDI Message to Salesforce Opportunity Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build ftp-edi-message-to-salesforce-opportunity
-      - name: Build GCalendar New Event to Trello Card Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build gcalendar-new-event-to-trello-card
-      - name: Build GCalendar New Event to Trello Card and Twilio Msg Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build gcalendar-new-event-to-trello-card-and-twillio-msg
-      - name: Build GDrive Files to Microsoft OneDrive Files Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build gdrive-files-to-microsoft-onedrive-files
-      - name: Build GitHub Issue Summary to Email Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build github-issue-summary-to-email
-      - name: Build GitHub Pull Requests to GSheets Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build github-pull-requests-to-gsheets
-      - name: Build GitHub Pull Requests to Stdout Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build github-pull-requests-to-stdout
-      - name: Build Gmail to Salesforce Lead Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build gmail-to-salesforce-lead
-      - name: Build GraphQL Social Media Service Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build graphql-social-media-service
-      - name: Build GraphQL API Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build graphql_api
-      - name: Build GraphQL Bookstore Service Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build graphql_bookstore_service
+          args: build ${{ matrix.package }}
+
+  generate-grpc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - name: Ballerina Generate gRPC
         uses: ballerina-platform/ballerina-action@master
         with:
-          args: 
-            grpc --input ./grpc_api/descriptor_record_store.proto --output ./grpc_api/
+          args: grpc --input ./grpc_api/descriptor_record_store.proto --output ./grpc_api/
+
+  build-grpc-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - name: Build GRPC API Package
         uses: ballerina-platform/ballerina-action@master
         with:
-          args: 
-            build grpc_api
-      - name: Build GSheet New Row to Salesforce New Contact Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build gsheet-new-row-to-salesforce-new-contact
-      - name: Build HubSpot Contacts to Google Contacts Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build hubspot-contacts-to-google-contacts
-      - name: Build Kafka Consumer Producer Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build kafka_consumer_producer
-      - name: Build Kafka Salesforce Integration Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build kafka_salesforce_integration
-      - name: Build MySQL Client with Transactions Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build mysql-client-with-transactions
-      - name: Build MySQL Record to Salesforce New Product Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build mysql-record-to-salesforce-new-product
-      - name: Build NewsAPI Headlines to Email Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build newsapi_headlines-to-email
-      - name: Build Pattern Scatter Gather Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build pattern-scatter-gather
-      - name: Build Population Service Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build population_service
-      - name: Build Produce and Consume Services Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build produce_and_consume_services
-      - name: Build RESTful API with Data Mapper Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build restful-api-with-data-mapper
-      - name: Build RESTful API Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build restful_api
-      - name: Build Salesforce New Contact to Twilio SMS Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build salesforce-new-contact-to-twilio-sms
-      - name: Build ServiceNow Case to Salesforce Case Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build servicenow-case-to-salesforce-case
-      - name: Build Shopify Customer to Salesforce Customer Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build shopify-customer-to-salesforce-customer
-      - name: Build Shopify New Customers to Outlook Mail Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build shopify-new-customers-to-outlook-mail
-      - name: Build Working With Data Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build working_with_data
-      - name: Build Working With Databases Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build working_with_databases
-      - name: Build Working With JSON Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build working_with_json
+          args: build grpc_api
