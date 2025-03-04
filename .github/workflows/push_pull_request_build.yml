@@ -80,17 +80,17 @@ jobs:
     strategy:
       matrix:
         subdirectory: [
-          data-validation\ballerina,
-          model-data-streams\ballerina,
-          declarative-data-processing\ballerina,
-          model-optionality\ballerina,
-          immutability\ballerina,
-          model-tabular-data\ballerina,
-          model-choices\ballerina,
-          pattern-matching\ballerina,
-          model-constrained-flexible-data\ballerina,
-          xml-support\ballerina,
-          model-data-as-data\ballerina
+          data-validation/ballerina,
+          model-data-streams/ballerina,
+          declarative-data-processing/ballerina,
+          model-optionality/ballerina,
+          immutability/ballerina,
+          model-tabular-data/ballerina,
+          model-choices/ballerina,
+          pattern-matching/ballerina,
+          model-constrained-flexible-data/ballerina,
+          xml-support/ballerina,
+          model-data-as-data/ballerina
         ]
     steps:
       - uses: actions/checkout@v3
