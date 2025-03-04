@@ -80,8 +80,8 @@ isolated function clientaryInvoiceToQuickBooksInvoice(ronin:Invoice invoice, Qui
     Line: from var invoiceItem in invoice.invoice_items ?: []
         let int quantity = invoiceItem.quantity ?: 0
         let decimal quantityInDecimal = check decimal:fromString(quantity.toString())
-        let string price = invoiceItem.price ?: "0.0"
-        let decimal priceInDecimal = check decimal:fromString(price)
+        let string|float price = invoiceItem.price ?: "0.0"
+        let decimal priceInDecimal = check decimal:fromString(price.toString())
         select {
             DetailType: "SalesItemLineDetail",
             Amount: priceInDecimal * quantityInDecimal,
