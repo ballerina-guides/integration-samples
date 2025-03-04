@@ -29,7 +29,6 @@ jobs:
           github-pull-requests-to-stdout,
           gmail-to-salesforce-lead,
           graphql-social-media-service,
-          graphql_api,
           graphql_bookstore_service,
           gsheet-new-row-to-salesforce-new-contact,
           hubspot-contacts-to-google-contacts,
@@ -75,3 +74,27 @@ jobs:
         uses: ballerina-platform/ballerina-action@master
         with:
           args: build grpc_api
+
+  build-data-oriented-programming:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        subdirectory: [
+          data-validation\ballerina,
+          model-data-streams\ballerina,
+          declarative-data-processing\ballerina,
+          model-optionality\ballerina,
+          immutability\ballerina,
+          model-tabular-data\ballerina,
+          model-choices\ballerina,
+          pattern-matching\ballerina,
+          model-constrained-flexible-data\ballerina,
+          xml-support\ballerina,
+          model-data-as-data\ballerina
+        ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build ${{ matrix.subdirectory }} Package
+        uses: ballerina-platform/ballerina-action@master
+        with:
+          args: build data-oriented-programming/${{ matrix.subdirectory }}
