@@ -16,7 +16,7 @@ jobs:
           azure-cosmosdb-data-as-rest-api,
           clientary_invoices_to_quickbooks_online_invoices,
           consuming_services,
-          data_integration/database/db_peristence,
+          data_integration/database/db_persistence,
           data_integration/database/db_sql_client,
           data_integration/transformation,
           edi-code-generation,
