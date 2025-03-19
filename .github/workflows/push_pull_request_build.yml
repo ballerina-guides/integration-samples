@@ -5,52 +5,97 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
   workflow_dispatch:
 
 jobs:
-  build:
+  build-packages:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        package: [
+          azure-cosmosdb-data-as-rest-api,
+          clientary_invoices_to_quickbooks_online_invoices,
+          consuming_services,
+          data_integration/database/db_persistence,
+          data_integration/database/db_sql_client,
+          data_integration/transformation,
+          edi-code-generation,
+          edi-package-generation/edi_service,
+          ftp-edi-message-to-salesforce-opportunity,
+          gcalendar-new-event-to-trello-card,
+          gcalendar-new-event-to-trello-card-and-twillio-msg,
+          gdrive-files-to-microsoft-onedrive-files,
+          github-issue-summary-to-email,
+          github-pull-requests-to-gsheets,
+          github-pull-requests-to-stdout,
+          gmail-to-salesforce-lead,
+          graphql-social-media-service,
+          graphql_bookstore_service,
+          gsheet-new-row-to-salesforce-new-contact,
+          hubspot-contacts-to-google-contacts,
+          kafka_consumer_producer,
+          kafka_salesforce_integration,
+          mysql-client-with-transactions,
+          mysql-record-to-salesforce-new-product,
+          newsapi_headlines-to-email,
+          pattern-scatter-gather,
+          population_service,
+          produce_and_consume_services,
+          restful-api-with-data-mapper,
+          restful_api,
+          salesforce-new-contact-to-twilio-sms,
+          servicenow-case-to-salesforce-case,
+          shopify-customer-to-salesforce-customer,
+          shopify-new-customers-to-outlook-mail,
+          working_with_data,
+          working_with_databases,
+          working_with_json
+        ]
     steps:
       - uses: actions/checkout@v3
-      - name: Build Consuming Services Package
+      - name: Build ${{ matrix.package }} Package
         uses: ballerina-platform/ballerina-action@master
         with:
-          args: 
-            build consuming_services
-      - name: Build Graphql API Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build graphql_api
+          args: build ${{ matrix.package }}
+
+  generate-grpc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - name: Ballerina Generate gRPC
         uses: ballerina-platform/ballerina-action@master
         with:
-          args: 
-            grpc --input ./grpc_api/descriptor_record_store.proto --output ./grpc_api/
+          args: grpc --input ./grpc_api/descriptor_record_store.proto --output ./grpc_api/
+
+  build-grpc-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - name: Build GRPC API Package
         uses: ballerina-platform/ballerina-action@master
         with:
-          args: 
-            build grpc_api
-      - name: Build Kafka Consumer Producer Package
+          args: build grpc_api
+
+  build-data-oriented-programming:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        subdirectory: [
+          data-validation/ballerina,
+          model-data-streams,
+          declarative-data-processing,
+          model-optionality/ballerina,
+          immutability/ballerina,
+          model-tabular-data,
+          model-choices/ballerina,
+          pattern-matching/ballerina,
+          model-constrained-flexible-data/ballerina,
+          xml-support/ballerina,
+          model-data-as-data/ballerina
+        ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build ${{ matrix.subdirectory }} Package
         uses: ballerina-platform/ballerina-action@master
         with:
-          args: 
-            build kafka_consumer_producer
-      - name: Build RESTful API Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build restful_api
-      - name: Build Working With Data Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build working_with_data
-      - name: Build Working With Databases Package
-        uses: ballerina-platform/ballerina-action@master
-        with:
-          args: 
-            build working_with_databases
+          args: build data-oriented-programming/${{ matrix.subdirectory }}
