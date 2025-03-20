@@ -82,7 +82,7 @@ jobs:
       - name: Ballerina Generate gRPC
         uses: ballerina-platform/ballerina-action@master
         with:
-          args: edi ./edi-code-generation/schemas/edi-schema.json -o ./edi-code-generation/edi.bal
+          args: tool pull edi && bal edi ./edi-code-generation/schemas/edi-schema.json -o ./edi-code-generation/edi.bal
 
   build-edi:
     runs-on: ubuntu-latest
@@ -91,7 +91,7 @@ jobs:
       - name: Ballerina Generate gRPC
         uses: ballerina-platform/ballerina-action@master
         with:
-          args: build ./edi-code-generation
+          args: tool pull edi && bal build ./edi-code-generation
 
   build-data-oriented-programming:
     runs-on: ubuntu-latest
