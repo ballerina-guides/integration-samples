@@ -80,7 +80,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Setup Ballerina
-        uses: ballerina-platform/setup-ballerina@v1
+        uses: ballerina-platform/setup-ballerina@v1.1.3
         with:
           ballerina-version: 'latest'
       - name: Build Pull EDI tool
