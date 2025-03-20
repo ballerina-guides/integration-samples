@@ -82,9 +82,13 @@ jobs:
       - name: Setup Ballerina
         uses: ballerina-platform/setup-ballerina@v1
         with:
-          ballerina-version: 'slbeta5'
+          ballerina-version: 'latest'
+      - name: Build Pull EDI tool
+        run: bal tool pull edi
+      - name: Generate EDI 
+        run: bal edi ./edi-code-generation/schemas/edi-schema.json -o ./edi-code-generation/edi.bal
       - name: Build EDI Package
-        run: bal tool pull edi && bal build ./edi-code-generation
+        run: bal build ./edi-code-generation/edi.bal
 
   build-data-oriented-programming:
     runs-on: ubuntu-latest
