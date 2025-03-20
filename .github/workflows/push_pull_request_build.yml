@@ -80,21 +80,6 @@ jobs:
           ballerina-version: 'slbeta5'
       - name: Build GRPC API Package
         run: bal build grpc_api
-  
-  generate-edi:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Ballerina
-        uses: ballerina-platform/setup-ballerina@v1
-        with:
-          ballerina-version: 'slbeta5'
-      - name: Pull Ballerina EDI
-        run: bal tool pull edi 
-      - name: Generate EDI
-        run: bal edi ./edi-code-generation/schemas/edi-schema.json -o ./edi-code-generation/edi.bal
-      - name: Build EDI
-        run: bal build ./edi-code-generation
 
   build-edi:
     runs-on: ubuntu-latest
