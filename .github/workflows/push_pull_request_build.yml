@@ -86,7 +86,7 @@ jobs:
       - name: Build Pull EDI tool
         run: bal tool pull edi
       - name: Generate EDI 
-        run: bal edi ./edi-code-generation/schemas/edi-schema.json -o ./edi-code-generation/edi.bal
+        run: bal edi -i ./edi-code-generation/schemas/edi-schema.json -o ./edi-code-generation/edi.bal
       - name: Build EDI Package
         run: bal build ./edi-code-generation/edi.bal
 
