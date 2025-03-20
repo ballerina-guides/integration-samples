@@ -19,7 +19,6 @@ jobs:
           data_integration/database/db_persistence,
           data_integration/database/db_sql_client,
           data_integration/transformation,
-          edi-code-generation,
           edi-package-generation/edi_service,
           ftp-edi-message-to-salesforce-opportunity,
           gcalendar-new-event-to-trello-card,
@@ -75,6 +74,24 @@ jobs:
         uses: ballerina-platform/ballerina-action@master
         with:
           args: build grpc_api
+  
+  generate-edi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Ballerina Generate gRPC
+        uses: ballerina-platform/ballerina-action@master
+        with:
+          args: edi ./edi-code-generation/schemas/edi-schema.json -o ./edi-code-generation/edi.bal
+
+  build-edi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Ballerina Generate gRPC
+        uses: ballerina-platform/ballerina-action@master
+        with:
+          args: build ./edi-code-generation
 
   build-data-oriented-programming:
     runs-on: ubuntu-latest
