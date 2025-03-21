@@ -19,7 +19,6 @@ jobs:
           data_integration/database/db_persistence,
           data_integration/database/db_sql_client,
           data_integration/transformation,
-          edi-package-generation/edi_service,
           ftp-edi-message-to-salesforce-opportunity,
           gcalendar-new-event-to-trello-card,
           gcalendar-new-event-to-trello-card-and-twillio-msg,
@@ -85,10 +84,16 @@ jobs:
           version: latest
       - name: Build Pull EDI tool
         run: bal tool pull edi
-      - name: Generate EDI 
+      - name: Generate EDI  code
         run: bal edi codegen -i ./edi-code-generation/schemas/edi-schema.json -o ./edi-code-generation/edi.bal
       - name: Build EDI Package
         run: bal build ./edi-code-generation/edi.bal
+      - name: Generate EDI Package
+        run: bal edi libgen -p citymart/porder -i schemas -o ./edi-package-generation/lib 
+      - name: Generate EDI Package
+        run: cd ./edi-package-generation/lib/porder/ && bal pack && bal push --repository=local
+      - name: Build EDI service
+        run: bal build ./edi-package-generation/edi_service
 
   build-data-oriented-programming:
     runs-on: ubuntu-latest
