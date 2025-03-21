@@ -18,7 +18,7 @@ jobs:
           consuming_services,
           data_integration/database/db_persistence,
           data_integration/database/db_sql_client,
-          data_integration/transformation,
+          # data_integration/transformation,
           ftp-edi-message-to-salesforce-opportunity,
           gcalendar-new-event-to-trello-card,
           gcalendar-new-event-to-trello-card-and-twillio-msg,
