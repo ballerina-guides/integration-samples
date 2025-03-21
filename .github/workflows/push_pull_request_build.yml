@@ -18,9 +18,7 @@ jobs:
           consuming_services,
           data_integration/database/db_persistence,
           data_integration/database/db_sql_client,
-          data_integration/transformation,
-          edi-code-generation,
-          edi-package-generation/edi_service,
+          # data_integration/transformation,
           ftp-edi-message-to-salesforce-opportunity,
           gcalendar-new-event-to-trello-card,
           gcalendar-new-event-to-trello-card-and-twillio-msg,
@@ -75,6 +73,27 @@ jobs:
         uses: ballerina-platform/ballerina-action@master
         with:
           args: build grpc_api
+  
+  build-edi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Ballerina
+        uses: ballerina-platform/setup-ballerina@v1.1.3
+        with:
+          version: latest
+      - name: Build Pull EDI tool
+        run: bal tool pull edi
+      - name: Generate EDI  code
+        run: bal edi codegen -i ./edi-code-generation/schemas/edi-schema.json -o ./edi-code-generation/edi.bal
+      - name: Build EDI Package
+        run: bal build ./edi-code-generation/edi.bal
+      - name: Generate EDI Package
+        run: bal edi libgen -p citymart/porder -i ./edi-package-generation/schemas -o ./edi-package-generation/lib 
+      - name: Generate EDI Package
+        run: cd ./edi-package-generation/lib/porder/ && bal pack && bal push --repository=local
+      - name: Build EDI service
+        run: bal build ./edi-package-generation/edi_service
 
   build-data-oriented-programming:
     runs-on: ubuntu-latest
