@@ -89,7 +89,7 @@ jobs:
       - name: Build EDI Package
         run: bal build ./edi-code-generation/edi.bal
       - name: Generate EDI Package
-        run: bal edi libgen -p citymart/porder -i schemas -o ./edi-package-generation/lib 
+        run: bal edi libgen -p citymart/porder -i ./edi-package-generation/schemas -o ./edi-package-generation/lib 
       - name: Generate EDI Package
         run: cd ./edi-package-generation/lib/porder/ && bal pack && bal push --repository=local
       - name: Build EDI service
