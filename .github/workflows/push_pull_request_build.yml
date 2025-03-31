@@ -27,7 +27,7 @@ jobs:
           github-pull-requests-to-gsheets,
           github-pull-requests-to-stdout,
           gmail-to-salesforce-lead,
-          graphql-social-media-service,
+          # graphql-social-media-service/ballerina,
           graphql_bookstore_service,
           gsheet-new-row-to-salesforce-new-contact,
           hubspot-contacts-to-google-contacts,
