@@ -23,7 +23,7 @@ jobs:
           gcalendar-new-event-to-trello-card,
           gcalendar-new-event-to-trello-card-and-twillio-msg,
           gdrive-files-to-microsoft-onedrive-files,
-          github-issue-summary-to-email,
+          # github-issue-summary-to-email,
           github-pull-requests-to-gsheets,
           github-pull-requests-to-stdout,
           gmail-to-salesforce-lead,
