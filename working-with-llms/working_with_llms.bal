@@ -13,7 +13,7 @@ service on new http:Listener(port) {
             returns Attraction[]|http:InternalServerError {
 
         Attraction[]|error attractions = natural {
-            Tell me the top ${count} places to visit in ${country} which are 
+            Tell me the top ${count} attractions to visit in ${country} which are 
             good for a tourist who has an interest in ${interest} to visit.  
             Include a highlight one-liner about that place.
         };
