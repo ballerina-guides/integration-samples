@@ -47,7 +47,8 @@ jobs:
           shopify-new-customers-to-outlook-mail,
           working_with_data,
           working_with_databases,
-          working_with_json
+          working_with_json,
+          working_with_llms
         ]
     steps:
       - uses: actions/checkout@v3
@@ -118,3 +119,12 @@ jobs:
         uses: ballerina-platform/ballerina-action@master
         with:
           args: build data-oriented-programming/${{ matrix.subdirectory }}
+  
+  build-working-with-llms:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Working with LLMs Package
+        uses: ballerina-platform/ballerina-action@2201.13.0-m1
+        with:
+          args: build --experimental working-with-llms
