@@ -5,7 +5,7 @@ on:
     branches:
       - 'main'
     paths:
-      - 'working_with_llms/working_with_llms.bal'
+      - 'working-with-llms/working_with_llms.bal'
 
 jobs:
   build:

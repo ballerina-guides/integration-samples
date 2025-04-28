@@ -47,8 +47,7 @@ jobs:
           shopify-new-customers-to-outlook-mail,
           working_with_data,
           working_with_databases,
-          working_with_json,
-          working_with_llms
+          working_with_json
         ]
     steps:
       - uses: actions/checkout@v3
