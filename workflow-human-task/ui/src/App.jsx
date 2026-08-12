@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
-// Identity headers used by the workflow management API for role-based access.
-// In a real application these come from your login/identity provider.
+// Identity headers for the workflow management API: the role filters which
+// tasks this caller sees, and the user ID is recorded on decisions. The module
+// does not authenticate callers — in a real application a backend or gateway
+// sets these from the logged-in user.
 const HEADERS = {
   'Content-Type': 'application/json',
   'x-user-id': 'alice',
