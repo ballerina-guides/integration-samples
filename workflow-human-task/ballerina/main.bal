@@ -34,7 +34,7 @@ function claimApprovalWorkflow(workflow:Context ctx, Claim claim) returns string
 @workflow:Activity
 function verifyClaim(Claim claim) returns boolean|error {
     io:println(string `Verifying claim ${claim.claimId} against policy ${claim.policyNo}`);
-    return claim.amount > 0.0d;
+    return claim.amount <= 1000.0d;
 }
 
 @workflow:Activity
