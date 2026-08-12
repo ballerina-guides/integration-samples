@@ -13,7 +13,7 @@ type PayoutRequest record {|
 @workflow:Workflow
 function claimPayoutWorkflow(workflow:Context ctx, PayoutRequest request) returns string|error {
     decimal localAmount = check ctx->callActivity(convertCurrency,
-            {"amount": request.amount, "currency": request.currency},
+            {"claimId": request.claimId, "amount": request.amount, "currency": request.currency},
             retryPolicy = {maxRetries: 3, retryDelay: 2.0, retryBackoff: 2.0});
     string depositRef = check ctx->callActivity(depositPayout,
             {"accountNo": request.accountNo, "amount": localAmount},
@@ -23,17 +23,19 @@ function claimPayoutWorkflow(workflow:Context ctx, PayoutRequest request) return
     return string `Claim ${request.claimId} paid. Deposit reference: ${depositRef}`;
 }
 
-int convertAttempts = 0;
+map<int> convertAttempts = {};
 
-// Simulates a flaky exchange-rate service: the first two calls fail,
-// the third succeeds. The AutoRetry policy recovers without any human help.
+// Simulates a flaky exchange-rate service: for each claim, the first two
+// calls fail and the third succeeds. The AutoRetry policy recovers without
+// any human help.
 @workflow:Activity
-function convertCurrency(decimal amount, string currency) returns decimal|error {
-    convertAttempts += 1;
-    if convertAttempts % 3 != 0 {
-        return error(string `Exchange rate service is unavailable (attempt ${convertAttempts})`);
+function convertCurrency(string claimId, decimal amount, string currency) returns decimal|error {
+    int attempts = (convertAttempts[claimId] ?: 0) + 1;
+    convertAttempts[claimId] = attempts;
+    if attempts < 3 {
+        return error(string `Exchange rate service is unavailable (attempt ${attempts})`);
     }
-    io:println(string `Converted ${amount} ${currency} on attempt ${convertAttempts}`);
+    io:println(string `Converted ${amount} ${currency} on attempt ${attempts}`);
     return currency == "USD" ? amount * 300.0d : amount;
 }
 
