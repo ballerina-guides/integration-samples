@@ -134,8 +134,8 @@ jobs:
       matrix:
         package: [
           workflow-claim-processing,
-          workflow-human-task/ballerina,
-          workflow-error-handling/ballerina
+          workflow-human-task,
+          workflow-error-handling
         ]
     steps:
       - uses: actions/checkout@v3

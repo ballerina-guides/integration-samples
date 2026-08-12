@@ -24,10 +24,9 @@ The operator reviews failures through the module's built-in **management API**, 
    temporal server start-dev
    ```
 
-2. Run the Ballerina service:
+2. Run the Ballerina service from this directory:
 
    ```bash
-   cd ballerina
    bal run
    ```
 
