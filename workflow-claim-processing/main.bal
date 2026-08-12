@@ -7,16 +7,6 @@ type Claim record {|
     decimal amount;
 |};
 
-@workflow:Workflow
-function claimProcessingWorkflow(workflow:Context ctx, Claim claim) returns string|error {
-    boolean verified = check ctx->callActivity(verifyClaim, {"claim": claim});
-    if !verified {
-        return string `Claim ${claim.claimId} was rejected during verification.`;
-    }
-    string paymentRef = check ctx->callActivity(makePayment, {"claimId": claim.claimId, "amount": claim.amount});
-    return string `Claim ${claim.claimId} approved. Payment reference: ${paymentRef}`;
-}
-
 @workflow:Activity
 function verifyClaim(Claim claim) returns boolean|error {
     io:println(string `Verifying claim ${claim.claimId} against policy ${claim.policyNo}`);
@@ -27,6 +17,16 @@ function verifyClaim(Claim claim) returns boolean|error {
 function makePayment(string claimId, decimal amount) returns string|error {
     io:println(string `Paying ${amount} for claim ${claimId}`);
     return string `PAY-${claimId}`;
+}
+
+@workflow:Workflow
+function claimProcessingWorkflow(workflow:Context ctx, Claim claim) returns string|error {
+    boolean verified = check ctx->callActivity(verifyClaim, {"claim": claim});
+    if !verified {
+        return string `Claim ${claim.claimId} was rejected during verification.`;
+    }
+    string paymentRef = check ctx->callActivity(makePayment, {"claimId": claim.claimId, "amount": claim.amount});
+    return string `Claim ${claim.claimId} approved. Payment reference: ${paymentRef}`;
 }
 
 public function main() returns error? {
