@@ -1,0 +1,9 @@
+# Workflow engine — runs against a local Temporal development server.
+[ballerina.workflow]
+mode = "LOCAL"
+
+# Management API — exposed at http://localhost:8234/workflow/
+[ballerina.workflow.management]
+enableManagementApi = true
+port = 8234
+enableBasicAuth = false
