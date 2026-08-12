@@ -6,7 +6,11 @@ An insurance claim workflow that pauses for a manager's decision between two aut
 2. `approveClaim` — a **human task**; the workflow durably waits (for hours or days) until a manager approves or rejects the claim.
 3. `makePayment` — pays the approved amount.
 
-The manager completes the task through the module's built-in **management API**. A minimal single-page React app under [`ui/`](ui/) lists the pending tasks and posts the decision.
+The manager completes the task through the module's built-in **management API**. A minimal single-page React dashboard under [`ui/`](ui/) has three tabs:
+
+- **Workflows** — the workflow instances; each detail view shows the workflow input and every activity with its input, output, started time, and status.
+- **Human Tasks** — pending approvals with Approve/Reject.
+- **Failed Activities** — failed activities waiting for review (used by the [workflow-error-handling](../workflow-error-handling) sample; the same dashboard works for both).
 
 ## Prerequisites
 
@@ -47,7 +51,7 @@ The manager completes the task through the module's built-in **management API**.
         -d '{"claimId": "CLM-001", "policyNo": "POL-1234", "amount": 750.0}'
    ```
 
-5. Open <http://localhost:3000>, review the pending task, and click **Approve** or **Reject**.
+5. Open <http://localhost:3000>. The **Workflows** tab lists the claim workflow — open its details to see the input and activity progress. Under **Human Tasks**, review the pending task and click **Approve** or **Reject**.
 
 6. Check the result:
 

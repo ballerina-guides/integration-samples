@@ -8,7 +8,11 @@ A claim payout workflow that shows the two ways to recover from activity failure
 
 Because every completed activity result is stored durably, replaying the failed activity never re-executes the earlier steps — each activity behaves as its own store-and-forward stage.
 
-A minimal single-page React app under [`ui/`](ui/) lists failed activities and posts the replay decision through the module's built-in **management API**.
+A minimal single-page React dashboard under [`ui/`](ui/) talks to the module's built-in **management API** and has three tabs:
+
+- **Workflows** — the workflow instances; each detail view shows the workflow input and every activity with its input, output, started time, and status.
+- **Human Tasks** — pending human tasks (used by the [workflow-human-task](../workflow-human-task) sample; the same dashboard works for both).
+- **Failed Activities** — failed activities waiting for review, with Retry / Retry with changes / Reject.
 
 ## Prerequisites
 
@@ -51,7 +55,7 @@ A minimal single-page React app under [`ui/`](ui/) lists failed activities and p
 
    Watch the service logs: `convertCurrency` fails twice and succeeds on the third automatic retry. `depositPayout` then fails and suspends the workflow for review.
 
-5. Open <http://localhost:3000>, fix the `accountNo` to `ACC-12345` in the input box, and click **Retry with changes**. The workflow resumes from the failed activity and completes.
+5. Open <http://localhost:3000>. The **Workflows** tab lists the payout workflow — open its details to see the workflow input and each activity's input, output, and status, including the failed `depositPayout` attempt. Under **Failed Activities**, fix the `accountNo` to `ACC-12345` in the input box and click **Retry with changes**. The workflow resumes from the failed activity and completes.
 
 6. Check the result:
 
