@@ -20,7 +20,15 @@ The included `Config.toml` uses the `IN_MEMORY` engine, so no external server is
 mode = "IN_MEMORY"
 ```
 
-To run against a durable [Temporal](https://temporal.io) engine instead, set `mode = "LOCAL"` in `Config.toml` and start a development server with:
+To run against a durable [Temporal](https://temporal.io) engine instead, set `mode = "LOCAL"` and a unique `taskQueue` in `Config.toml`:
+
+```toml
+[ballerina.workflow]
+mode = "LOCAL"
+taskQueue = "CLAIM_PROCESSING_QUEUE"
+```
+
+and start a development server with:
 
 ```bash
 temporal server start-dev

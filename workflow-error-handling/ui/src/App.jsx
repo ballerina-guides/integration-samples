@@ -21,12 +21,37 @@ async function api(path, options = {}) {
 
 const boxStyle = { border: '1px solid #ccc', borderRadius: 8, padding: 16, marginBottom: 12, listStyle: 'none' };
 const preStyle = { background: '#f6f6f6', padding: 8, margin: '4px 0', overflowX: 'auto' };
+// Listings are namespace-wide, so items from other integrations sharing the
+// same Temporal server also show up. Items that this integration's worker
+// does not serve — a different task queue, or a workflow type without an
+// active worker — are grayed out and their actions disabled.
+const inactiveStyle = { ...boxStyle, opacity: 0.5 };
+
+// This integration's task queue, from ui/.env (matches ballerina/Config.toml).
+const MY_TASK_QUEUE = import.meta.env.VITE_TASK_QUEUE || null;
+
+function hasActiveWorker(item, type, activeTypes) {
+  if (MY_TASK_QUEUE && item.taskQueue && item.taskQueue !== MY_TASK_QUEUE) {
+    return false;
+  }
+  return activeTypes.has(type);
+}
 
 function Json({ value }) {
   if (value === null || value === undefined) {
     return <em>none</em>;
   }
   return <pre style={preStyle}>{JSON.stringify(value, null, 2)}</pre>;
+}
+
+// Workflow type of a task, e.g. "workflow-claimPayoutWorkflow.depositPayout" → "claimPayoutWorkflow".
+function taskWorkflowType(task) {
+  const type = task.parentWorkflowType || (task.taskName || '').split('.')[0];
+  return type.replace(/^workflow-/, '');
+}
+
+function NoWorkerNote() {
+  return <p><em>No active worker for this workflow type — start its integration to act on it.</em></p>;
 }
 
 // ── Workflows ────────────────────────────────────────────────────────────────
@@ -100,7 +125,7 @@ function WorkflowDetail({ workflow, onBack }) {
   );
 }
 
-function Workflows() {
+function Workflows({ activeTypes }) {
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState(null);
   const [error, setError] = useState(null);
@@ -125,13 +150,17 @@ function Workflows() {
       {error && <p style={{ color: 'red' }}>Cannot reach the management API: {error}</p>}
       {items.length === 0 && !error && <p>No workflows yet. Start one and it will appear here.</p>}
       <ul style={{ padding: 0 }}>
-        {items.map((w) => (
-          <li key={w.workflowId} style={boxStyle}>
-            <strong>{w.workflowType}</strong> — {w.status}
-            <p>ID: {w.workflowId}<br />Started: {w.startTime}</p>
-            <button onClick={() => setSelected(w)}>View details</button>
-          </li>
-        ))}
+        {items.map((w) => {
+          const active = hasActiveWorker(w, w.workflowType, activeTypes);
+          return (
+            <li key={w.workflowId} style={active ? boxStyle : inactiveStyle}>
+              <strong>{w.workflowType}</strong> — {w.status}
+              <p>ID: {w.workflowId}<br />Started: {w.startTime}</p>
+              {!active && <NoWorkerNote />}
+              <button onClick={() => setSelected(w)}>View details</button>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
@@ -139,7 +168,7 @@ function Workflows() {
 
 // ── Human tasks ──────────────────────────────────────────────────────────────
 
-function HumanTask({ task, onDone }) {
+function HumanTask({ task, active, onDone }) {
   const [comment, setComment] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
@@ -160,24 +189,26 @@ function HumanTask({ task, onDone }) {
   };
 
   return (
-    <li style={boxStyle}>
+    <li style={active ? boxStyle : inactiveStyle}>
       <strong>{task.title || task.taskName}</strong>
       <p>{task.description}</p>
       <Json value={task.payload} />
+      {!active && <NoWorkerNote />}
       <input
         placeholder="Comment"
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         style={{ width: '60%', marginRight: 8 }}
+        disabled={!active}
       />
-      <button disabled={busy} onClick={() => decide(true)}>Approve</button>{' '}
-      <button disabled={busy} onClick={() => decide(false)}>Reject</button>
+      <button disabled={busy || !active} onClick={() => decide(true)}>Approve</button>{' '}
+      <button disabled={busy || !active} onClick={() => decide(false)}>Reject</button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </li>
   );
 }
 
-function HumanTasks() {
+function HumanTasks({ activeTypes }) {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
 
@@ -186,7 +217,7 @@ function HumanTasks() {
       // The list endpoint returns summaries; fetch each task for its payload.
       const list = await api('/human-tasks?status=PENDING');
       const details = await Promise.all(
-        (list.items || []).map((t) => api(`/human-tasks/${encodeURIComponent(t.taskId)}`)),
+        (list.items || []).map((t) => api(`/human-tasks/${encodeURIComponent(t.taskId)}`).then((d) => ({ ...t, ...d }))),
       );
       setTasks(details);
       setError(null);
@@ -206,7 +237,9 @@ function HumanTasks() {
       {error && <p style={{ color: 'red' }}>Cannot reach the management API: {error}</p>}
       {tasks.length === 0 && !error && <p>No pending tasks.</p>}
       <ul style={{ padding: 0 }}>
-        {tasks.map((t) => <HumanTask key={t.taskId} task={t} onDone={load} />)}
+        {tasks.map((t) => (
+          <HumanTask key={t.taskId} task={t} active={hasActiveWorker(t, taskWorkflowType(t), activeTypes)} onDone={load} />
+        ))}
       </ul>
     </div>
   );
@@ -214,7 +247,7 @@ function HumanTasks() {
 
 // ── Failed activities (review) ───────────────────────────────────────────────
 
-function FailedActivity({ task, onDone }) {
+function FailedActivity({ task, active, onDone }) {
   const [inputJson, setInputJson] = useState(JSON.stringify(task.activityArgs || {}, null, 2));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
@@ -243,10 +276,11 @@ function FailedActivity({ task, onDone }) {
   }));
 
   return (
-    <li style={boxStyle}>
+    <li style={active ? boxStyle : inactiveStyle}>
       <strong>{task.activityName || task.taskName}</strong>
       <p>Workflow: {task.parentWorkflowId}</p>
       <p style={{ color: 'red' }}>{task.errorMessage}</p>
+      {!active && <NoWorkerNote />}
       <label>
         Activity input (edit to retry with corrected values):
         <textarea
@@ -254,17 +288,18 @@ function FailedActivity({ task, onDone }) {
           value={inputJson}
           onChange={(e) => setInputJson(e.target.value)}
           style={{ width: '100%', fontFamily: 'monospace' }}
+          disabled={!active}
         />
       </label>
-      <button disabled={busy} onClick={retry}>Retry</button>{' '}
-      <button disabled={busy} onClick={retryWithInput}>Retry with changes</button>{' '}
-      <button disabled={busy} onClick={reject}>Reject</button>
+      <button disabled={busy || !active} onClick={retry}>Retry</button>{' '}
+      <button disabled={busy || !active} onClick={retryWithInput}>Retry with changes</button>{' '}
+      <button disabled={busy || !active} onClick={reject}>Reject</button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </li>
   );
 }
 
-function FailedActivities() {
+function FailedActivities({ activeTypes }) {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
 
@@ -273,7 +308,7 @@ function FailedActivities() {
       // The list endpoint returns summaries; fetch each task for its error and input.
       const list = await api('/review-activities?status=PENDING');
       const details = await Promise.all(
-        (list.items || []).map((t) => api(`/review-activities/${encodeURIComponent(t.taskId)}`)),
+        (list.items || []).map((t) => api(`/review-activities/${encodeURIComponent(t.taskId)}`).then((d) => ({ ...t, ...d }))),
       );
       setTasks(details);
       setError(null);
@@ -293,7 +328,9 @@ function FailedActivities() {
       {error && <p style={{ color: 'red' }}>Cannot reach the management API: {error}</p>}
       {tasks.length === 0 && !error && <p>No failed activities waiting for review.</p>}
       <ul style={{ padding: 0 }}>
-        {tasks.map((t) => <FailedActivity key={t.taskId} task={t} onDone={load} />)}
+        {tasks.map((t) => (
+          <FailedActivity key={t.taskId} task={t} active={hasActiveWorker(t, taskWorkflowType(t), activeTypes)} onDone={load} />
+        ))}
       </ul>
     </div>
   );
@@ -301,20 +338,33 @@ function FailedActivities() {
 
 // ── App ──────────────────────────────────────────────────────────────────────
 
-const TABS = {
-  Workflows: <Workflows />,
-  'Human Tasks': <HumanTasks />,
-  'Failed Activities': <FailedActivities />,
-};
+const TAB_NAMES = ['Workflows', 'Human Tasks', 'Failed Activities'];
 
 export default function App() {
   const [tab, setTab] = useState('Workflows');
+  const [activeTypes, setActiveTypes] = useState(new Set());
+
+  // Workflow types with an active worker in this integration; everything
+  // else on the shared Temporal server is shown grayed out.
+  const loadDefinitions = () => {
+    api('/definitions')
+      .then((d) => setActiveTypes(new Set(
+        (d.definitions || []).filter((def) => def.isActive).map((def) => def.workflowType),
+      )))
+      .catch(() => setActiveTypes(new Set()));
+  };
+
+  useEffect(() => {
+    loadDefinitions();
+    const id = setInterval(loadDefinitions, 15000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <main style={{ fontFamily: 'sans-serif', maxWidth: 720, margin: '2rem auto' }}>
       <h1>Workflow dashboard</h1>
       <nav style={{ marginBottom: 16 }}>
-        {Object.keys(TABS).map((name) => (
+        {TAB_NAMES.map((name) => (
           <button
             key={name}
             onClick={() => setTab(name)}
@@ -324,7 +374,9 @@ export default function App() {
           </button>
         ))}
       </nav>
-      {TABS[tab]}
+      {tab === 'Workflows' && <Workflows activeTypes={activeTypes} />}
+      {tab === 'Human Tasks' && <HumanTasks activeTypes={activeTypes} />}
+      {tab === 'Failed Activities' && <FailedActivities activeTypes={activeTypes} />}
     </main>
   );
 }

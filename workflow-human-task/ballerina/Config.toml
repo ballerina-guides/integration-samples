@@ -1,6 +1,9 @@
 # Workflow engine — runs against a local Temporal development server.
+# Each integration needs its own task queue so samples sharing the same
+# Temporal server do not conflict.
 [ballerina.workflow]
 mode = "LOCAL"
+taskQueue = "CLAIM_APPROVAL_QUEUE"
 
 # Management API — exposed at http://localhost:8234/workflow/
 [ballerina.workflow.management]
