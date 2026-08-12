@@ -34,6 +34,7 @@ public function main() returns error? {
             {claimId: "CLM-001", policyNo: "POL-1234", amount: 750.0d});
     io:println("Workflow started with ID: " + workflowId);
 
-    anydata result = check workflow:getWorkflowResult(workflowId);
+    // Blocks until the workflow completes or the timeout (in seconds) is reached.
+    anydata result = check workflow:getWorkflowResult(workflowId, 60);
     io:println("Result: " + result.toString());
 }

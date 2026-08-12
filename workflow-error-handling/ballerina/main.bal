@@ -1,7 +1,7 @@
 import ballerina/http;
 import ballerina/io;
 import ballerina/workflow;
-import ballerina/workflow.management as _;
+import ballerina/workflow.management;
 
 type PayoutRequest record {|
     string claimId;
@@ -63,7 +63,13 @@ service /payouts on new http:Listener(8080) {
     }
 
     resource function get [string workflowId]() returns json|error {
-        anydata result = check workflow:getWorkflowResult(workflowId, 5);
-        return {workflowId, result: check result.cloneWithType(json)};
+        // Check the status first instead of blocking on the result:
+        // getWorkflowResult waits until the workflow completes.
+        management:WorkflowExecutionInfo info = check management:getWorkflowInfo(workflowId);
+        if info.status != "COMPLETED" {
+            return {workflowId, status: info.status};
+        }
+        anydata result = check workflow:getWorkflowResult(workflowId);
+        return {workflowId, status: info.status, result: check result.cloneWithType(json)};
     }
 }

@@ -51,11 +51,13 @@ service /claims on new http:Listener(8080) {
     }
 
     resource function get [string workflowId]() returns json|error {
+        // Check the status first instead of blocking on the result:
+        // getWorkflowResult waits until the workflow completes.
         management:WorkflowExecutionInfo info = check management:getWorkflowInfo(workflowId);
-        if info.status == "RUNNING" {
-            return {workflowId, status: "IN_PROGRESS"};
+        if info.status != "COMPLETED" {
+            return {workflowId, status: info.status};
         }
         anydata result = check workflow:getWorkflowResult(workflowId);
-        return {workflowId, result: check result.cloneWithType(json)};
+        return {workflowId, status: info.status, result: check result.cloneWithType(json)};
     }
 }
