@@ -32,3 +32,6 @@ Build
 .code
 
 .DS_Store
+
+# Temporal dev-server databases
+*.db

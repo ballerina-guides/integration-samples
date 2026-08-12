@@ -6,11 +6,7 @@ An insurance claim workflow that pauses for a manager's decision between two aut
 2. `approveClaim` — a **human task**; the workflow durably waits (for hours or days) until a manager approves or rejects the claim.
 3. `makePayment` — pays the approved amount.
 
-The manager completes the task through the module's built-in **management API**. A minimal single-page React dashboard under [`ui/`](ui/) has three tabs:
-
-- **Workflows** — the workflow instances; each detail view shows the workflow input and every activity with its input, output, started time, and status.
-- **Human Tasks** — pending approvals with Approve/Reject.
-- **Failed Activities** — failed activities waiting for review (used by the [workflow-error-handling](../workflow-error-handling) sample; the same dashboard works for both).
+The manager completes the task through the module's built-in **management API**, using the shared [workflow-dashboard](../workflow-dashboard) app — a minimal single-page React dashboard with three tabs: **Workflows** (instances with input, activity inputs/outputs, and status), **Human Tasks** (Approve/Reject), and **Failed Activities**.
 
 ## Prerequisites
 
@@ -35,12 +31,12 @@ The manager completes the task through the module's built-in **management API**.
 
    `Config.toml` enables the management API on `http://localhost:8234/workflow/`.
 
-3. Start the approval UI:
+3. Start the shared dashboard, pointing it at this sample's task queue:
 
    ```bash
-   cd ui
+   cd ../workflow-dashboard
    npm install
-   npm run dev
+   VITE_TASK_QUEUE=CLAIM_APPROVAL_QUEUE npm run dev
    ```
 
 4. Submit a claim:

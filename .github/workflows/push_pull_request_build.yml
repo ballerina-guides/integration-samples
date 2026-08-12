@@ -146,22 +146,16 @@ jobs:
       - name: Build ${{ matrix.package }} Package
         run: bal build ${{ matrix.package }}
 
-  build-workflow-sample-uis:
+  build-workflow-dashboard:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ui: [
-          workflow-human-task/ui,
-          workflow-error-handling/ui
-        ]
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Build ${{ matrix.ui }} App
-        working-directory: ${{ matrix.ui }}
+      - name: Build Workflow Dashboard App
+        working-directory: workflow-dashboard
         run: |
           npm ci
           npm run build

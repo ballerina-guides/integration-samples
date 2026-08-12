@@ -21,13 +21,19 @@ async function api(path, options = {}) {
 
 const boxStyle = { border: '1px solid #ccc', borderRadius: 8, padding: 16, marginBottom: 12, listStyle: 'none' };
 const preStyle = { background: '#f6f6f6', padding: 8, margin: '4px 0', overflowX: 'auto' };
+const rowStyle = { border: '1px solid #ccc', borderRadius: 6, padding: '8px 12px', marginBottom: 6, listStyle: 'none' };
+const metaStyle = { color: '#666', fontSize: 13, margin: '2px 0' };
 // Listings are namespace-wide, so items from other integrations sharing the
 // same Temporal server also show up. Items that this integration's worker
 // does not serve — a different task queue, or a workflow type without an
-// active worker — are grayed out and their actions disabled.
+// active worker — are hidden by default. The "Show inactive integrations"
+// filter lists them grayed out with their actions disabled.
 const inactiveStyle = { ...boxStyle, opacity: 0.5 };
+const inactiveRowStyle = { ...rowStyle, opacity: 0.5 };
 
-// This integration's task queue, from ui/.env (matches ballerina/Config.toml).
+// This integration's task queue, passed as an environment variable when
+// starting the dashboard (matches `taskQueue` in the sample's Config.toml),
+// e.g. VITE_TASK_QUEUE=CLAIM_APPROVAL_QUEUE npm run dev
 const MY_TASK_QUEUE = import.meta.env.VITE_TASK_QUEUE || null;
 
 function hasActiveWorker(item, type, activeTypes) {
@@ -50,8 +56,13 @@ function taskWorkflowType(task) {
   return type.replace(/^workflow-/, '');
 }
 
-function NoWorkerNote() {
-  return <p><em>No active worker for this workflow type — start its integration to act on it.</em></p>;
+function InactiveNote({ taskQueue }) {
+  return (
+    <p style={{ color: '#888', fontStyle: 'italic', margin: '4px 0' }}>
+      Grayed out because its integration is not active — no worker is serving
+      {taskQueue ? ` task queue "${taskQueue}"` : ' its task queue'}. Start that integration to act on it.
+    </p>
+  );
 }
 
 // ── Workflows ────────────────────────────────────────────────────────────────
@@ -125,7 +136,7 @@ function WorkflowDetail({ workflow, onBack }) {
   );
 }
 
-function Workflows({ activeTypes }) {
+function Workflows({ activeTypes, showInactive }) {
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState(null);
   const [error, setError] = useState(null);
@@ -145,19 +156,23 @@ function Workflows({ activeTypes }) {
   if (selected) {
     return <WorkflowDetail workflow={selected} onBack={() => setSelected(null)} />;
   }
+  const visible = items.filter((w) => showInactive || hasActiveWorker(w, w.workflowType, activeTypes));
+  const hidden = items.length - visible.length;
   return (
     <div>
       {error && <p style={{ color: 'red' }}>Cannot reach the management API: {error}</p>}
-      {items.length === 0 && !error && <p>No workflows yet. Start one and it will appear here.</p>}
+      {visible.length === 0 && !error && (
+        <p>No workflows to show.{hidden > 0 ? ` ${hidden} from inactive integrations are hidden by the filter.` : ' Start one and it will appear here.'}</p>
+      )}
       <ul style={{ padding: 0 }}>
-        {items.map((w) => {
+        {visible.map((w) => {
           const active = hasActiveWorker(w, w.workflowType, activeTypes);
           return (
-            <li key={w.workflowId} style={active ? boxStyle : inactiveStyle}>
+            <li key={w.workflowId} style={active ? rowStyle : inactiveRowStyle}>
               <strong>{w.workflowType}</strong> — {w.status}
-              <p>ID: {w.workflowId}<br />Started: {w.startTime}</p>
-              {!active && <NoWorkerNote />}
-              <button onClick={() => setSelected(w)}>View details</button>
+              {!active && <span style={{ color: '#888', fontSize: 12 }}> — integration not active</span>}
+              <button style={{ float: 'right' }} onClick={() => setSelected(w)}>Details</button>
+              <div style={metaStyle}>{w.workflowId} · started {w.startTime}</div>
             </li>
           );
         })}
@@ -193,7 +208,7 @@ function HumanTask({ task, active, onDone }) {
       <strong>{task.title || task.taskName}</strong>
       <p>{task.description}</p>
       <Json value={task.payload} />
-      {!active && <NoWorkerNote />}
+      {!active && <InactiveNote taskQueue={task.taskQueue} />}
       <input
         placeholder="Comment"
         value={comment}
@@ -208,7 +223,7 @@ function HumanTask({ task, active, onDone }) {
   );
 }
 
-function HumanTasks({ activeTypes }) {
+function HumanTasks({ activeTypes, showInactive }) {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
 
@@ -232,12 +247,16 @@ function HumanTasks({ activeTypes }) {
     return () => clearInterval(id);
   }, []);
 
+  const visible = tasks.filter((t) => showInactive || hasActiveWorker(t, taskWorkflowType(t), activeTypes));
+  const hidden = tasks.length - visible.length;
   return (
     <div>
       {error && <p style={{ color: 'red' }}>Cannot reach the management API: {error}</p>}
-      {tasks.length === 0 && !error && <p>No pending tasks.</p>}
+      {visible.length === 0 && !error && (
+        <p>No pending tasks to show.{hidden > 0 ? ` ${hidden} from inactive integrations are hidden by the filter.` : ''}</p>
+      )}
       <ul style={{ padding: 0 }}>
-        {tasks.map((t) => (
+        {visible.map((t) => (
           <HumanTask key={t.taskId} task={t} active={hasActiveWorker(t, taskWorkflowType(t), activeTypes)} onDone={load} />
         ))}
       </ul>
@@ -280,7 +299,7 @@ function FailedActivity({ task, active, onDone }) {
       <strong>{task.activityName || task.taskName}</strong>
       <p>Workflow: {task.parentWorkflowId}</p>
       <p style={{ color: 'red' }}>{task.errorMessage}</p>
-      {!active && <NoWorkerNote />}
+      {!active && <InactiveNote taskQueue={task.taskQueue} />}
       <label>
         Activity input (edit to retry with corrected values):
         <textarea
@@ -299,7 +318,7 @@ function FailedActivity({ task, active, onDone }) {
   );
 }
 
-function FailedActivities({ activeTypes }) {
+function FailedActivities({ activeTypes, showInactive }) {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
 
@@ -323,12 +342,16 @@ function FailedActivities({ activeTypes }) {
     return () => clearInterval(id);
   }, []);
 
+  const visible = tasks.filter((t) => showInactive || hasActiveWorker(t, taskWorkflowType(t), activeTypes));
+  const hidden = tasks.length - visible.length;
   return (
     <div>
       {error && <p style={{ color: 'red' }}>Cannot reach the management API: {error}</p>}
-      {tasks.length === 0 && !error && <p>No failed activities waiting for review.</p>}
+      {visible.length === 0 && !error && (
+        <p>No failed activities to show.{hidden > 0 ? ` ${hidden} from inactive integrations are hidden by the filter.` : ''}</p>
+      )}
       <ul style={{ padding: 0 }}>
-        {tasks.map((t) => (
+        {visible.map((t) => (
           <FailedActivity key={t.taskId} task={t} active={hasActiveWorker(t, taskWorkflowType(t), activeTypes)} onDone={load} />
         ))}
       </ul>
@@ -343,6 +366,7 @@ const TAB_NAMES = ['Workflows', 'Human Tasks', 'Failed Activities'];
 export default function App() {
   const [tab, setTab] = useState('Workflows');
   const [activeTypes, setActiveTypes] = useState(new Set());
+  const [showInactive, setShowInactive] = useState(false);
 
   // Workflow types with an active worker in this integration; everything
   // else on the shared Temporal server is shown grayed out.
@@ -373,10 +397,18 @@ export default function App() {
             {name}
           </button>
         ))}
+        <label style={{ marginLeft: 16, fontSize: 14 }}>
+          <input
+            type="checkbox"
+            checked={showInactive}
+            onChange={(e) => setShowInactive(e.target.checked)}
+          />{' '}
+          Show inactive integrations
+        </label>
       </nav>
-      {tab === 'Workflows' && <Workflows activeTypes={activeTypes} />}
-      {tab === 'Human Tasks' && <HumanTasks activeTypes={activeTypes} />}
-      {tab === 'Failed Activities' && <FailedActivities activeTypes={activeTypes} />}
+      {tab === 'Workflows' && <Workflows activeTypes={activeTypes} showInactive={showInactive} />}
+      {tab === 'Human Tasks' && <HumanTasks activeTypes={activeTypes} showInactive={showInactive} />}
+      {tab === 'Failed Activities' && <FailedActivities activeTypes={activeTypes} showInactive={showInactive} />}
     </main>
   );
 }

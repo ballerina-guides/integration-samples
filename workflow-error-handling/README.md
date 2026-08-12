@@ -8,11 +8,7 @@ A claim payout workflow that shows the two ways to recover from activity failure
 
 Because every completed activity result is stored durably, replaying the failed activity never re-executes the earlier steps — each activity behaves as its own store-and-forward stage.
 
-A minimal single-page React dashboard under [`ui/`](ui/) talks to the module's built-in **management API** and has three tabs:
-
-- **Workflows** — the workflow instances; each detail view shows the workflow input and every activity with its input, output, started time, and status.
-- **Human Tasks** — pending human tasks (used by the [workflow-human-task](../workflow-human-task) sample; the same dashboard works for both).
-- **Failed Activities** — failed activities waiting for review, with Retry / Retry with changes / Reject.
+The operator reviews failures through the module's built-in **management API**, using the shared [workflow-dashboard](../workflow-dashboard) app — a minimal single-page React dashboard with three tabs: **Workflows** (instances with input, activity inputs/outputs, and status), **Human Tasks**, and **Failed Activities** (Retry / Retry with changes / Reject).
 
 ## Prerequisites
 
@@ -37,12 +33,12 @@ A minimal single-page React dashboard under [`ui/`](ui/) talks to the module's b
 
    `Config.toml` enables the management API on `http://localhost:8234/workflow/`.
 
-3. Start the review UI:
+3. Start the shared dashboard, pointing it at this sample's task queue:
 
    ```bash
-   cd ui
+   cd ../workflow-dashboard
    npm install
-   npm run dev
+   VITE_TASK_QUEUE=CLAIM_PAYOUT_QUEUE npm run dev
    ```
 
 4. Submit a payout with a **bad account number** (note the missing `ACC-` prefix):
