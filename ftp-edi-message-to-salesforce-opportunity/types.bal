@@ -34,6 +34,6 @@ type Opportunity record {|
     string CloseDate = "2023-12-18";
     string StageName = "40 - Negotiation/Review";
     string Confidence__c = "Low";
-    string Pricebook2Id = "01s6C000000UN4PQAW";
+    string Pricebook2Id;
     string Working_with_3rd_party__c = "No";
 |};

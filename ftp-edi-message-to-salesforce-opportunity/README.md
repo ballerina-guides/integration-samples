@@ -41,6 +41,7 @@ Note that any FTP server with read and write access can be used for this sample.
 ### Config.toml
 ```
 salesforcePriceBookId = "<pricebook-id>"
+salesforceBaseUrl = "<salesforce-base-url>"
 ftpNewQuotesPath = "<ftp-path-for-input-edi-files>"
 ftpProcessedQuotesPath = "<ftp-path-for-processed-edi-files>"
 
@@ -61,10 +62,7 @@ password = "<password>"
 # Salesforce configuration
 # ==========================
 
-[salesforceConfig]
-baseUrl = "<salesforce-base-url>"
-
-[salesforceConfig.auth]
+[salesforceAuth]
 clientId = "<salesforce-client-id>"
 clientSecret = "<salesforce-client-secret>"
 refreshToken = "<salesforce-refresh-token>"
