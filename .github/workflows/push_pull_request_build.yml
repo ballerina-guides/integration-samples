@@ -11,6 +11,7 @@ jobs:
   build-packages:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         package: [
           azure-cosmosdb-data-as-rest-api,
@@ -19,7 +20,7 @@ jobs:
           data_integration/database/db_persistence,
           data_integration/database/db_sql_client,
           # data_integration/transformation,
-          # ftp-edi-message-to-salesforce-opportunity,
+          ftp-edi-message-to-salesforce-opportunity,
           gcalendar-new-event-to-trello-card,
           gcalendar-new-event-to-trello-card-and-twillio-msg,
           gdrive-files-to-microsoft-onedrive-files,
@@ -87,7 +88,7 @@ jobs:
       - name: Generate EDI  code
         run: bal edi codegen -i ./edi-code-generation/schemas/edi-schema.json -o ./edi-code-generation/edi.bal
       - name: Build EDI Package
-        run: bal build ./edi-code-generation/edi.bal
+        run: bal build ./edi-code-generation
       - name: Generate EDI Package
         run: bal edi libgen -p citymart/porder -i ./edi-package-generation/schemas -o ./edi-package-generation/lib 
       - name: Generate EDI Package
