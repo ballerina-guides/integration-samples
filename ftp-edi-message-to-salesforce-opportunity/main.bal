@@ -16,6 +16,9 @@ ftp:Client fileServer = check new ftp:Client(ftpConfig);
 public function main() returns error? {
     ftp:FileInfo[] quoteList = check fileServer->list(ftpNewQuotesPath);
     foreach ftp:FileInfo quoteFile in quoteList {
+        if !quoteFile.name.endsWith(".edi") {
+            continue;
+        }
         string quoteText = check fileServer->getText(quoteFile.path);
         mREQOTE:EDI_REQOTE_REQOTE quote = check mREQOTE:fromEdiString(quoteText);
         QuoteRequest quoteRequest = check transformQuoteRequest(quote);
