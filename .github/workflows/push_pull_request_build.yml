@@ -33,7 +33,8 @@ jobs:
           gsheet-new-row-to-salesforce-new-contact,
           hubspot-contacts-to-google-contacts,
           kafka_consumer_producer,
-          kafka_salesforce_integration,
+          kafka_salesforce_integration/kafka-message-producer,
+          kafka_salesforce_integration/kafka-salesforce-pricebook_update,
           mysql-client-with-transactions,
           mysql-record-to-salesforce-new-product,
           newsapi_headlines-to-email,
@@ -48,7 +49,7 @@ jobs:
           shopify-new-customers-to-outlook-mail,
           working_with_data,
           working_with_databases,
-          working_with_json
+          working_with_json/ballerina
         ]
     steps:
       - uses: actions/checkout@v3
