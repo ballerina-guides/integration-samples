@@ -10,7 +10,7 @@ The manager completes the task through the module's built-in **management API**,
 
 ## Prerequisites
 
-- [Ballerina](https://ballerina.io/downloads/) 2201.13.4 or greater
+- [Ballerina](https://ballerina.io/downloads/) 2201.14.0 (Swan Lake Update 14) or greater
 - [Temporal CLI](https://docs.temporal.io/cli) for the local development server
 - Node.js 20+ (for the approval UI)
 

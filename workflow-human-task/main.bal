@@ -2,6 +2,8 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/workflow;
 import ballerina/workflow.management;
+// Serves the management REST API; the service starts on import.
+import ballerina/workflow.management.rest as _;
 
 type Claim record {|
     string claimId;
@@ -20,8 +22,10 @@ function claimApprovalWorkflow(workflow:Context ctx, Claim claim) returns string
     if !verified {
         return string `Claim ${claim.claimId} was rejected during verification.`;
     }
-    ApprovalDecision decision = check ctx->awaitHumanTask("approveClaim", "MANAGER",
-            payload = {claimId: claim.claimId, policyNo: claim.policyNo, amount: claim.amount},
+    ApprovalDecision decision = check ctx->awaitHumanTask("approveClaim",
+            {claimId: claim.claimId, policyNo: claim.policyNo, amount: claim.amount},
+            userRoles = "MANAGER",
+            administratorRoles = "CLAIMS_ADMIN",
             title = string `Approve claim ${claim.claimId}`,
             description = "Review the claim and approve or reject the payment.");
     if !decision.approved {

@@ -3,7 +3,7 @@
 A claim payout workflow that shows the two ways to recover from activity failures with the [`ballerina/workflow`](https://central.ballerina.io/ballerina/workflow/latest) module:
 
 1. `convertCurrency` — fails transiently (simulated flaky service) and recovers with an **automatic retry policy** (`retryPolicy = {maxRetries: 3, ...}`).
-2. `depositPayout` — fails on a malformed account number and waits for **manual review** (`retryPolicy = "OPS"`); an operator retries it as-is, retries it with corrected input, or rejects it.
+2. `depositPayout` — fails on a malformed account number and waits for **manual review** (`retryPolicy = {userRoles: "OPS", ...}`); an operator retries it as-is, retries it with corrected input, or rejects it.
 3. `notifyCustomer` — runs only after the deposit succeeds.
 
 Because every completed activity result is stored durably, replaying the failed activity never re-executes the earlier steps — each activity behaves as its own store-and-forward stage.
@@ -12,7 +12,7 @@ The operator reviews failures through the module's built-in **management API**, 
 
 ## Prerequisites
 
-- [Ballerina](https://ballerina.io/downloads/) 2201.13.4 or greater
+- [Ballerina](https://ballerina.io/downloads/) 2201.14.0 (Swan Lake Update 14) or greater
 - [Temporal CLI](https://docs.temporal.io/cli) for the local development server
 - Node.js 20+ (for the review UI)
 

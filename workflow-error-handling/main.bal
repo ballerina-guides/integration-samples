@@ -2,6 +2,8 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/workflow;
 import ballerina/workflow.management;
+// Serves the management REST API; the service starts on import.
+import ballerina/workflow.management.rest as _;
 
 type PayoutRequest record {|
     string claimId;
@@ -17,7 +19,7 @@ function claimPayoutWorkflow(workflow:Context ctx, PayoutRequest request) return
             retryPolicy = {maxRetries: 3, retryDelay: 2.0, retryBackoff: 2.0});
     string depositRef = check ctx->callActivity(depositPayout,
             {"accountNo": request.accountNo, "amount": localAmount},
-            retryPolicy = "OPS");
+            retryPolicy = {userRoles: "OPS", administratorRoles: "OPS_LEAD"});
     string _ = check ctx->callActivity(notifyCustomer,
             {"claimId": request.claimId, "depositRef": depositRef});
     return string `Claim ${request.claimId} paid. Deposit reference: ${depositRef}`;
@@ -40,8 +42,8 @@ function convertCurrency(string claimId, decimal amount, string currency) return
 }
 
 // Simulates a bank transfer that fails on a malformed account number.
-// The HumanReview policy ("OPS") suspends the workflow until an operator
-// retries, corrects the input, or rejects the activity.
+// The review policy suspends the workflow until an OPS operator retries,
+// corrects the input, or rejects the activity.
 @workflow:Activity
 function depositPayout(string accountNo, decimal amount) returns string|error {
     if !accountNo.startsWith("ACC-") {

@@ -2,7 +2,12 @@
 org = "ballerina_guides"
 name = "workflow_error_handling"
 version = "0.1.0"
-distribution = "2201.13.4"
+distribution = "2201.13.6"
 
 [build-options]
 observabilityIncluded = true
+
+[[dependency]]
+org = "ballerina"
+name = "workflow"
+version = "0.10.0"
