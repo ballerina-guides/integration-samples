@@ -1,40 +1,38 @@
 import ballerina/http;
 
-type Product record {|
+configurable int port = 8080;
+
+type Album readonly & record {|
     string id;
-    string name;
+    string title;
+    string artist;
     decimal price;
 |};
 
-type Stock record {|
-    string productId;
-    int available;
-|};
+table<Album> key(id) albums = table [
+    {id: "1", title: "Blue Train", artist: "John Coltrane", price: 56.99},
+    {id: "2", title: "Jeru", artist: "Gerry Mulligan", price: 17.99},
+    {id: "3", title: "Sarah Vaughan and Clifford Brown", artist: "Sarah Vaughan", price: 39.99}
+];
 
-// Local product and stock services make the integration runnable without accounts.
-service /products on new http:Listener(9091) {
-    resource function get [string id]() returns Product {
-        return {id, name: "Travel mug", price: 18.50d};
+service / on new http:Listener(port) {
+    resource function get albums() returns Album[] {
+        return albums.toArray();
     }
-}
 
-service /stock on new http:Listener(9092) {
-    resource function get [string id]() returns Stock {
-        return {productId: id, available: 12};
+    resource function get albums/[string id]() returns Album|http:NotFound {
+        Album? album = albums[id];
+        if album is () {
+            return http:NOT_FOUND;
+        }
+        return album;
     }
-}
 
-service /catalog on new http:Listener(8080) {
-    resource function get [string id]() returns json|error {
-        http:Client products = check new ("http://localhost:9091");
-        http:Client stock = check new ("http://localhost:9092");
-        Product product = check products->/products/[id];
-        Stock availability = check stock->/stock/[id];
-        return {
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            available: availability.available
-        };
+    resource function post albums(@http:Payload Album album) returns Album|http:Conflict {
+        if albums.hasKey(album.id) {
+            return http:CONFLICT;
+        }
+        albums.add(album);
+        return album;
     }
 }
