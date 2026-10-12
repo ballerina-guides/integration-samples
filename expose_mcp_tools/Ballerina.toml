@@ -1,0 +1,5 @@
+[package]
+org = "integration_samples"
+name = "expose_mcp_tools"
+version = "0.1.0"
+distribution = "2201.14.0"
