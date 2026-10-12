@@ -1,25 +1,29 @@
-import ballerina/http;
 import ballerina/io;
 
-type Country record {
-    string country;
-    int population;
-    string continent;
-    int cases;
-    int deaths;
-};
+type Customer record {|
+    string id;
+    string name;
+    string email;
+    boolean active;
+|};
 
-// Prints the top 10 countries having the highest case-fatality ratio.
-public function main() returns error? {
-    http:Client diseaseEp = check new ("https://disease.sh/v3");
-    Country[] countries = check diseaseEp->/covid\-19/countries;
+type Contact record {|
+    string externalId;
+    string displayName;
+    string email;
+|};
 
-    json summary =
-        from var {country, continent, population, cases, deaths} in countries
-            where population >= 100000 && deaths >= 100
-            let decimal caseFatalityRatio = <decimal>deaths / <decimal>cases * 100
-            order by caseFatalityRatio descending
-            limit 10
-            select {country, continent, population, caseFatalityRatio};
-    io:println(summary);
+public function main() {
+    Customer[] customers = [
+        {id: "C-101", name: "Asha Perera", email: "asha@example.com", active: true},
+        {id: "C-102", name: "Milan Silva", email: "milan@example.com", active: false}
+    ];
+    Contact[] contacts = from Customer customer in customers
+        where customer.active
+        select {
+            externalId: customer.id,
+            displayName: customer.name,
+            email: customer.email
+        };
+    io:println(contacts);
 }

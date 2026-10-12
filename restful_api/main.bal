@@ -1,56 +1,40 @@
 import ballerina/http;
 
-configurable int port = 8080;
-
-type Album readonly & record {|
+type Product record {|
     string id;
-    string title;
-    string artist;
+    string name;
     decimal price;
 |};
 
-table<Album> key(id) albums = table [
-    {id: "1", title: "Blue Train", artist: "John Coltrane", price: 56.99},
-    {id: "2", title: "Jeru", artist: "Gerry Mulligan", price: 17.99},
-    {id: "3", title: "Sarah Vaughan and Clifford Brown", artist: "Sarah Vaughan", price: 39.99}
-];
+type Stock record {|
+    string productId;
+    int available;
+|};
 
-service / on new http:Listener(port) {
-    resource function get albums() returns Album[] {
-        return albums.toArray();
+// Local product and stock services make the integration runnable without accounts.
+service /products on new http:Listener(9091) {
+    resource function get [string id]() returns Product {
+        return {id, name: "Travel mug", price: 18.50d};
     }
+}
 
-    resource function get albums/[string id]() returns Album|http:NotFound {
-        Album? album = albums[id];
-        if album is () {
-            return http:NOT_FOUND;
-        } else {
-            return album;
-        }
+service /stock on new http:Listener(9092) {
+    resource function get [string id]() returns Stock {
+        return {productId: id, available: 12};
     }
+}
 
-    resource function post albums(@http:Payload Album album) returns Album {
-        albums.add(album);
-        return album;
-    }
-
-    resource function put albums/[string id](@http:Payload Album album) returns Album|http:NotFound {
-        Album? existingAlbum = albums[id];
-        if existingAlbum is () {
-            return http:NOT_FOUND;
-        } else {
-            albums.add(album);
-            return album;
-        }
-    }
-
-    resource function delete albums/[string id]() returns Album|http:NotFound {
-        Album? album = albums[id];
-        if album is () {
-            return http:NOT_FOUND;
-        } else {
-            _ = albums.remove(id);
-            return album;
-        }
+service /catalog on new http:Listener(8080) {
+    resource function get [string id]() returns json|error {
+        http:Client products = check new ("http://localhost:9091");
+        http:Client stock = check new ("http://localhost:9092");
+        Product product = check products->/products/[id];
+        Stock availability = check stock->/stock/[id];
+        return {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            available: availability.available
+        };
     }
 }

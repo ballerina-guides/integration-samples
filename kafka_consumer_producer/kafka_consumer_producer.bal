@@ -1,44 +1,35 @@
+import ballerina/io;
 import ballerinax/kafka;
 
-configurable string groupId = "order-consumers";
-configurable string orders = "orders";
-configurable string paymentSuccessOrders = "payment-success-orders";
-configurable decimal pollingInterval = 1;
-configurable string kafkaEndpoint = kafka:DEFAULT_URL;
+configurable string broker = kafka:DEFAULT_URL;
+configurable string inputTopic = "orders";
+configurable string outputTopic = "fulfillment";
 
 type Order readonly & record {|
-    int id;
-    string desc;
-    PaymentStatus paymentStatus;
+    string orderId;
+    string productId;
+    int quantity;
 |};
 
-enum PaymentStatus {
-    SUCCESS,
-    FAIL
-}
-
-final kafka:ConsumerConfiguration consumerConfigs = {
-    groupId: groupId,
-    topics: [orders],
-    offsetReset: kafka:OFFSET_RESET_EARLIEST,
-    pollingInterval
+final kafka:ConsumerConfiguration consumerConfig = {
+    groupId: "fulfillment-example",
+    topics: [inputTopic],
+    offsetReset: kafka:OFFSET_RESET_EARLIEST
 };
 
-service on new kafka:Listener(kafkaEndpoint, consumerConfigs) {
-    private final kafka:Producer orderProducer;
+service on new kafka:Listener(broker, consumerConfig) {
+    private final kafka:Producer producer;
 
     function init() returns error? {
-        self.orderProducer = check new (kafkaEndpoint);
+        self.producer = check new (broker);
     }
 
     remote function onConsumerRecord(Order[] orders) returns error? {
-        from Order 'order in orders
-            where 'order.paymentStatus == SUCCESS
-            do {
-                check self.orderProducer->send({
-                    topic: paymentSuccessOrders,
-                    value: 'order
-                });
-            };
+        foreach Order item in orders {
+            json message = {orderId: item.orderId,
+                productId: item.productId, status: "READY_TO_PACK"};
+            check self.producer->send({topic: outputTopic, value: message});
+            io:println("Published fulfillment for ", item.orderId);
+        }
     }
 }
