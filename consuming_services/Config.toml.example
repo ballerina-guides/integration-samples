@@ -1,5 +1,6 @@
 githubPAT = "<GitHub token with repository read access>"
-repository = "ballerina-platform/ballerina-lang"
+githubOwner = "ballerina-platform"
+githubRepo = "ballerina-lang"
 sheetsAccessToken = "<Google OAuth access token with Sheets edit scope>"
 spreadSheetId = "<spreadsheet ID>"
 sheetName = "pull-requests"

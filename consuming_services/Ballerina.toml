@@ -8,3 +8,8 @@ distribution = "2201.14.0"
 org = "ballerinax"
 name = "googleapis.sheets"
 version = "4.0.0"
+
+[[dependency]]
+org = "ballerinax"
+name = "github"
+version = "4.6.0"
