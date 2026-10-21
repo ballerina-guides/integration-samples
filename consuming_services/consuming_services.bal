@@ -15,15 +15,16 @@ type PR record {
     string updated_at;
 };
 
+final http:Client github = check new ("https://api.github.com/repos");
+final sheets:Client gsheets = check new ({auth: {token: sheetsAccessToken}});
+final map<string> headers = {
+    "Accept": "application/vnd.github.v3+json",
+    "Authorization": "token " + githubPAT
+};
+
 public function main() returns error? {
-    http:Client github = check new ("https://api.github.com/repos");
-    map<string> headers = {
-        "Accept": "application/vnd.github.v3+json",
-        "Authorization": "token " + githubPAT
-    };
     PR[] prs = check github->/[repository]/pulls(headers);
 
-    sheets:Client gsheets = check new ({auth: {token: sheetsAccessToken}});
     _ = check gsheets->appendValue(spreadSheetId, ["Issue", "Title", "State", "Created At", "Updated At"],
                 {sheetName: sheetName});
 

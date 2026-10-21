@@ -1,8 +1,10 @@
 [package]
 org = "integration_samples"
 name = "consuming_services"
-version = "0.1.0"
-distribution = "2201.4.0"
+version = "0.2.0"
+distribution = "2201.14.0"
 
-[build-options]
-observabilityIncluded = true
+[[dependency]]
+org = "ballerinax"
+name = "googleapis.sheets"
+version = "4.0.0"

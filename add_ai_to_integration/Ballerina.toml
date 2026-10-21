@@ -1,0 +1,5 @@
+[package]
+org = "integration_samples"
+name = "add_ai_to_integration"
+version = "0.1.0"
+distribution = "2201.14.0"
